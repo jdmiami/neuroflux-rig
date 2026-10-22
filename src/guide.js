@@ -7,23 +7,31 @@ const same=(a,b)=>typeof a==='number'&&typeof b==='number'?Math.abs(a-b)<.005:a=
 class WalkthroughGuide {
   constructor(rig,knowledge){
     this.rig=rig;this.controls=knowledge.controls;this.knowledgeVersion=knowledge.version;
+    this.enabled=false;this.requestId=0;
+    try{this.enabled=localStorage.getItem('nfx.guide.enabled')==='true';}catch{}
     this.index=0;this.done=[];this.mount();
-    try{const saved=JSON.parse(sessionStorage.getItem('nfx.guide.v1'));if(saved?.plan&&saved.goal){this.saved=saved;this.message('Your previous walkthrough is ready to resume.');this.resume.hidden=false;}}catch{}
+    if(this.enabled)try{const saved=JSON.parse(sessionStorage.getItem('nfx.guide.v1'));if(saved?.plan&&saved.goal){this.saved=saved;this.message('Your previous walkthrough is ready to resume.');this.resume.hidden=false;}}catch{}
     this.timer=setInterval(()=>this.tick(),200);
   }
   mount(){
     const panel=document.createElement('section');panel.id='nfxGuidePanel';panel.className='card';
     panel.setAttribute('aria-label','AI guided walkthrough');
     panel.innerHTML=`<div class="c-hd"><span>GUIDED WALKTHROUGH</span><a href="/manual.html" target="_blank" rel="noopener">FULL MANUAL ↗</a></div>
-      <div class="nfx-guide-home"><p>Tell me what you want to make. I’ll find the right controls and walk you through it.</p>
+      <label class="nfx-guide-toggle" for="nfxGuideEnabled"><span>WALKTHROUGH MODE <b id="nfxGuideEnabledLabel">OFF</b></span><input id="nfxGuideEnabled" type="checkbox" role="switch" aria-controls="nfxGuideHome"></label>
+      <p class="nfx-guide-toggle-note">Optional and off by default. Turn it off any time to dismiss all guide overlays.</p>
+      <div class="nfx-guide-home" id="nfxGuideHome" hidden><p>Tell me what you want to make. I’ll find the right controls and walk you through it.</p>
       <form id="nfxGuideForm"><label for="nfxGuideGoal">What would you like to do?</label><textarea id="nfxGuideGoal" maxlength="1200" rows="3" placeholder="Record a vertical camera mix with clean video and separate voice audio…" required></textarea>
       <button type="submit" id="nfxGuideBuild">BUILD MY WALKTHROUGH</button><button type="button" id="nfxGuideCancel" hidden>CANCEL REQUEST</button></form>
       <div class="nfx-guide-examples"><button type="button" data-goal="Help me mix my camera with the visuals and fade to camera only.">MIX MY CAMERA</button><button type="button" data-goal="Help me create a 6-split kaleidoscope with gentle swirl and ripple.">MIRROR + WARP</button><button type="button" data-goal="Help me record a clean portrait video with music and separate microphone audio.">RECORD A TAKE</button></div>
       <p id="nfxGuideStatus" role="status" aria-live="polite">Uses the manual and your current settings. You choose when to apply a change.</p>
       <button id="nfxGuideResume" hidden>RESUME WALKTHROUGH</button><div id="nfxGuidePlan"></div></div>`;
     this.panel=panel;this.rig.mountGuide(panel);this.resume=panel.querySelector('#nfxGuideResume');
+    this.toggle=panel.querySelector('#nfxGuideEnabled');this.toggle.checked=this.enabled;
+    panel.querySelector('#nfxGuideHome').hidden=!this.enabled;
+    panel.querySelector('#nfxGuideEnabledLabel').textContent=this.enabled?'ON':'OFF';
+    this.toggle.onchange=()=>this.setEnabled(this.toggle.checked);
     const banner=document.createElement('aside');banner.id='nfxGuideStep';banner.hidden=true;banner.setAttribute('aria-label','Current walkthrough step');
-    banner.innerHTML=`<div class="nfx-guide-step-head"><button data-guide="expand" class="nfx-guide-progress" aria-expanded="true"></button><button data-guide="minimize" aria-label="Minimize walkthrough">−</button><button data-guide="end" aria-label="End walkthrough">×</button></div>
+    banner.innerHTML=`<div class="nfx-guide-step-head"><button data-guide="expand" class="nfx-guide-progress" aria-expanded="true"></button><button data-guide="minimize" aria-label="Minimize walkthrough">−</button><button data-guide="end" aria-label="Turn off walkthrough mode" title="Turn off walkthrough mode">×</button></div>
       <div class="nfx-guide-step-body"><h3 id="nfxGuideTitle"></h3><p id="nfxGuideInstruction"></p><p id="nfxGuideExpected"></p><p id="nfxGuideObserved" role="status" aria-live="polite"></p>
       <div class="nfx-guide-actions"><button data-guide="show">SHOW CONTROL</button><button data-guide="apply">APPLY THIS STEP</button><button data-guide="undo" hidden>UNDO CHANGE</button><button data-guide="next">NEXT</button><button data-guide="skip">SKIP</button></div>
       <details><summary>Manual sources</summary><div id="nfxGuideSources"></div></details>
@@ -41,8 +49,20 @@ class WalkthroughGuide {
       element.addEventListener('keydown',event=>event.stopPropagation());
     }
     const shortcut=document.createElement('button');shortcut.type='button';shortcut.className='nfx-guide-shortcut';shortcut.textContent='GUIDE ME STEP BY STEP';
-    shortcut.onclick=()=>{this.goalInput.value=$('#aiQ')?.value||this.goalInput.value;this.rig.guideOpen('ai');this.goalInput.focus();};
+    shortcut.onclick=()=>{this.goalInput.value=$('#aiQ')?.value||this.goalInput.value;this.rig.guideOpen('ai');(this.enabled?this.goalInput:this.toggle).focus();};
     $('#aiSug')?.appendChild(shortcut);
+  }
+  setEnabled(enabled){
+    this.enabled=!!enabled;this.toggle.checked=this.enabled;
+    this.panel.querySelector('#nfxGuideHome').hidden=!this.enabled;
+    this.panel.querySelector('#nfxGuideEnabledLabel').textContent=this.enabled?'ON':'OFF';
+    try{localStorage.setItem('nfx.guide.enabled',String(this.enabled));}catch{}
+    if(!this.enabled){
+      this.requestId++;this.request?.abort();this.stopOverlay();this.plan=null;this.saved=null;this.done=[];
+      this.resume.hidden=true;$('#nfxGuidePlan').replaceChildren();
+      try{sessionStorage.removeItem('nfx.guide.v1');}catch{}
+      this.message('Walkthrough mode is off. Your app settings stay as you left them.');
+    }
   }
   get goalInput(){return this.panel.querySelector('#nfxGuideGoal');}
   get step(){return this.plan?.steps[this.index];}
@@ -52,8 +72,10 @@ class WalkthroughGuide {
     this.message(message);if(this.active)$('#nfxGuideObserved').textContent=message;
   }
   async generate(feedback=''){
+    if(!this.enabled)throw new Error('Turn on WALKTHROUGH MODE to build a guide.');
     if(this.loading)return;
     const goal=(feedback?this.goal:this.goalInput.value).trim();if(!goal)throw new Error('Tell me what you would like to do first.');
+    const requestId=++this.requestId;
     this.loading=true;this.request=new AbortController();this.message('Finding manual sections and building steps for your current setup…');
     $('#nfxGuideBuild').disabled=true;$('#nfxGuideCancel').hidden=false;
     try{
@@ -61,6 +83,7 @@ class WalkthroughGuide {
         body:JSON.stringify({action:'guide',goal,feedback,knowledgeVersion:this.knowledgeVersion,state:contract.sanitizeState(this.rig.guideState(),this.controls),completed:feedback?this.done:[]}),
         signal:AbortSignal.any([this.request.signal,AbortSignal.timeout(65000)])});
       const result=await response.json();if(!response.ok||!result.ok)throw new Error(result.message||'Gemini is unavailable. You can still open the full manual.');
+      if(!this.enabled||requestId!==this.requestId)return;
       this.accept(result,goal);this.message(result.fallback?`Built with ${result.model}. ${result.requestedModel} was unavailable; a Flash fallback answered.`:`Built with ${result.model}, grounded in the manual.`);
       if(feedback)this.begin();
     }catch(error){if(error instanceof TypeError)throw new Error('The guide needs an internet connection. The cached manual is still available.');throw error;}
@@ -75,7 +98,7 @@ class WalkthroughGuide {
     this.persist();
   }
   persist(){try{sessionStorage.setItem('nfx.guide.v1',JSON.stringify({plan:this.plan,goal:this.goal,index:this.index,done:this.done}));}catch{}}
-  begin(){if(!this.step)return;this.active=true;this.banner.hidden=false;this.banner.classList.remove('nfx-guide-collapsed');this.draw();this.reveal();}
+  begin(){if(!this.enabled||!this.step)return;this.active=true;this.banner.hidden=false;this.banner.classList.remove('nfx-guide-collapsed');this.draw();this.reveal();}
   draw(){
     const step=this.step;if(!step)return;
     this.undo=null;this.manualApplied=false;this.applied=false;this.testPassed=false;this.observed=false;this.statusText='';
@@ -162,7 +185,7 @@ class WalkthroughGuide {
   }
   async handle(action){
     if((this.applying||this.loading)&&['apply','next','skip','replan','undo'].includes(action))return;
-    if(action==='end'){this.stopOverlay();this.plan=null;this.saved=null;this.resume.hidden=true;sessionStorage.removeItem('nfx.guide.v1');this.message('Walkthrough ended. Your settings stay as you left them.');return;}
+    if(action==='end'){this.setEnabled(false);return;}
     if(action==='minimize'){this.banner.classList.add('nfx-guide-collapsed');this.banner.querySelector('[data-guide=expand]').setAttribute('aria-expanded','false');return;}
     if(action==='expand'){this.banner.classList.remove('nfx-guide-collapsed');this.banner.querySelector('[data-guide=expand]').setAttribute('aria-expanded','true');return;}
     if(action==='show'){this.reveal();return;}

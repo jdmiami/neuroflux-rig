@@ -3,6 +3,9 @@
 .nfx-guide-home{padding:0 12px 14px;font:12px/1.6 var(--mono,monospace);color:var(--text)}
 .nfx-guide-home p{color:var(--dim)}
 #nfxGuidePanel label,#nfxGuideStep label{display:block;font-size:11px;margin:9px 0 6px;color:var(--text)}
+#nfxGuidePanel .nfx-guide-toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 12px;min-height:48px;font:11px var(--mono,monospace);cursor:pointer}
+#nfxGuideEnabled{width:24px;height:24px;accent-color:var(--cyan);cursor:pointer}#nfxGuideEnabledLabel{color:var(--cyan);margin-left:7px}
+#nfxGuidePanel .nfx-guide-toggle-note{margin:0 12px 12px;color:var(--dim);font:10px/1.5 var(--mono,monospace)}
 #nfxGuidePanel textarea,#nfxGuideStep input{display:block;width:100%;padding:10px;font:12px/1.5 var(--mono,monospace);background:#0b1725;color:var(--text);border:1px solid var(--line2);resize:vertical;user-select:text;-webkit-user-select:text}
 #nfxGuidePanel button,#nfxGuideStep button,.nfx-guide-shortcut{font:10px var(--mono,monospace);letter-spacing:.04em;min-height:40px;padding:10px 12px;border:1px solid var(--line2);background:#102735;color:var(--cyan);cursor:pointer;clip-path:var(--ch6)}
 #nfxGuidePanel button:hover,#nfxGuideStep button:hover{background:#193c49}

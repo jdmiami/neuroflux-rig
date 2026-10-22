@@ -409,13 +409,13 @@ This tab contains several independent features. Local audio analysis/director be
 
 ### Get a fresh, guided walkthrough
 
-Open **Menu → AI → GUIDED WALKTHROUGH**. Tell it what you want to do in ordinary language: “Help me record a clean portrait camera mix with music and a separate voice track,” or “Show me how to make a six-split kaleidoscope with a gentle swirl.” You can also choose **GUIDE ME STEP BY STEP** in the typed AI command window.
+Open **Menu → AI → GUIDED WALKTHROUGH**. **WALKTHROUGH MODE starts OFF.** Turn its switch ON only when you want help; the app remembers that choice. Even with it enabled, a new session waits for you to begin or resume a walkthrough. Tell it what you want to do in ordinary language: “Help me record a clean portrait camera mix with music and a separate voice track,” or “Show me how to make a six-split kaleidoscope with a gentle swirl.” You can also choose **GUIDE ME STEP BY STEP** in the typed AI command window.
 
 The guide looks up relevant parts of this manual and checks your current settings and browser capabilities. It makes a new plan for that setup. Read the plan first, then press **BEGIN WALKTHROUGH**. Building the plan does not change a setting or start a take.
 
 The current step sits inside the app's native menu. On phones, the menu expands so the instructions and controls have room. A green outline points to the real control. Use **SHOW CONTROL** to find it again. Turn the dial yourself or tap **APPLY THIS SETTING**. **VERIFIED · NEXT** means the app has checked that setting. It does not mean the result sounds or looks good—that part is yours. Listening and visual checks say **I CHECKED THIS · NEXT**, because the guide cannot judge them for you.
 
-Use **UNDO CHANGE** for a reversible setting, **SKIP** when a step is unnecessary, the minus button to minimize, or × to end the walkthrough. Ending leaves your settings as you set them. **Change the plan / I'm stuck** lets you describe a problem and rebuild the remaining steps using the latest settings. If you reload the same tab, an explicit **RESUME WALKTHROUGH** lets you continue.
+Use **UNDO CHANGE** for a reversible setting, **SKIP** when a step is unnecessary, the minus button to minimize, or × to turn walkthrough mode OFF. You can also switch it OFF in the AI panel. Turning it off dismisses the highlighting and instructions, cancels a pending guide request and clears the resumable plan. Your visual/audio settings and any recording already in progress stay as you left them. **Change the plan / I'm stuck** lets you describe a problem and rebuild the remaining steps using the latest settings. If you reload the same tab, an explicit **RESUME WALKTHROUGH** lets you continue.
 
 Starting a recording still needs your own tap on **START TAKE · 3–2–1**, followed by the normal countdown. Camera and microphone permissions still come from the browser. Read the step before granting access. The guide does not silently record, delete takes, upload files or publish anything. Its instructions and highlighting stay out of your recorded picture.
 

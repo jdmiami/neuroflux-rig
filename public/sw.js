@@ -1,4 +1,4 @@
-const CACHE = 'neuroflux-local-80886afd3e4a6714';
+const CACHE = 'neuroflux-local-9fe13faabc93d38d';
 const ASSETS = ["/","/index.html","/studio.js","/studio.css","/guide.js","/guide.css","/guide-index.json","/manual.html","/export.worker.js","/pcm.worklet.js","/c0.bin","/c1.bin","/c2.bin","/c3.bin","/c4.bin","/THIRD-PARTY-NOTICES.txt","/vendor-licenses/FFmpeg-core-GPL-2.0.txt","/vendor-licenses/FFmpeg-wasm-MIT.txt","/vendor-licenses/Mediabunny-MPL-2.0.txt","/manual-assets/camera-000.png","/manual-assets/camera-050.png","/manual-assets/camera-100.png","/vendor/ffmpeg/classes.js","/vendor/ffmpeg/const.js","/vendor/ffmpeg/errors.js","/vendor/ffmpeg/index.js","/vendor/ffmpeg/types.js","/vendor/ffmpeg/utils.js","/vendor/ffmpeg/worker.js","/vendor/ffmpeg-core/ffmpeg-core.js","/vendor/ffmpeg-core/ffmpeg-core.wasm"];
 self.addEventListener('install', event => {
   // Do not activate halfway through a take; the next normal navigation gets the update.

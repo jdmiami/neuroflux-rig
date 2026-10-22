@@ -5,6 +5,7 @@ import functools,http.server,json,pathlib,tempfile,threading
 from playwright.sync_api import sync_playwright
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 requests=[]
+delayed=threading.Event()
 def plan(goal):
  def step(title,action,expected='The setting changes in the app.'):
   return {'title':title,'instruction':'Use the highlighted control, or apply this step.','action':action,'expected':expected,'sources':['control-mirror']}
@@ -24,9 +25,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
   super().do_GET()
  def do_POST(self):
   body=json.loads(self.rfile.read(int(self.headers.get('content-length',0))))
-  requests.append(body);self.json(plan(body.get('goal','')))
+  requests.append(body)
+  if body.get('goal','').startswith('Delayed'):delayed.wait(10)
+  self.json(plan(body.get('goal','')))
  def json(self,value):
-  self.send_response(200);self.send_header('content-type','application/json');self.end_headers();self.wfile.write(json.dumps(value).encode())
+  self.send_response(200);self.send_header('content-type','application/json');self.end_headers()
+  try:self.wfile.write(json.dumps(value).encode())
+  except BrokenPipeError:pass
  def log_message(self,*_):pass
 
 def main():
@@ -41,6 +46,10 @@ def main():
    page.add_init_script("localStorage.setItem('nfx.state.v1',JSON.stringify({P:{res:0,cx:0,mode:8,mirror:0}}));localStorage.setItem('nfx.studio.v1',JSON.stringify({profiles:[{width:128,height:128,fps:24},{width:128,height:192,fps:24}],settings:{stems:false}}));")
    page.goto(f'http://127.0.0.1:{server.server_port}/',wait_until='domcontentloaded');page.wait_for_function('window.NFXGuide&&NFXStudio.storageReady')
    page.locator('#start [data-go=sim]').click();page.locator('#btnMenu').click();page.locator('#tabs [data-p=ai]').click()
+   assert not page.locator('#nfxGuideEnabled').is_checked()
+   assert page.locator('#nfxGuideHome').is_hidden() and page.locator('#nfxGuideStep').is_hidden()
+   assert not requests,'Default-off guide made a model request'
+   page.locator('#nfxGuideEnabled').check()
    page.locator('#nfxGuideGoal').fill('Help me make six mirror splits and swirl');page.locator('#nfxGuideBuild').click()
    page.locator('[data-guide=begin]').wait_for();assert 'fallback' in page.locator('.nfx-guide-model').inner_text().lower()
    assert page.evaluate('NFXRig.guideState().controls.mirror')==0,'Generating a plan mutated the app'
@@ -69,6 +78,17 @@ def main():
    assert 'cannot verify' in page.locator('#nfxGuideObserved').inner_text()
    page.locator('[data-guide=next]').click();assert page.locator('#nfxGuideStep').is_hidden()
    print('PASS guide: manual-grounded plan, labeled fallback, no automatic mutations, native navigation, spotlight, apply/verify, undo, manual edits, recording fields, responsive layout and honest review steps',flush=True)
+   # Off cancels an in-flight request and cannot accept a late response.
+   page.locator('#tabs [data-p=ai]').click();page.locator('#nfxGuideGoal').fill('Delayed walkthrough request')
+   page.locator('#nfxGuideBuild').click()
+   for _ in range(100):
+    if requests[-1].get('goal','').startswith('Delayed'):break
+    page.wait_for_timeout(50)
+   assert requests[-1]['goal'].startswith('Delayed')
+   page.locator('#nfxGuideEnabled').uncheck();delayed.set()
+   page.wait_for_function('!NFXGuide.loading')
+   page.locator('#nfxGuideEnabled').check();page.wait_for_timeout(200)
+   assert page.locator('[data-guide=begin]').count()==0 and not page.evaluate('NFXGuide.plan||NFXGuide.active')
    # Exercise real recording/countdown tools; the guide must not capture until explicit Apply.
    page.locator('#tabs [data-p=ai]').click();page.locator('#nfxGuideGoal').fill('Help me record audio only')
    page.locator('#nfxGuideBuild').click();page.locator('[data-guide=begin]').wait_for();page.locator('[data-guide=begin]').click()
@@ -79,7 +99,20 @@ def main():
    page.locator('[data-guide=next]').click();page.locator('[data-guide=apply]').click();page.wait_for_function('!NFXStudio.session')
    page.locator('[data-guide=next]').click();page.locator('[data-guide=next]').click()
    assert page.evaluate('NFXStudio.store.list().then(a=>a.some(x=>x.status==="complete"&&x.bytes>0))')
+   # Turning the guide off also clears an active/resumable plan, and survives reload.
+   page.locator('#tabs [data-p=ai]').click();page.locator('#nfxGuideBuild').click()
+   page.locator('[data-guide=begin]').wait_for();page.locator('[data-guide=begin]').click()
+   page.locator('[data-guide=end]').click()
+   assert page.locator('#nfxGuideStep').is_hidden() and page.locator('#nfxGuideSpotlight').is_hidden()
+   assert not page.evaluate('NFXGuide.enabled')
+   assert page.evaluate('sessionStorage.getItem("nfx.guide.v1")') is None
+   request_count=len(requests);page.reload(wait_until='domcontentloaded')
+   page.wait_for_function('window.NFXGuide')
+   assert not page.evaluate('NFXGuide.enabled||NFXGuide.active')
+   assert not page.locator('#nfxGuideEnabled').is_checked() and page.locator('#nfxGuideHome').is_hidden()
+   assert len(requests)==request_count,'Reload started another guide request'
    assert not errors,errors
+   print('PASS guide mode: off on first use; explicit opt-in; × turns mode off, clears resume, removes overlays, stays off after reload and makes no AI requests',flush=True)
    print('PASS guide recording tools: explicit start, mandatory countdown, floating/collapsed coaching, stop/save and intact local take; no JavaScript errors',flush=True)
    browser.close()
  finally:server.shutdown();server.server_close()
