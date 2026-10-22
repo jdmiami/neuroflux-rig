@@ -4,6 +4,8 @@ Audio-reactive visual synthesizer with nine WebGL shader cores, live audio input
 
 Production: https://neuroflux-rig.vercel.app/
 
+Repository: https://github.com/jdmiami/neuroflux-rig
+
 ## Development
 
 - Edit `src/app.html` for the browser application (HTML, CSS, shaders, and JavaScript).
