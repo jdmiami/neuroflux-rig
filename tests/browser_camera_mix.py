@@ -52,10 +52,10 @@ with sync_playwright() as p:
         gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,scene);gl.generateMipmap(gl.TEXTURE_2D);
         gl.bindFramebuffer(gl.FRAMEBUFFER,null);
         uniforms(last,{...values,...(effects?{uBright:.3,uContrast:1.8,uSat:0,uBloom:1,uInvert:1,uPoster:.8,
-          uGrain:1,uVig:1,uScan:1,uGlitch:1,uFish:1,uMirror:3,uPixel:1,uChroma:1,uFlash:.5}: {})});
+          uGrain:1,uVig:1,uScan:1,uGlitch:1,uFish:1,uMirror:15,uSwirl:.8,uRipple:1,uWave:1,uPixel:1,uChroma:1,uFlash:.5}: {})});
         gl.drawArrays(gl.TRIANGLES,0,3);if(gl.getError()!==gl.NO_ERROR)throw Error('Camera pipeline GL error');const pixels=new Uint8Array(16*16*4);gl.readPixels(0,0,16,16,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
         // Reset all post effects between renders.
-        uniforms(last,Object.fromEntries(['uBloom','uInvert','uPoster','uGrain','uVig','uScan','uGlitch','uFish','uMirror','uPixel','uChroma','uFlash'].map(k=>[k,0])));
+        uniforms(last,Object.fromEntries(['uBloom','uInvert','uPoster','uGrain','uVig','uScan','uGlitch','uFish','uMirror','uSwirl','uRipple','uWave','uPixel','uChroma','uFlash'].map(k=>[k,0])));
         return pixels;}
       function near(a,b,context,tolerance=2){for(let i=0;i<a.length;i++)if(Math.abs(a[i]-b[i])>tolerance)
         throw Error(`${context}: byte ${i}, got ${a[i]}, expected ${b[i]}`);}

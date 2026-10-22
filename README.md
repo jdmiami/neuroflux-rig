@@ -21,6 +21,18 @@ If a device keeps showing an older version after refreshing, open https://neurof
 
 With the camera enabled, **CAM MIX** runs from **0% visuals**, through the selected camera/visual **BLEND at 50%**, to **100% camera only**. Above 50%, the complete visual composition, including trails, edge glow, and post effects, fades toward the camera feed. Camera crop and front-camera mirroring are preserved. The same renderer supplies the live view and recording outputs. Run `python -u tests/browser_camera_mix.py` for the WebGL pixel regression across all six blend modes and both camera-trail settings.
 
+## Mirror and warp effects
+
+**Menu → FX → MIRROR** keeps OFF, X, XY and QUAD, then adds every radial kaleidoscope split from **5-SPLIT through 16-SPLIT**. **SWIRL** bends the picture clockwise or counterclockwise; **RIPPLE** adds moving circular ripples; **WAVE** adds flowing horizontal/vertical distortion. Zero leaves that warp off. These controls work with live visuals, presets, AI looks and both recording outputs. Camera mix at 100% still shows the raw camera feed.
+
+## Guided walkthroughs
+
+Open **Menu → AI → GUIDED WALKTHROUGH**, describe a goal, review the generated plan, then tap **BEGIN WALKTHROUGH**. The guide opens the appropriate native page and highlights the real control. Apply a suggested setting or adjust it yourself; Next unlocks when the app verifies the setting. Listening and visual-review steps require your own confirmation. Reversible settings offer Undo. Skip, minimize, end, resume and rebuild remaining steps are available. Recording always requires an explicit start tap and the existing countdown.
+
+The guide retrieves passages from the full [user manual](https://neuroflux-rig.vercel.app/manual.html), generated from `docs/Neuroflux-User-Guide.md`, alongside a catalog extracted from the real app controls. It sends your goal, bounded numeric/settings state and device capability flags to the existing server-side Gemini gateway. It does not send camera frames, microphone recordings, source files, filenames, titles, branding text or API keys. Each step cites manual sources. Tools are validated on server and client; they cannot execute arbitrary code, delete recordings, upload media or publish externally.
+
+Each new request tries **Gemini 3.8 Flash first**, then the configured Flash fallbacks. The plan displays the model that actually answered and explicitly labels a fallback. Set `GEMINI_GUIDE_MODEL` to override that ordered list. AI generation needs internet; existing controls and downloaded/cached manual remain available without it. Server checks reject a mismatched app/manual catalog version and direct the user to the update page.
+
 ## Recording Studio
 
 Tap **REC** in the existing bottom dock to record with your last settings. Open the app menu and choose **RECORD** for recording settings, framing, audio, and saved takes. The recording tools use the app's native menu sheet; there is no floating Studio toolbar. Everything is local: no streaming, cloud media storage, account connections, or direct publishing.
@@ -51,6 +63,9 @@ npm test
 npm run build
 python -u tests/browser_studio.py
 python -u tests/browser_rig_smoke.py
+python -u tests/browser_guide.py
+python -u tests/browser_fx.py
+python -u tests/browser_camera_mix.py
 ```
 
 Browser tests require Python Playwright, Chromium at `/usr/bin/chromium`, and `ffprobe`. The capture test uses deterministic synthetic visual/audio inputs with real MediaRecorder, AudioWorklet, OPFS, worker conversion, and offline caching; encoded files are inspected with ffprobe. It covers dual shapes, pause/resume, companion WAVs, synchronization, trimming/remixing, and actual FFmpeg fallback. A separate software-WebGL smoke test exercises all nine existing shader modes, the Studio, picture rotation, and a mobile viewport. Physical Android/iPhone thermal behavior, hardware microphones/cameras, installed share-sheet destinations, 4K/60 fps, and sustained 30-minute synchronization require device testing before claiming device certification.
@@ -63,7 +78,7 @@ Connected target: existing `neuroflux-rig` project in Vercel team `jdmiamis-proj
 
 Vercel runs `npm run build`, serves `public/`, and deploys `api/ai.js` as `/api/ai`.
 
-Set `GEMINI_API_KEY` in Vercel environment settings. Optional overrides: `GEMINI_BASE`, `GEMINI_MODEL`, `GEMINI_FAST_MODEL`, and `GEMINI_LIVE_MODEL`. Existing Vercel environment variables stay with the project. No credentials belong in Git.
+Set `GEMINI_API_KEY` in Vercel environment settings. Optional overrides: `GEMINI_BASE`, `GEMINI_MODEL`, `GEMINI_FAST_MODEL`, and `GEMINI_LIVE_MODEL`, and `GEMINI_GUIDE_MODEL`. Existing Vercel environment variables stay with the project. No credentials belong in Git.
 
 ## Recovery provenance
 

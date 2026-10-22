@@ -1,0 +1,1900 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Neuroflux manual</title><style>body{margin:0;background:#080d19;color:#dcecff;font:16px/1.65 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:24px}a{color:#45f0ff}h2{border-top:1px solid #30485c;margin-top:48px;padding-top:24px}h1,h2,h3{line-height:1.3}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:12px;border:1px solid #30485c;text-align:left;vertical-align:top}th{background:#123543}td{overflow-wrap:anywhere}figure{display:flex;gap:10px;margin:20px 0}figure div{flex:1;min-width:0}img{width:100%}figcaption{font-size:12px}a[id]{scroll-margin-top:24px}button{padding:10px;background:#123543;color:#45f0ff;border:1px solid #45f0ff;font:inherit}@media(max-width:600px){main{padding:16px}figure{display:block}table{font-size:12px}td,th{padding:7px}}@media print{body{color:#152438;background:white}a{color:#087680}tr{break-inside:avoid}}</style><main><a href="/">← Back to Neuroflux</a><p>Find a control with your browser's Find command. The AI guide links directly to the sections it used.</p><h1 id="neuroflux-the-complete-user-guide">Neuroflux: the complete user guide</h1><p><strong>Make the visuals move. Mix the camera in. Capture a take worth keeping.</strong></p>
+<p>A practical, plain-English manual for the current Neuroflux Visual Rig. Covers the live rig, all 110 core controls, camera mixing, sensors, 3D, AI tools, recording, audio routing, editing, exports and sharing.</p>
+<p><strong>Edition:</strong> 22 October 2026. Based on app revision <code>1f700c0</code>, including the 0–50–100 camera crossfade and the offline-cache update recovery page. The default values in this guide mean a clean first-run setup; your saved settings or a loaded preset can be different.</p>
+<p><strong>Open the app:</strong> <a href="https://neuroflux-rig.vercel.app/">neuroflux-rig.vercel.app</a>. If a phone acts as though an update never happened, use <a href="https://neuroflux-rig.vercel.app/update.html">Load the latest version</a>, then tap <strong>UPDATE AND OPEN NEUROFLUX</strong>. It refreshes app files while keeping saved recordings and settings. Finish active recordings and exports first.</p>
+<h2 id="1-what-this-app-is-doing">1. What this app is doing</h2><p>Neuroflux is a visual instrument. Pick a source of sound, choose a visual world, then shape how that world reacts. You can play it gently like a moving backdrop or push it like a live VJ performance.</p>
+<p>Think in four layers:</p>
+<ol>
+<li><strong>The source:</strong> a loaded track, the built-in demo, a live mic/interface, desktop tab audio where supported, or the silent simulated signal.</li>
+<li><strong>The visual:</strong> one of nine engines, shaped with FORM and MOTION, colored with COLOR, and styled with FX.</li>
+<li><strong>The performers:</strong> audio reactivity, camera, your fingers, phone sensors, hand tracking and the director can all push the look.</li>
+<li><strong>The take:</strong> the recorder builds a separate output picture and audio mix, then saves it on your device.</li>
+</ol>
+<p>That fourth layer matters. What you see while operating the app and what you put in a saved video do not have to be identical. You can keep a menu open while tweaking and still record a clean picture.</p>
+<p>The current app records, exports and hands files to your device&#39;s share sheet. It does <strong>not</strong> broadcast your visuals to RTMP/stream URLs or publish directly to social accounts. Platform presets are framing shortcuts. The word STREAM in the lyrics tool means live speech transcription, not a YouTube/Twitch broadcast.</p>
+<h2 id="2-your-first-good-looking-minute">2. Your first good-looking minute</h2><ol>
+<li>Open Neuroflux in a normal browser tab. If the app asks how to start, choose <strong>DEMO</strong> for real built-in sound or <strong>SILENT</strong> for simulated motion without sound. You can also choose <strong>FILE</strong> or <strong>MIC / BT</strong>.</li>
+<li>Open the bottom-right <strong>Menu</strong> button. On a phone the controls rise in a sheet; on a wide screen they sit to the side. The tab strip scrolls sideways, so swipe it to find more pages.</li>
+<li>Open <strong>SCENES</strong> and load a factory scene such as <strong>OUTRUN</strong>, <strong>LIQUID SUN</strong> or <strong>DMT GATE</strong>. This gives you a coordinated starting look.</li>
+<li>Open <strong>FX</strong>. Keep FEEDBACK roughly 60–80% and BLOOM around 30–60% while you get a feel for the image. These are starting suggestions, not hard rules.</li>
+<li>Open <strong>REACT</strong>. Leave INPUT GAIN near 1–1.2× and try BASS › ZOOM around 20%. Listen to a few kicks before making the next change.</li>
+<li>Move just one control at a time. If the image gets lost, lower FEEDBACK, BLOOM and EXPOSURE before changing ten other things.</li>
+<li>To keep this look, go to <strong>SCENES → MEMORY BANKS</strong> and hold <strong>A</strong>, <strong>B</strong>, <strong>C</strong> or <strong>D</strong> for about half a second. Holding an occupied slot replaces its saved look.</li>
+</ol>
+<p>For a first recording, choose <strong>RECORD → OUTPUT</strong>, start with one 720p/30 output and <strong>Clean</strong>, then tap <strong>REC</strong>. Preparation and the output test happen first; a visible <strong>3–2–1</strong> happens just before the take begins. Tap the red stop control to save. Open <strong>RECORD → LIBRARY</strong> to play and download the take.</p>
+<p><strong>Important:</strong> the keyboard shortcut <strong>R means Randomize</strong>, not Record. The REC button is your recording control.</p>
+<h2 id="3-find-your-way-around-the-screen">3. Find your way around the screen</h2><h3 id="the-bottom-dock">The bottom dock</h3><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>What it is for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Source button / SIM, DEMO, FILE, MIC or SYS chip</td>
+<td>Opens the source chooser. <strong>INPUT DEVICES</strong> takes you to device selection. <strong>SILENT</strong> returns to simulated analysis without actual sound.</td>
+</tr>
+<tr>
+<td>Track/status strip</td>
+<td>Shows the current source or track and a progress/scrub strip where there is room. Scrub a loaded file to seek; the demo scrub strip jumps through its generated arrangement. It is not a playlist editor.</td>
+</tr>
+<tr>
+<td>Large Play/Pause button</td>
+<td>Controls the current source. For a live mic/system source, pausing releases that input. In silent SIM mode, Play starts the demo. It does not pause a recording.</td>
+</tr>
+<tr>
+<td>Sparkle / AI button</td>
+<td>Tap for the text prompt panel; hold to speak a short visual instruction.</td>
+</tr>
+<tr>
+<td>REC</td>
+<td>Starts a take using saved recording settings. During preparation it can cancel; during recording it becomes a red Stop/Save control with elapsed time.</td>
+</tr>
+<tr>
+<td>Recorder Pause/Resume</td>
+<td>Appears next to REC while a take is running. It pauses the take, not the music or camera.</td>
+</tr>
+<tr>
+<td>Menu grid / close icon</td>
+<td>Opens or closes the native control sheet.</td>
+</tr>
+</tbody></table>
+<p>On a very narrow phone, track information can shrink or disappear while recording so Stop, Pause and Menu still fit. The controls have not been removed from your recording options.</p>
+<h3 id="the-top-and-the-little-badges">The top and the little badges</h3><p>The scene name/number tells you which engine is active; tap it to go to SCENES. The colored <strong>B / M / H</strong> meters show analyzed bass, mid and high energy. The BPM reactor shows the app&#39;s estimate of the pulse; tap it for REACT. Badges such as MIC, CAM, HANDS or DIR show active features and take you to the relevant page when tapped.</p>
+<p>BPM is estimated, not a metronome setting. Silent simulation uses a synthetic 120 BPM signal; the demo&#39;s arrangement is 124 BPM. Detection can settle on a related half/double-time pulse with real music.</p>
+<h3 id="the-menu-map">The menu map</h3><table>
+<thead>
+<tr>
+<th>Page</th>
+<th>Use it when you want to…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>QUICK</td>
+<td>Pick an engine, reach performance commands, and use your pinned controls.</td>
+</tr>
+<tr>
+<td>RECORD</td>
+<td>Set up the take, output framing, recording audio and local library.</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>Type/speak a look, run the director, track hands, or show lyrics.</td>
+</tr>
+<tr>
+<td>SCENES</td>
+<td>Pick engines, load factory scenes, save/recall four look slots.</td>
+</tr>
+<tr>
+<td>INPUT</td>
+<td>Choose what the rig hears and which live input device to use.</td>
+</tr>
+<tr>
+<td>SENSE</td>
+<td>Use touch, tilt, gyro, shake, heading or available light information.</td>
+</tr>
+<tr>
+<td>CAMERA</td>
+<td>Choose a camera and blend it with the visual.</td>
+</tr>
+<tr>
+<td>3D</td>
+<td>Enable camera depth or load a scan file.</td>
+</tr>
+<tr>
+<td>FORM</td>
+<td>Shape the active visual engine.</td>
+</tr>
+<tr>
+<td>MOTION</td>
+<td>Set time, travel, spin, origin and automatic drifting.</td>
+</tr>
+<tr>
+<td>COLOR</td>
+<td>Choose a palette and grade the picture.</td>
+</tr>
+<tr>
+<td>FX</td>
+<td>Add trails, glow, lens distortion and texture.</td>
+</tr>
+<tr>
+<td>REACT</td>
+<td>Decide how sound and detected beats move the picture.</td>
+</tr>
+<tr>
+<td>SYSTEM</td>
+<td>Adjust operator quality/UI, telemetry, wake behavior and app updates.</td>
+</tr>
+</tbody></table>
+<h3 id="dragging-resetting-and-pinning">Dragging, resetting and pinning</h3><ul>
+<li><strong>Knobs:</strong> drag up or right to increase; down or left to decrease. Think “slide the value,” not “trace a perfect circle.” A diagonal drag combines the two directions.</li>
+<li><strong>Faders:</strong> drag to change the level. Their value is still just a control amount; a fader is not automatically an audio volume control.</li>
+<li><strong>Double-tap a knob/fader:</strong> returns that control to its built-in default. This can differ from the value in the preset you just loaded.</li>
+<li><strong>Choice rows:</strong> use their left/right arrows, tap the value area to cycle, or drag sideways. Examples are BLEND, PALETTE and SYMMETRY. Do not assume every choice row uses the knob double-tap behavior.</li>
+<li><strong>Switch rows:</strong> tap to toggle. Keyboard Enter/Space also works when the switch has focus.</li>
+<li><strong>Hold ordinary knobs/choice/switch rows:</strong> pins or unpins that control in QUICK, roughly a half-second hold. Primary power cards use their own switch behavior rather than every one supporting pinning.</li>
+<li><strong>ORIGIN XY pad:</strong> drag within the pad to set both axes. Double-tap to center it.</li>
+<li><strong>Scrolling:</strong> scroll the menu body between groups; swipe the tab strip sideways for hidden tabs. On a phone, the sheet handle lets you change its open position. On a wide screen the sheet uses a side layout.</li>
+</ul>
+<h3 id="gestures-on-the-art-itself">Gestures on the art itself</h3><p>Touch the exposed canvas to use TOUCH FX. With TOUCH FX on, a <strong>two-finger swipe left</strong> goes to the next engine and a right swipe goes to the previous one. With TOUCH FX off, a quick horizontal single-finger swipe can do that job instead. Double-tap the canvas to hide/show the operator interface. These gestures belong on the art, not on a dial or menu row.</p>
+<p><strong>HIDE UI</strong> removes the operator controls; it is separate from recorded Menu visibility. Use the small reveal control, double-tap the canvas, or press H to bring the interface back. Fullscreen is offered only where the browser supports the requested fullscreen API.</p>
+<h2 id="4-how-to-mix-without-turning-it-into-soup">4. How to mix without turning it into soup</h2><p>A good mix usually has a clear main idea. Choose one: a tunnel you travel through, a person with graphics around them, a crisp symmetrical pattern, or a soft moving color field. Then let the other controls support that idea.</p>
+<p>A reliable order is <strong>engine → form → motion → color → trails/glow → audio response → camera/other performers → recording preview</strong>. You can work in a different order, but changing everything at once makes it hard to know what helped.</p>
+<p>Start from a readable image. Turn off AUTOPILOT, AI DIRECTOR and BEAT JUMP while learning a look. If hands or sensors are on, they can add movement too. Bring FEEDBACK and BLOOM down, keep EXPOSURE near 1×, and get FORM where you like it. Then add one effect at a time.</p>
+<p><strong>Feedback is the picture remembering itself.</strong> With a lot of memory, small zoom/spin/color changes repeat and build up. That is why a tiny TRAIL SPIN can produce an enormous spiral. If the image has become a bright smear, drop FEEDBACK to 0 briefly, then raise it more gently.</p>
+<p><strong>Base amounts and modulation add up.</strong> A low base CHROMA does not guarantee no color separation if HIGH › CHROMA or the director is adding more. A steady TIME dial does not guarantee steady pace if LEVEL › TIME or hand/sensor effects are active. When something “moves by itself,” check the performers before assuming the dial is broken.</p>
+<p>For transitions, try a slow CAM MIX move from 25% to 50% to 85%, or ease FEEDBACK down while changing engine, then bring the trails back. Use extreme GLITCH, INVERT or fast SPIN as a deliberate moment rather than the only thing the picture ever does.</p>
+<h2 id="5-quick-scenes-and-keeping-a-favorite-look">5. QUICK, SCENES and keeping a favorite look</h2><h3 id="engine-versus-factory-scene">Engine versus factory scene</h3><p>An <strong>engine</strong> is the kind of visual math. A <strong>factory scene</strong> is an engine plus a styled selection of geometry, motion, color and effects. Engine selection generally leaves your current styling in place. A factory scene resets the relevant visual controls to a baseline and applies its stored values, with many continuous controls easing over roughly a second. It does not reconfigure your audio hardware, camera or recording settings.</p>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>The feel</th>
+<th>Good controls to explore first</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HYPERTUNNEL</td>
+<td>A polar tunnel/wormhole with a central rush.</td>
+<td>THRUST, SYMMETRY, TWIST, TRAIL ZOOM.</td>
+</tr>
+<tr>
+<td>KALI VORTEX</td>
+<td>Folding fractal structures and dense, jewel-like detail.</td>
+<td>DETAIL, MORPH, WARP, FEEDBACK.</td>
+</tr>
+<tr>
+<td>GYROID CATHEDRAL</td>
+<td>A volumetric/raymarched architectural world.</td>
+<td>DETAIL, ZOOM, TWIST, THRUST; watch device load.</td>
+</tr>
+<tr>
+<td>LIQUID PLASMA</td>
+<td>Flowing color and melted, cloud-like shapes.</td>
+<td>WARP, MORPH, PALETTE, gentle motion.</td>
+</tr>
+<tr>
+<td>JULIA BLOOM</td>
+<td>Fractal islands/blooms with escape-time detail.</td>
+<td>DETAIL, MORPH, ZOOM, modest trail spin.</td>
+</tr>
+<tr>
+<td>CELL DIVISION</td>
+<td>Cells with bright edges and organic subdivision.</td>
+<td>DENSITY, MORPH, PALETTE, MID › WARP.</td>
+</tr>
+<tr>
+<td>HYPERSPACE</td>
+<td>Star streaks and a sense of forward speed.</td>
+<td>THRUST, DENSITY, BLOOM, FEEDBACK.</td>
+</tr>
+<tr>
+<td>SONIC MANDALA</td>
+<td>Layered spectral rings and radial patterns.</td>
+<td>SYMMETRY, DETAIL, DENSITY, audio gain.</td>
+</tr>
+<tr>
+<td>NEON HORIZON</td>
+<td>Retro horizon, sun and outrun grid.</td>
+<td>SYMMETRY OFF, THRUST, SCANLINES, PALETTE.</td>
+</tr>
+</tbody></table>
+<p>The nine factory buttons are <strong>DMT GATE, KALI VORTEX, CATHEDRAL, LIQUID SUN, JULIA BLOOM, CELL DIVISION, HYPERSPACE, MANDALA and OUTRUN</strong>. Keyboard 1–9 loads those factory scenes in that order; it is not simply a bare engine-number shortcut.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-mode"></a><strong>SCENE ENGINE</strong></td>
+<td>9 engines; default HYPERTUNNEL</td>
+<td>Chooses one of the nine procedural shader engines—the basic kind of world you are looking at. <strong>Try this:</strong> Changing the engine keeps many of your current styling controls. Loading a factory scene also loads a particular setup, so the two actions can look quite different.</td>
+</tr>
+</tbody></table>
+<h3 id="quick-commands-and-pins">QUICK commands and pins</h3><p><strong>RANDOMIZE / RND</strong> rolls a new engine and selected visual styling values within built-in ranges. It leaves source/device/camera/recording setup alone. <strong>AUTOPILOT</strong> gradually drifts selected parameters over time. <strong>NEXT SCENE</strong> advances the engine. <strong>FREEZE</strong> holds procedural time, <strong>HIDE UI</strong> clears the operator interface, and <strong>FULLSCREEN</strong> asks the browser to expand the app.</p>
+<p>Pin a few things you will actually play: CAM MIX, FEEDBACK, BLOOM, TIME and a color control make a useful starting group. Long-hold again to unpin. Pins are shortcuts to the same controls, not independent copies.</p>
+<h3 id="the-four-memory-banks-ad">The four memory banks: A–D</h3><ol>
+<li>Get a look you like.</li>
+<li>Hold a slot for about half a second to store it. A filled slot is indicated visually. A short tap on an empty slot also stores the current look.</li>
+<li>Tap a filled slot to recall it; holding a filled slot overwrites it.</li>
+</ol>
+<p>Banks store the supported visual look controls: scene engine, form, much of motion, color and FX. They do <strong>not</strong> store a complete production session, a track file, input devices, camera setup, AI settings, recording framing, stems or exported media. FREEZE/REVERSE can be stored; automatic drifting is outside the stored look. Disable unwanted automation separately.</p>
+<p><strong>INIT</strong> returns the supported visual/look controls to their built-in initial values. It is not “erase my recordings,” a full app factory reset, or a reset of all device permissions. There is no general undo stack for randomizing, initializing or overwriting a bank, so store a safe look before exploring.</p>
+<p>Banks and pins are local to that browser/site. There is no in-app bank-export/import or cloud sync in this version. A saved recording is a finished picture, not a preset you can load back into the dials.</p>
+<h2 id="6-input-choose-what-the-app-hears">6. INPUT: choose what the app hears</h2><p>The main rig has <strong>one active analysis source at a time</strong>. Switching from a file/demo to MIC or SYSTEM changes what drives the visual; it is not a two-deck DJ crossfader. You can add a separate microphone for recording alongside music from RECORD → AUDIO, but that extra input is a different layer.</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>What you get</th>
+<th>What to know</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SILENT / SIM</td>
+<td>A made-up rhythmic signal so the visuals still move, without a real music track.</td>
+<td>Good for experimenting quietly. It can look audio-reactive even though no microphone is being heard.</td>
+</tr>
+<tr>
+<td>DEMO</td>
+<td>The built-in generative “Phase Lock” arrangement, 124 BPM.</td>
+<td>Actual sound; convenient for testing a whole recording flow. Scrubbing jumps through the arrangement.</td>
+</tr>
+<tr>
+<td>FILE</td>
+<td>A locally selected audio file, such as MP3, WAV or M4A if the browser can decode it.</td>
+<td>The file plays in the app and loops. Use the dock strip to seek. Pick the file again after a fresh session; there is no persistent track library/playlist importer.</td>
+</tr>
+<tr>
+<td>MIC / BT</td>
+<td>A browser-exposed microphone input: built-in mic, headset, USB interface or another OS-provided device.</td>
+<td>Pair/connect the hardware in the operating system first. Allow the browser permission, then choose the input under INPUT DEVICE.</td>
+</tr>
+<tr>
+<td>SYSTEM</td>
+<td>Captured tab/desktop audio through the browser&#39;s sharing picker, where supported.</td>
+<td>Primarily a desktop option. It is hidden on touch-oriented/mobile layouts and when the browser lacks the required API. Choose an audio-sharing option in the picker; sharing a screen without audio provides no usable audio source.</td>
+</tr>
+</tbody></table>
+<h3 id="get-a-live-mic-or-interface-working">Get a live mic or interface working</h3><p>Open <strong>INPUT → MIC / BT</strong>, allow access, and check <strong>INPUT DEVICE</strong>. Tap <strong>SCAN</strong> if the list is out of date. Tap the device you actually want; names may remain vague until permission has been granted. Watch the input meter and status readout, not just the existence of a device name.</p>
+<p>Bluetooth labels are helpful hints rather than a direct Bluetooth pairing system. A headset in call mode may have thin high frequencies and extra delay. For a tighter music response, a wired interface/USB route is often easier to control. Your phone still decides which interfaces and input routes Chrome can see.</p>
+<p>For direct music feeds, start with ECHO CANCEL, NOISE SUPPRESS and AUTO LEVEL off. For speech near speakers, try the processing options one at a time. These are browser/device requests, so their exact behavior can vary.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-micTrim"></a><strong>INPUT TRIM</strong></td>
+<td>0–4×; default 1.00×</td>
+<td>Boosts or reduces the live microphone/system input before analysis and the recorder&#39;s input tap. This is software gain, so it cannot fix distortion already coming from a clipped hardware input. <strong>Try this:</strong> Start at 1×. Raise it for a weak input; lower it if the level meter is constantly slammed. It affects the captured live-source signal as well as visual response.</td>
+</tr>
+<tr>
+<td><a id="control-gate"></a><strong>NOISE GATE</strong></td>
+<td>0–50%; default 4%</td>
+<td>Ignores low-level energy when the rig analyzes live microphone/system audio. It quiets unwanted visual twitching from room noise; it is not a general-purpose noise-removal effect on your saved audio. <strong>Try this:</strong> Start around 2–6%. Raise it until the room stops triggering the picture, then stop. Too much makes quiet passages look unresponsive.</td>
+</tr>
+<tr>
+<td><a id="control-aec"></a><strong>ECHO CANCEL</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Asks the microphone/browser to cancel speaker sound getting back into the mic. <strong>Try this:</strong> Useful for talking near speakers. For a direct music feed, start OFF so processing does not flatten the music; changing it reconnects the main mic input.</td>
+</tr>
+<tr>
+<td><a id="control-ns"></a><strong>NOISE SUPPRESS</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Asks the microphone/browser to suppress steady background noise. <strong>Try this:</strong> Try it for voice in a noisy room. Leave it OFF for a clean interface or music feed unless it solves a real problem. Device support varies; changing it reconnects the main mic.</td>
+</tr>
+<tr>
+<td><a id="control-agc"></a><strong>AUTO LEVEL</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Asks the microphone/browser to automatically ride the input level. <strong>Try this:</strong> Handy for uneven speech. It can soften the difference between quiet sections and big drops, so try OFF for deliberate music dynamics. Changing it reconnects the main mic.</td>
+</tr>
+</tbody></table>
+<h3 id="three-different-gain-jobs">Three different gain jobs</h3><ul>
+<li><strong>INPUT TRIM:</strong> changes the live input signal. It can affect both captured live audio and the analysis.</li>
+<li><strong>REACT → INPUT GAIN:</strong> changes how strongly the analysis drives the visuals. Use this to make a weak-looking response stronger without turning the recorded mix up.</li>
+<li><strong>RECORD → AUDIO recording gains:</strong> change what goes into the saved mix, independently of visual response. Use these to balance music against voice.</li>
+</ul>
+<p>Do not try to solve a visual sensitivity problem by making the saved audio painfully loud. Likewise, lowering recording gain cannot repair audio that is already clipped at the microphone/interface.</p>
+<p>The main live microphone is not automatically sent to speakers for monitoring. For intentional monitoring, use the recording audio controls and headphones. Speaker sound can feed back into a mic and can also make the visual react twice to the same musical event.</p>
+<h2 id="7-form-sculpt-the-world">7. FORM: sculpt the world</h2><p>These dials describe the engine, so their visual meaning changes a little from world to world. DENSITY in a tunnel is not the exact same thing as DENSITY in cells. Find the range that reads well in the current engine rather than chasing a supposedly perfect number.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-cx"></a><strong>DETAIL</strong></td>
+<td>0–100%; default 55%</td>
+<td>Sets geometric/iteration detail in the active visual engine. <strong>Try this:</strong> More detail can look richer and cost more GPU time, especially in fractal/raymarch scenes. Around 30–60% is a sensible phone starting range.</td>
+</tr>
+<tr>
+<td><a id="control-scale"></a><strong>ZOOM</strong></td>
+<td>0.3–3×; default 1.00×</td>
+<td>Changes the scale or zoom of the active engine&#39;s geometry. <strong>Try this:</strong> Try 0.8×, 1× and 1.3×. Because engines construct their worlds differently, a larger number does not look like the exact same camera move in every scene. This is different from recorded-output Zoom.</td>
+</tr>
+<tr>
+<td><a id="control-sym"></a><strong>SYMMETRY</strong></td>
+<td>OFF through 16-FOLD; default 6-FOLD</td>
+<td>Sets kaleidoscope-style symmetry: OFF or 2–16 folds. <strong>Try this:</strong> OFF is useful for recognizable camera/scan compositions and the horizon scene. 4–8 folds is a nice middle ground; 12–16 can become dense and mandala-like. Individual engines interpret symmetry differently.</td>
+</tr>
+<tr>
+<td><a id="control-warp"></a><strong>WARP</strong></td>
+<td>0 to 2; default 0.60</td>
+<td>Distorts the underlying procedural space or pattern. <strong>Try this:</strong> Raise it gradually to make the world bend and melt. If the image stops reading clearly, ease WARP back before piling on other effects.</td>
+</tr>
+<tr>
+<td><a id="control-density"></a><strong>DENSITY</strong></td>
+<td>0–100%; default 50%</td>
+<td>Changes how tightly packed or frequent the engine&#39;s repeated shapes are. <strong>Try this:</strong> Use it to make the picture busier or more spacious. It affects pattern content rather than recording pixel resolution or the 3D point count.</td>
+</tr>
+<tr>
+<td><a id="control-morph"></a><strong>MORPH</strong></td>
+<td>0–100%; default 40%</td>
+<td>Moves the engine through variations of its internal shape. <strong>Try this:</strong> Think of it as a character dial: a small move can uncover a very different look. It does not automatically crossfade between different shader engines.</td>
+</tr>
+<tr>
+<td><a id="control-twist"></a><strong>TWIST</strong></td>
+<td>-2 to 2; default 0.30</td>
+<td>Adds directional twist/spiral structure; 0 is neutral and negative/positive values twist differently. <strong>Try this:</strong> Try −0.3 and +0.3 with moderate symmetry. Small moves can change a tunnel or fractal a lot; it is a shape control rather than the continuous SPIN speed.</td>
+</tr>
+<tr>
+<td><a id="control-ring"></a><strong>SPECTRUM RING</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Draws a live frequency-spectrum ring over the procedural image. <strong>Try this:</strong> Useful when you want the audio response to be obvious. Turn it off for a cleaner camera-led composition; it follows the main visual/camera crossfade.</td>
+</tr>
+</tbody></table>
+<h2 id="8-motion-set-the-pace-and-point-of-view">8. MOTION: set the pace and point of view</h2><p>TIME advances the engine&#39;s clock; THRUST is the amount of travel through its world; SPIN rotates it; ORIGIN places the center. Those jobs overlap visually, but they are different controls. If a scene feels dizzy, lower SPIN and WOBBLE first and keep THRUST moderate.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-speed"></a><strong>TIME</strong></td>
+<td>0–3×; default 1.00×</td>
+<td>Sets the procedural animation clock speed. <strong>Try this:</strong> 1× is the normal pace; 0 stops that clock, but audio modulation and some live/post effects can still move. For a slow backdrop, try 0.3–0.6× before freezing everything.</td>
+</tr>
+<tr>
+<td><a id="control-ox"></a><strong>ORIGIN</strong></td>
+<td>−1 to +1; default center</td>
+<td>Moves the visual&#39;s horizontal origin using the shared ORIGIN XY pad. <strong>Try this:</strong> Drag left/right to place the center. This is creative composition inside the rig; output framing has its own left/right control. Double-tap the XY pad to return both axes to center.</td>
+</tr>
+<tr>
+<td><a id="control-oy"></a><strong>ORIGIN Y</strong></td>
+<td>−1 to +1; default center</td>
+<td>Moves the visual&#39;s vertical origin on the same ORIGIN XY pad. <strong>Try this:</strong> Drag up/down to place the center. ORIGIN Y is the second axis, not a separate screen that you need to find. Keep it near center when a symmetrical scene should stay balanced.</td>
+</tr>
+<tr>
+<td><a id="control-rotSpd"></a><strong>SPIN</strong></td>
+<td>-1 to 1; default 0.10</td>
+<td>Sets continuous visual rotation speed; negative and positive values turn in opposite directions. <strong>Try this:</strong> 0 stops this rotation. Around ±0.05–0.2 is usually easier to watch than a full-speed spin. Physical gyro and hand gestures can add their own movement.</td>
+</tr>
+<tr>
+<td><a id="control-travel"></a><strong>THRUST</strong></td>
+<td>0–3×; default 1.00×</td>
+<td>Controls how fast you move through the active engine&#39;s world. <strong>Try this:</strong> Most obvious in tunnels and HYPERSPACE. It works with TIME and may have a subtler interpretation in flat scenes. Raise it for forward rush without using a huge continuous spin.</td>
+</tr>
+<tr>
+<td><a id="control-wobble"></a><strong>WOBBLE</strong></td>
+<td>0–100%; default 20%</td>
+<td>Adds a gentle moving wobble to the procedural view. <strong>Try this:</strong> A little keeps a static look alive. Lower it for geometric precision or if the composition feels seasick.</td>
+</tr>
+<tr>
+<td><a id="control-freeze"></a><strong>FREEZE</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Stops the rig&#39;s procedural time progression while leaving audio-driven movement possible. <strong>Try this:</strong> Use it for a held moment on a beat. It is not a still-image capture, does not pause the camera, and is not the recorder&#39;s Pause button.</td>
+</tr>
+<tr>
+<td><a id="control-reverse"></a><strong>REVERSE</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Runs the procedural clock backward. <strong>Try this:</strong> It can reverse time-based travel/animation without reversing your music, camera video or recorded file. Combine with a modest TIME value for a readable transition.</td>
+</tr>
+<tr>
+<td><a id="control-autopilot"></a><strong>AUTOPILOT</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Lets the rig periodically drift selected creative parameters on its own. <strong>Try this:</strong> Good for an unattended background. Turn it off if you want a dial to stay where you put it; it is separate from the song-aware AI DIRECTOR.</td>
+</tr>
+<tr>
+<td><a id="control-autoRate"></a><strong>DRIFT RATE</strong></td>
+<td>0–100%; default 45%</td>
+<td>Controls how frequently AUTOPILOT chooses new drifting targets. <strong>Try this:</strong> Low is more leisurely, high changes direction more often. It has no effect when AUTOPILOT is off and is not the same as AI CHANGE RATE.</td>
+</tr>
+</tbody></table>
+<p><strong>Freeze is not record-pause.</strong> FREEZE can leave camera motion, audio-reactive geometry, feedback/post effects and live gestures active. Recorder Pause actually leaves that time out of the take. Music Play/Pause is a third, separate action.</p>
+<h2 id="9-color-choose-the-mood-then-protect-the-detail">9. COLOR: choose the mood, then protect the detail</h2><p>Start with PALETTE and HUE. Then set EXPOSURE and CONTRAST so shapes remain readable. Add SATURATION last. If you are mixing a face into the image, judge skin and background together—bright neon, strong contrast and colored trails can take over quickly.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-pal"></a><strong>PALETTE</strong></td>
+<td>6 palettes; default SPECTRA</td>
+<td>Chooses SPECTRA, ACID, SOLAR, GLACIER, CANDY, or TOXIN. <strong>Try this:</strong> Find a palette you like before fine-tuning HUE. The same palette can look very different at different exposure, saturation and blend settings.</td>
+</tr>
+<tr>
+<td><a id="control-hue"></a><strong>HUE</strong></td>
+<td>0–360°; default 0°</td>
+<td>Offsets the procedural palette&#39;s color position. <strong>Try this:</strong> Use it to find a color family that suits your track or branding. It interacts with HUE DRIFT and any compass/hand modulation, so turn those down if you want a fixed hue.</td>
+</tr>
+<tr>
+<td><a id="control-hueSpd"></a><strong>HUE DRIFT</strong></td>
+<td>0–100%; default 15%</td>
+<td>Continuously drifts the palette hue. <strong>Try this:</strong> 0% keeps the automatic hue clock still; a little drift is good for long ambient passages. It does not stop an AI or sensor from changing the overall look.</td>
+</tr>
+<tr>
+<td><a id="control-bright"></a><strong>EXPOSURE</strong></td>
+<td>0–2×; default 1.05×</td>
+<td>Scales the final picture&#39;s brightness/exposure. <strong>Try this:</strong> Start near 1×. If the image looks like a white blob, lower this and BLOOM first. It can affect blended camera footage, but 100% CAM MIX resolves to the ungraded camera feed.</td>
+</tr>
+<tr>
+<td><a id="control-sat"></a><strong>SATURATION</strong></td>
+<td>0–200%; default 115%</td>
+<td>Sets how much color survives in the final visual grade. <strong>Try this:</strong> 0% is grayscale, 100% is normal color amount, and higher values push it harder. More is not always richer—very high values can flatten color detail.</td>
+</tr>
+<tr>
+<td><a id="control-contrast"></a><strong>CONTRAST</strong></td>
+<td>0.5–2×; default 1.10×</td>
+<td>Separates dark and bright parts of the image. <strong>Try this:</strong> Around 1× is a useful neutral point. Higher contrast can make the picture punchier but crush detail; lower contrast is softer.</td>
+</tr>
+<tr>
+<td><a id="control-fbHue"></a><strong>TRAIL HUE</strong></td>
+<td>-0.1 to 0.1; default +0.006</td>
+<td>Shifts the color of feedback history as it repeats; negative and positive values move the shift in opposite directions. <strong>Try this:</strong> It needs visible FEEDBACK to matter. Tiny values go a long way because the change repeats frame after frame.</td>
+</tr>
+<tr>
+<td><a id="control-poster"></a><strong>POSTERIZE</strong></td>
+<td>0–100%; default 0%</td>
+<td>Reduces smooth shading to fewer visible color bands. <strong>Try this:</strong> Keep 0% for smooth gradients. Raise it for a graphic, print-like or retro look; strong settings can make faces look harsh in a blend.</td>
+</tr>
+<tr>
+<td><a id="control-invert"></a><strong>INVERT</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Turns the final image into a negative-style image. <strong>Try this:</strong> Use it as a momentary change of mood. BEAT INVERT is a separate rhythmic toggle; combining them changes which part of the cycle looks negative.</td>
+</tr>
+</tbody></table>
+<h2 id="10-fx-trails-glow-lens-and-texture">10. FX: trails, glow, lens and texture</h2><p>FEEDBACK, TRAIL ZOOM, TRAIL SPIN, TRAIL WARP and TRAIL HUE work on history. BLOOM, CHROMA, GLITCH, LENS and texture controls change the current final look. If a trail-related control seems to do nothing, make sure enough FEEDBACK exists to reveal it.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-fb"></a><strong>FEEDBACK</strong></td>
+<td>0–99%; default 84%</td>
+<td>How much of the previous picture remains in the next one—the main trail length control. <strong>Try this:</strong> Around 50–75% is easier to keep readable; 85–95% gives longer, more immersive history. Near the top it can smear or accumulate brightness. Drop it to 0 to let old trails clear.</td>
+</tr>
+<tr>
+<td><a id="control-fbZoom"></a><strong>TRAIL ZOOM</strong></td>
+<td>-0.05 to 0.05; default +0.012</td>
+<td>Makes feedback history expand inward/outward relative to the center. <strong>Try this:</strong> Positive values produce a zooming-in/expanding-history feel; negative values pull history the other way. Try about ±0.005–0.015. 0 stops this particular trail motion.</td>
+</tr>
+<tr>
+<td><a id="control-fbRot"></a><strong>TRAIL SPIN</strong></td>
+<td>-0.05 to 0.05; default +0.004</td>
+<td>Rotates the previous image a little on every feedback pass. <strong>Try this:</strong> Tiny positive/negative values make spirals in opposite directions. Pair it with FEEDBACK around 70–85%; large values can turn the whole view into a spinning smear.</td>
+</tr>
+<tr>
+<td><a id="control-fbWarp"></a><strong>TRAIL WARP</strong></td>
+<td>0–100%; default 20%</td>
+<td>Warps the old trail image before mixing it back in. <strong>Try this:</strong> This makes history look liquid without being the same dial as FORM WARP. Keep it low when you want clean geometric echoes.</td>
+</tr>
+<tr>
+<td><a id="control-chroma"></a><strong>CHROMA</strong></td>
+<td>0–100%; default 30%</td>
+<td>Separates red, green and blue sampling slightly for color fringes. <strong>Try this:</strong> Around 10–25% can add energy. Reduce it for readable faces, small text or clean edges. HIGH › CHROMA can add more on top of your base setting.</td>
+</tr>
+<tr>
+<td><a id="control-bloom"></a><strong>BLOOM</strong></td>
+<td>0–150%; default 75%</td>
+<td>Adds a glowing halo around bright parts. <strong>Try this:</strong> A little glow goes a long way when FEEDBACK is high. Values can go above 100%, so check that you are not turning every highlight into a white patch.</td>
+</tr>
+<tr>
+<td><a id="control-glitch"></a><strong>GLITCH</strong></td>
+<td>0–100%; default 8%</td>
+<td>Adds digital blocks, horizontal shifts and broken-image accents. <strong>Try this:</strong> Keep it near zero for a clean visual, and bring it up briefly for transitions. The DIRECTOR&#39;s drop effects can add extra glitch even if this base dial is low.</td>
+</tr>
+<tr>
+<td><a id="control-fish"></a><strong>LENS</strong></td>
+<td>-1 to 1; default 0.15</td>
+<td>Bends the final image with a lens-like warp; negative and positive values bend differently. <strong>Try this:</strong> 0 is neutral. Try a little for a curved tunnel or wide-lens feeling; stronger settings can distort a camera/visual blend.</td>
+</tr>
+<tr>
+<td><a id="control-mirror"></a><strong>MIRROR</strong></td>
+<td>OFF, X, XY, QUAD, 5–16-SPLIT; default OFF</td>
+<td>Chooses OFF, X, XY, QUAD, or any radial split count from 5 through 16 for the final visual. <strong>Try this:</strong> X folds horizontally; XY folds both directions; QUAD adds a more complex fold. The 5–16-SPLIT choices repeat and reflect the picture around the center, like a kaleidoscope. This is an artistic effect, separate from normal front-camera mirroring.</td>
+</tr>
+<tr>
+<td><a id="control-swirl"></a><strong>SWIRL</strong></td>
+<td>−1 to +1; default 0</td>
+<td>Twists the whole picture around the center, strongest near the middle. Negative and positive turn the twist in opposite directions. <strong>Try this:</strong> Start at ±0.15–0.3 with a 6-SPLIT or 8-SPLIT mirror. 0 is neutral. It can reshape the camera/visual blend, but 100% CAM MIX still resolves to the clear camera feed.</td>
+</tr>
+<tr>
+<td><a id="control-ripple"></a><strong>RIPPLE</strong></td>
+<td>0–100%; default 0%</td>
+<td>Adds moving circular waves to the entire picture, like ripples spreading through a lens. <strong>Try this:</strong> Start at 10–25% with modest feedback. It uses the live post-effect clock, so it can still ripple when procedural time is frozen. It is separate from SENSE → TOUCH MODE → RIPPLE.</td>
+</tr>
+<tr>
+<td><a id="control-wave"></a><strong>WAVE</strong></td>
+<td>0–100%; default 0%</td>
+<td>Makes the picture undulate horizontally and vertically with animated sine waves. <strong>Try this:</strong> Start at 10–20% for a watery bend, then try a radial mirror. Combine gently with SWIRL; high values of every warp at once can hide the original subject.</td>
+</tr>
+<tr>
+<td><a id="control-pixel"></a><strong>PIXELATE</strong></td>
+<td>0–100%; default 0%</td>
+<td>Turns the picture into larger pixel blocks. <strong>Try this:</strong> Low settings give a retro texture; high settings hide detail fast. It is a look, not a smaller export file or a recording-resolution setting.</td>
+</tr>
+<tr>
+<td><a id="control-scan"></a><strong>SCANLINES</strong></td>
+<td>0–100%; default 22%</td>
+<td>Adds horizontal display/CRT-style scanlines. <strong>Try this:</strong> Try 10–30% for a light screen texture. It does not change actual frame rate or interlace the video.</td>
+</tr>
+<tr>
+<td><a id="control-grain"></a><strong>GRAIN</strong></td>
+<td>0–100%; default 18%</td>
+<td>Adds a moving noise texture. <strong>Try this:</strong> A little makes a clean digital scene feel less clinical. High grain can look messy and make compressed uploads harder to keep clean.</td>
+</tr>
+<tr>
+<td><a id="control-vig"></a><strong>VIGNETTE</strong></td>
+<td>0–150%; default 80%</td>
+<td>Darkens the edges so the center feels more prominent. <strong>Try this:</strong> Start low when important content sits near the corners. High values make a strong tunnel/spotlight feel and can hide edge details.</td>
+</tr>
+</tbody></table>
+<p><strong>Try a new kaleidoscope mix:</strong> Choose MIRROR → 6-SPLIT or 8-SPLIT, set SWIRL around 0.2, RIPPLE around 15%, and keep WAVE at 0 until the first two feel right. Then introduce WAVE slowly. Every radial split from 5 through 16 is available; higher counts produce finer repeated wedges. These are whole-picture post effects, and a 100% camera crossfade still bypasses the visual treatment.</p>
+<p><strong>A clean reset for an overloaded look:</strong> lower FEEDBACK to 0 for a moment, set GLITCH and POSTERIZE to 0, set EXPOSURE near 1×, reduce BLOOM, and switch off rhythmic inversion/strobe. Bring only the useful bits back. Camera color/effects can be bypassed at 100% CAM MIX, but that is not a way to reset the procedural controls for when you crossfade back.</p>
+<h2 id="11-react-make-it-dance-with-the-right-part-of-the-music">11. REACT: make it dance with the right part of the music</h2><p>The visual analyzer groups sound into bass, mids and highs. You choose which visual behavior each group pushes. Start with a good input level, then set a response you can feel at a comfortable scale. A short test with a clear beat is easier to tune than a noisy room full of competing sounds.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-gain"></a><strong>INPUT GAIN</strong></td>
+<td>0–3×; default 1.20×</td>
+<td>Amplifies the signal used to drive visuals, not the recording&#39;s output mix. <strong>Try this:</strong> Start at 1–1.2×, then raise only if the meters and response are weak. High values can pin the analysis and make everything react all the time; they do not repair a poor audio source.</td>
+</tr>
+<tr>
+<td><a id="control-rBass"></a><strong>BASS › ZOOM</strong></td>
+<td>0–100%; default 35%</td>
+<td>Makes bass energy add zoom/scale movement. <strong>Try this:</strong> Start around 15–35% for a pulse you can read. If every kick makes the whole scene lurch, lower this before reducing the music recording level.</td>
+</tr>
+<tr>
+<td><a id="control-rMid"></a><strong>MID › WARP</strong></td>
+<td>0–100%; default 40%</td>
+<td>Lets midrange energy add procedural warp. <strong>Try this:</strong> It can respond nicely to vocals, guitars and synths. Lower it when dense music makes the visual busy even between kick drums.</td>
+</tr>
+<tr>
+<td><a id="control-rHigh"></a><strong>HIGH › CHROMA</strong></td>
+<td>0–100%; default 50%</td>
+<td>Makes high-frequency energy add color separation/chroma. <strong>Try this:</strong> Good for hi-hats and bright percussion. Reduce it if outlines constantly split apart; increase modestly if a thin Bluetooth/call-mode input has weak high-frequency response.</td>
+</tr>
+<tr>
+<td><a id="control-rSpeed"></a><strong>LEVEL › TIME</strong></td>
+<td>0–100%; default 40%</td>
+<td>Makes overall signal level speed up procedural time. <strong>Try this:</strong> Low values keep the pace more predictable. High values can make loud sections rush forward even when the base TIME dial stays still.</td>
+</tr>
+<tr>
+<td><a id="control-beatThr"></a><strong>BEAT THRESHOLD</strong></td>
+<td>1.05–2×; default 1.35×</td>
+<td>How strong a bass peak must be relative to recent bass energy to count as a beat. <strong>Try this:</strong> Lower means easier/more frequent triggers; higher means pickier/fewer triggers. It is not a BPM selector. Adjust after your input level is sensible.</td>
+</tr>
+<tr>
+<td><a id="control-smooth"></a><strong>SMOOTHING</strong></td>
+<td>0–95%; default 60%</td>
+<td>How gently analyzed audio values settle instead of dropping abruptly. <strong>Try this:</strong> Higher gives a smoother, more floaty release; lower feels snappier. If the visual never seems to let go of the last hit, bring this down a bit.</td>
+</tr>
+<tr>
+<td><a id="control-beatKick"></a><strong>BEAT PUNCH</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Adds a short zoom punch on detected beats. <strong>Try this:</strong> A good first rhythmic effect. If a delicate camera blend is bouncing too much, switch it off before changing the camera framing.</td>
+</tr>
+<tr>
+<td><a id="control-strobe"></a><strong>BEAT STROBE</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Adds a white flash on detected beats. <strong>Try this:</strong> Use deliberately: it produces repeated flashes. Leave it off for viewers sensitive to flashing, and check DROP FX too if you want a flash-free performance.</td>
+</tr>
+<tr>
+<td><a id="control-beatInv"></a><strong>BEAT INVERT</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Toggles negative/normal-style inversion as beats arrive. <strong>Try this:</strong> This is a strong rhythmic effect and can also create intense light changes. For a stable grade, leave it off and use the regular COLOR INVERT switch only when wanted.</td>
+</tr>
+<tr>
+<td><a id="control-beatJump"></a><strong>BEAT JUMP</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Chooses a different shader engine every 16 detected beats. <strong>Try this:</strong> Useful for hands-free variety, but those beats depend on detection. It is not a precisely authored arrangement or a guaranteed musical-bar counter.</td>
+</tr>
+</tbody></table>
+<h3 id="tune-a-beat-response-in-four-moves">Tune a beat response in four moves</h3><ol>
+<li>Use a source you can actually hear or meter. SIM will produce a fake pulse, so it cannot prove your microphone is working.</li>
+<li>Set INPUT GAIN near 1–1.2×. Get B / M / H moving without being permanently pinned high.</li>
+<li>Bring BASS › ZOOM up slowly. Add MID › WARP and HIGH › CHROMA only if you want those parts of the song to contribute.</li>
+<li>Set BEAT THRESHOLD for sensible hits, then adjust SMOOTHING for a crisp or floaty release. Check several quiet and loud passages.</li>
+</ol>
+<p>A house groove and a drumless ambient track will not detect the same way. The BPM readout and BEAT JUMP use detected events; they are not a sample-accurate synchronization system or external MIDI clock. There is no manual BPM-entry dial in this version.</p>
+<h2 id="12-camera-mix-the-real-world-into-the-visual">12. CAMERA: mix the real world into the visual</h2><p>Open <strong>CAMERA</strong>, switch the camera on, allow permission, then confirm that the small CAMERA FEED preview is live. Pick FRONT for a selfie or REAR for the room/subject. If the preview is not live, the CAM MIX dial has no camera picture to bring in.</p>
+<h3 id="the-050100-crossfade">The 0–50–100 crossfade</h3><table>
+<thead>
+<tr>
+<th>CAM MIX position</th>
+<th>What you should see in the actual picture</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0%</td>
+<td>The procedural visual. The little camera preview inside the operator menu can still be live.</td>
+</tr>
+<tr>
+<td>1–49%</td>
+<td>The selected artistic blend gradually comes in.</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>The full selected blend of camera and visual. This is not necessarily a mathematical 50/50 opacity blend: SCREEN, ADD and the key modes combine images differently.</td>
+</tr>
+<tr>
+<td>51–99%</td>
+<td>The complete visual/effect composition fades away toward the camera.</td>
+</tr>
+<tr>
+<td>100%</td>
+<td>Camera-only picture with the usual aspect crop/front-camera mirroring. Visual history, edge glow, 3D additions and grading fade out of that final picture.</td>
+</tr>
+</tbody></table>
+<p>The camera-only endpoint does not hide your operating menus on the screen. For an uncluttered <strong>saved</strong> picture, choose <strong>RECORD → OUTPUT → Menu visibility → Clean</strong> and switch off any optional recorded title, branding, lyrics or skeletons you do not want. Those separately selected output overlays can still be drawn over a camera-only base.</p>
+<figure class="camera-examples">
+<div><img src="/manual-assets/camera-000.png" alt="Neuroflux CAMERA page at CAM MIX 0 percent: procedural visuals fill the screen and the small camera preview remains live."><figcaption>0%: the main picture is visuals.</figcaption></div>
+<div><img src="/manual-assets/camera-050.png" alt="Neuroflux CAMERA page at CAM MIX 50 percent: the procedural visuals and green test camera pattern are blended."><figcaption>50%: the selected SCREEN blend.</figcaption></div>
+<div><img src="/manual-assets/camera-100.png" alt="Neuroflux CAMERA page at CAM MIX 100 percent: the main picture shows only the green camera test pattern, with operator controls still visible."><figcaption>100%: camera-only base picture.</figcaption></div>
+</figure><p><em>These are screenshots of the app using Chrome&#39;s synthetic test-camera feed. The green pattern is the test source, not a camera fault or a special Neuroflux effect. Operator controls remain visible; the output profile determines recorded overlays.</em></p>
+<h3 id="choose-a-blend-at-50-then-choose-your-final-balance">Choose a blend at 50%, then choose your final balance</h3><table>
+<thead>
+<tr>
+<th>BLEND</th>
+<th>In ordinary language</th>
+<th>A useful starting situation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SCREEN</td>
+<td>A bright, light-over-light combination. Dark parts of the camera contribute less.</td>
+<td>Neon patterns over a darker room or a person against a dark background.</td>
+</tr>
+<tr>
+<td>ADD</td>
+<td>Adds camera and visual brightness aggressively.</td>
+<td>Short, energetic peaks; lower EXPOSURE/BLOOM if highlights blow out.</td>
+</tr>
+<tr>
+<td>DIFF</td>
+<td>Shows differences between the two pictures, often making unusual contrast/colors.</td>
+<td>Abstract performance and silhouettes; less suitable when natural skin color matters.</td>
+</tr>
+<tr>
+<td>MULTIPLY</td>
+<td>Multiplies the two pictures with the app&#39;s brightness scaling; darker areas can dominate.</td>
+<td>Using camera shapes as texture in the graphic. It is not a precise photographic opacity blend.</td>
+</tr>
+<tr>
+<td>LUMA KEY</td>
+<td>Lets camera brightness decide where the camera replaces the visual.</td>
+<td>A bright subject/light against darker surroundings; adjust KEY LEVEL.</td>
+</tr>
+<tr>
+<td>DEPTH KEY</td>
+<td>Uses estimated depth, when available, to decide where to show the camera.</td>
+<td>A subject separated in depth from the background. Enable AI DEPTH in 3D for actual depth-based input; without it the shader uses a brightness fallback.</td>
+</tr>
+</tbody></table>
+<p>These are blend/key treatments, not a chroma-key green-screen editor or a guaranteed person-cutout tool. Depth edges can shimmer and a brightness key can also pick out bright objects in the background.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-cam"></a><strong>CAMERA</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Makes the live camera available as a visible layer in the main picture. <strong>Try this:</strong> Switch it on and allow access. If hands/depth still need the camera, hiding the camera layer may leave the hardware active for those features.</td>
+</tr>
+<tr>
+<td><a id="control-camFace"></a><strong>FACING</strong></td>
+<td>FRONT, REAR; default REAR</td>
+<td>Chooses FRONT or REAR camera, subject to the cameras the browser actually exposes. <strong>Try this:</strong> REAR is the default. FRONT is useful for selfies and hand conducting and is mirrored in the visual mix. Switching can briefly reopen the camera.</td>
+</tr>
+<tr>
+<td><a id="control-camMix"></a><strong>CAM MIX</strong></td>
+<td>0–100%; default 70%</td>
+<td>The main camera/visual crossfader: 0% is visuals, 50% is the full selected blend, and 100% is camera only. Above 50%, the complete visual/effect picture fades toward the camera. <strong>Try this:</strong> Use 25–40% to introduce the camera, 50% for the strongest selected blend, and 70–90% to bring the person or room forward. At 100%, visual trails, glow and grading fade away; operator menus can still be visible on your screen.</td>
+</tr>
+<tr>
+<td><a id="control-camBlend"></a><strong>BLEND</strong></td>
+<td>SCREEN, ADD, DIFF, MULTIPLY, LUMA KEY, DEPTH KEY; default SCREEN</td>
+<td>Selects SCREEN, ADD, DIFF, MULTIPLY, LUMA KEY, or DEPTH KEY. It changes the mixed look, not the 0%/100% endpoints. <strong>Try this:</strong> SCREEN is a friendly first choice. Compare the modes at 50% CAM MIX so you are actually seeing the full blend character.</td>
+</tr>
+<tr>
+<td><a id="control-camKey"></a><strong>KEY LEVEL</strong></td>
+<td>0–100%; default 50%</td>
+<td>Moves the threshold for LUMA KEY or DEPTH KEY. <strong>Try this:</strong> In LUMA KEY, higher values generally restrict replacement to brighter camera areas. In DEPTH KEY, adjust while watching the preview; it is a depth threshold, not an exact distance in meters.</td>
+</tr>
+<tr>
+<td><a id="control-camEdge"></a><strong>EDGE GLOW</strong></td>
+<td>0–100%; default 35%</td>
+<td>Finds edges in the camera and adds colored glow to them. <strong>Try this:</strong> Around 10–25% can outline a person without overwhelming the image. It scales in with the first half of CAM MIX and disappears again at the camera-only endpoint.</td>
+</tr>
+<tr>
+<td><a id="control-camWarp"></a><strong>CAM WARP</strong></td>
+<td>0–100%; default 25%</td>
+<td>Lets changes in camera brightness distort the procedural visual. <strong>Try this:</strong> Point the camera at a textured object and move slightly to see it. Keep low for recognizable faces; increase for melting/warping the visual. The camera-only endpoint stays clear.</td>
+</tr>
+<tr>
+<td><a id="control-camMotion"></a><strong>MOTION › PULSE</strong></td>
+<td>0–100%; default 50%</td>
+<td>Uses changes between camera frames to trigger visual pulse/beat energy. <strong>Try this:</strong> Move a hand or walk across the shot to test it. Camera shake can also trigger it; lower the amount for handheld filming if the picture punches constantly.</td>
+</tr>
+<tr>
+<td><a id="control-camTrails"></a><strong>CAM TRAILS</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Puts the camera into the feedback path so its earlier frames can trail with the visuals. <strong>Try this:</strong> OFF is cleaner for faces. ON can create ghosted silhouettes when FEEDBACK is high. At 100% CAM MIX, the final picture still resolves to camera only.</td>
+</tr>
+</tbody></table>
+<h3 id="a-practical-face-and-visual-mix">A practical face-and-visual mix</h3><p>Use SCREEN, start at 30% CAM MIX, keep EDGE GLOW around 10–20%, and keep CAM WARP low. Move to 50% to see the full artistic blend. If the face is lost in the effects, move toward 75–90% instead of only pushing exposure. Move all the way to 100% for a clean camera reveal; crossfade back to bring the visual world in again.</p>
+<p><strong>If 100% still looks like the old blended endpoint:</strong> finish active work, open the <a href="https://neuroflux-rig.vercel.app/update.html">update recovery page</a>, and tap UPDATE AND OPEN NEUROFLUX on that phone/browser. A regular refresh can leave an old offline version active. Browser profiles and different phones keep their own caches.</p>
+<h2 id="13-sense-perform-with-your-phone-and-fingers">13. SENSE: perform with your phone and fingers</h2><p>Start in a comfortable position, enable MOTION SENSORS, answer any permission prompt, and tap <strong>RE-ZERO</strong>. Re-zero takes the current orientation as your reference; use it again after you change how you hold the phone. It does not calibrate the microphone or repair missing hardware support.</p>
+<p>The SENSOR ARRAY/status area distinguishes readings the browser exposes from estimated/unavailable ones. Tilt and gyro need motion/orientation access. Heading needs usable compass/orientation data. Light can be camera-estimated when a real light sensor is not available. A desktop cannot respond like a handheld phone just because the switch is on.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-motion"></a><strong>MOTION SENSORS</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Turns on the motion/orientation sensor listeners and requests permission where required. <strong>Try this:</strong> Hold your phone in the position you plan to perform from, enable it, then use RE-ZERO. A desktop or a browser that does not expose a sensor may show unavailable readings.</td>
+</tr>
+<tr>
+<td><a id="control-tiltOrigin"></a><strong>TILT › ORIGIN</strong></td>
+<td>0–100%; default 50%</td>
+<td>Moves the center of the visual as you tilt the device. <strong>Try this:</strong> Around 15–35% gives a gentle handheld feel. Higher values are more like steering the scene around the screen.</td>
+</tr>
+<tr>
+<td><a id="control-tiltFlow"></a><strong>TILT › FLOW</strong></td>
+<td>0–100%; default 50%</td>
+<td>Uses tilt to push the trail/feedback flow. <strong>Try this:</strong> It is easiest to see with FEEDBACK turned up. Keep it low for a stable image; turn it up for drifting, liquid trails.</td>
+</tr>
+<tr>
+<td><a id="control-gyroSpin"></a><strong>GYRO › SPIN</strong></td>
+<td>0–100%; default 40%</td>
+<td>Uses rotational motion from the device to add spin. <strong>Try this:</strong> Small wrist turns can add a lot of life. Lower it if the image keeps turning when you want a steady composition.</td>
+</tr>
+<tr>
+<td><a id="control-shake"></a><strong>SHAKE › PUNCH</strong></td>
+<td>0–100%; default 60%</td>
+<td>Turns a physical shake into a visual punch or burst of energy. <strong>Try this:</strong> Use a small, deliberate gesture first. It depends on motion data, so a browser without accelerometer access cannot supply this trigger.</td>
+</tr>
+<tr>
+<td><a id="control-touch"></a><strong>TOUCH FX</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Lets fingers or a mouse bend the visual canvas where you touch it. <strong>Try this:</strong> Leave ON for performance effects. With it ON, use two fingers to swipe between scenes; a single finger is your effect controller.</td>
+</tr>
+<tr>
+<td><a id="control-touchMode"></a><strong>TOUCH MODE</strong></td>
+<td>RIPPLE, VORTEX, LENS, SHOCK; default RIPPLE</td>
+<td>Chooses RIPPLE, VORTEX, LENS, or SHOCK for the touch field. <strong>Try this:</strong> RIPPLE sends out rings; VORTEX swirls; LENS bends/magnifies; SHOCK gives a more abrupt energetic disturbance. Try each with TOUCH FORCE around 40%.</td>
+</tr>
+<tr>
+<td><a id="control-touchAmt"></a><strong>TOUCH FORCE</strong></td>
+<td>0–100%; default 70%</td>
+<td>Sets the strength of canvas touches and touch-style hand pinches. <strong>Try this:</strong> Reduce it for subtle accents or small screens. Higher values are good for a few obvious performance gestures rather than constant dragging.</td>
+</tr>
+<tr>
+<td><a id="control-compHue"></a><strong>COMPASS › HUE</strong></td>
+<td>0–100%; default 50%</td>
+<td>Adds a color offset from the device&#39;s heading/compass information. <strong>Try this:</strong> Turn slowly to feel the palette respond. If there is no usable heading data, this control cannot invent one.</td>
+</tr>
+<tr>
+<td><a id="control-lightGlow"></a><strong>LIGHT › GLOW</strong></td>
+<td>0–100%; default 50%</td>
+<td>Lets ambient light influence glow. The app can use a light sensor when exposed, or estimate scene brightness from the active camera. <strong>Try this:</strong> Darker surroundings can produce more glow. Set this to 0% if you want BLOOM to stay consistent while lighting changes.</td>
+</tr>
+</tbody></table>
+<p>For your first sensor mix, try TILT › ORIGIN 20%, TILT › FLOW 15% and GYRO › SPIN 10–20%, leaving a readable base scene. Hold the phone still and re-zero if the view drifts. For a locked-off recording, turn motion sensors off and leave touch gestures for intentional accents.</p>
+<h2 id="14-3d-depth-clouds-and-imported-scans">14. 3D: depth clouds and imported scans</h2><p>There are two separate jobs on this page: <strong>AI DEPTH</strong> estimates a point cloud from the live camera; <strong>LOAD SPLAT</strong> opens an existing scan file. Neither is a full in-app room-scanning/capture workflow.</p>
+<h3 id="live-camera-depth">Live camera depth</h3><p>Switch on AI DEPTH and wait for the first download/initialization to finish. The app tries supported GPU acceleration and can fall back to a local CPU/WASM path. The model runs on the device; first-time model/runtime downloads need internet. A depth model can be a substantial download, so use the status message rather than guessing that a short delay means failure.</p>
+<p>Begin with DEPTH RES FAST and CLOUD DENSITY LOW or MEDIUM. Bring CLOUD GAIN and POINT SIZE up until the cloud is readable. Then try a little ORBIT and BASS › BURST. A brightly lit, distinct subject is easier to read than a dim, blank wall. The estimated depth is relative and imperfect, not survey-grade distance data.</p>
+<h3 id="load-a-scan-you-already-have">Load a scan you already have</h3><ol>
+<li>Export a supported <strong>.ply</strong>, <strong>.splat</strong> or <strong>.spz</strong> file from your scanning workflow.</li>
+<li>Tap <strong>LOAD SPLAT</strong>, choose the file, and wait for the “loaded” status.</li>
+<li>Start with SPLAT GAIN around 50–60% and SPLAT DENSITY low enough to run smoothly.</li>
+<li>Toggle SPLAT FLIP if the orientation is wrong; reduce SPLAT SPIN to 0 while you inspect it.</li>
+<li>Add ORBIT, spin or bass burst gradually. Use <strong>CLEAR</strong> to unload the imported scan from the current rig.</li>
+</ol>
+<p>A file extension alone is not a promise: unsupported PLY layouts/SPZ variants or damaged files can fail to parse. The renderer centers/scales imported point data and can reduce a very dense source to fit its working point budget (up to roughly 600,000 imported points before density reduction). This is a lightweight point/splat performance view, not a full-quality Gaussian-splat editing or reconstruction application. Clearing does not delete the original file on your device.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-depth"></a><strong>AI DEPTH</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Uses a downloaded AI model to estimate depth from the camera and make a live colored point cloud. <strong>Try this:</strong> Give it time to load the first time. This is estimated single-camera depth, not a LiDAR measurement or an automatic saved 3D scan. It can turn the camera on if necessary.</td>
+</tr>
+<tr>
+<td><a id="control-depthRes"></a><strong>DEPTH RES</strong></td>
+<td>FAST, BALANCED, FINE; default FAST</td>
+<td>Chooses FAST, BALANCED, or FINE for the depth-estimation input. <strong>Try this:</strong> Start FAST on a phone. Move up only if the cloud stays responsive and the device is comfortable. FINE means more work for the model, not guaranteed perfect edges.</td>
+</tr>
+<tr>
+<td><a id="control-cloudRes"></a><strong>CLOUD DENSITY</strong></td>
+<td>LOW, MEDIUM, HIGH; default MEDIUM</td>
+<td>Chooses LOW, MEDIUM, or HIGH point density for the live depth cloud. <strong>Try this:</strong> This is separate from DEPTH RES: one controls the model input, the other how many points draw the result. Lower density first if the cloud is sluggish.</td>
+</tr>
+<tr>
+<td><a id="control-cloud"></a><strong>CLOUD GAIN</strong></td>
+<td>0–150%; default 50%</td>
+<td>Sets how strongly the live depth cloud is drawn. <strong>Try this:</strong> Use a little cloud over the visual for texture, or raise it to make the cloud the main attraction. 0% hides the cloud without being the same thing as turning the whole depth engine off.</td>
+</tr>
+<tr>
+<td><a id="control-ptSize"></a><strong>POINT SIZE</strong></td>
+<td>0.3–3×; default 1.00×</td>
+<td>Changes the size of live-cloud points. <strong>Try this:</strong> Small points look more delicate; larger points fill gaps and look chunkier. The effect is easiest to judge together with CLOUD DENSITY.</td>
+</tr>
+<tr>
+<td><a id="control-explode"></a><strong>BASS › BURST</strong></td>
+<td>0–100%; default 50%</td>
+<td>Lets bass and spectral energy spread the 3D points outward. <strong>Try this:</strong> Keep low to preserve a person&#39;s shape or an imported object. Raise it for the exploding-on-the-beat effect; it applies to the 3D rendering rather than changing your original scan file.</td>
+</tr>
+<tr>
+<td><a id="control-orbit"></a><strong>ORBIT</strong></td>
+<td>0–100%; default 60%</td>
+<td>Sets how much the 3D view orbits, including tilt-based and gentle automatic movement. <strong>Try this:</strong> Use a little for depth and parallax. Reduce it when the object keeps drifting away from a composition you like; motion sensors provide the physical tilt part when available.</td>
+</tr>
+<tr>
+<td><a id="control-splatGain"></a><strong>SPLAT GAIN</strong></td>
+<td>0–150%; default 60%</td>
+<td>Controls the visible strength of an imported splat/point scan. <strong>Try this:</strong> Start near 40–60%. If nothing changes, check that a file is loaded; this dial does not create a scan by itself.</td>
+</tr>
+<tr>
+<td><a id="control-splatDensity"></a><strong>SPLAT DENSITY</strong></td>
+<td>5–100%; default 60%</td>
+<td>Chooses what fraction of the loaded scan points are drawn. <strong>Try this:</strong> Lower it for speed or a more airy point-cloud look. Higher values make the scan fuller and cost more GPU time. It does not increase the detail in the source file.</td>
+</tr>
+<tr>
+<td><a id="control-splatSpin"></a><strong>SPLAT SPIN</strong></td>
+<td>-1 to 1; default 0.15</td>
+<td>Sets continuous spin for the imported scan; negative and positive values turn in opposite directions. <strong>Try this:</strong> 0 stops the automatic spin. Try a small magnitude such as 0.05–0.15 before using a full turntable effect.</td>
+</tr>
+<tr>
+<td><a id="control-splatFlip"></a><strong>SPLAT FLIP</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Flips the imported scan&#39;s Y/Z orientation to help correct an upside-down load. <strong>Try this:</strong> Toggle it if a scan looks inverted. The loader already chooses a starting value by format; there is no universal flip setting for every scanning app.</td>
+</tr>
+</tbody></table>
+<h2 id="15-ai-prompts-director-hands-and-lyrics">15. AI: prompts, director, hands and lyrics</h2><p>This tab contains several independent features. Local audio analysis/director behavior and local camera models are different from requests sent to Gemini. You can make a great recording without using any online AI.</p>
+<h3 id="get-a-fresh-guided-walkthrough">Get a fresh, guided walkthrough</h3><p>Open <strong>Menu → AI → GUIDED WALKTHROUGH</strong>. Tell it what you want to do in ordinary language: “Help me record a clean portrait camera mix with music and a separate voice track,” or “Show me how to make a six-split kaleidoscope with a gentle swirl.” You can also choose <strong>GUIDE ME STEP BY STEP</strong> in the typed AI command window.</p>
+<p>The guide looks up relevant parts of this manual and checks your current settings and browser capabilities. It makes a new plan for that setup. Read the plan first, then press <strong>BEGIN WALKTHROUGH</strong>. Building the plan does not change a setting or start a take.</p>
+<p>The current step sits inside the app&#39;s native menu. On phones, the menu expands so the instructions and controls have room. A green outline points to the real control. Use <strong>SHOW CONTROL</strong> to find it again. Turn the dial yourself or tap <strong>APPLY THIS SETTING</strong>. <strong>VERIFIED · NEXT</strong> means the app has checked that setting. It does not mean the result sounds or looks good—that part is yours. Listening and visual checks say <strong>I CHECKED THIS · NEXT</strong>, because the guide cannot judge them for you.</p>
+<p>Use <strong>UNDO CHANGE</strong> for a reversible setting, <strong>SKIP</strong> when a step is unnecessary, the minus button to minimize, or × to end the walkthrough. Ending leaves your settings as you set them. <strong>Change the plan / I&#39;m stuck</strong> lets you describe a problem and rebuild the remaining steps using the latest settings. If you reload the same tab, an explicit <strong>RESUME WALKTHROUGH</strong> lets you continue.</p>
+<p>Starting a recording still needs your own tap on <strong>START TAKE · 3–2–1</strong>, followed by the normal countdown. Camera and microphone permissions still come from the browser. Read the step before granting access. The guide does not silently record, delete takes, upload files or publish anything. Its instructions and highlighting stay out of your recorded picture.</p>
+<p>Each step has <strong>Manual sources</strong> so you can read the explanation. The plan names the model that answered. It tries <strong>Gemini 3.8 Flash first</strong>; if that is unavailable, a working Flash fallback is clearly labeled. This does not mean 3.8 handled a request that actually used another model.</p>
+<p>Online guidance sends your written goal, numeric controls, supported recording/audio settings and browser capability flags to the app&#39;s Gemini service. It does not send source files, filenames, camera frames, recorded audio, lyric text, titles, branding text or API keys. Ordinary controls and recordings keep working if online guidance is unavailable. If the guide reports an older catalog, finish your take and use <strong>SYSTEM → APP UPDATES → LOAD LATEST VERSION</strong>.</p>
+<h3 id="type-or-speak-a-visual-idea">Type or speak a visual idea</h3><p>Tap the dock&#39;s sparkle button or <strong>TYPE A VIBE</strong>, write a clear request, and submit it. Start with concrete creative changes:</p>
+<ul>
+<li>“Slow blue tunnel, soft glow, almost no glitch.”</li>
+<li>“Keep the current scene, lower the feedback and make the bass response gentle.”</li>
+<li>“A warm liquid plasma look with no strobe.”</li>
+<li>“Switch to the horizon scene, reduce spin and make the colors colder.”</li>
+</ul>
+<p>The service translates the request into supported visual parameters/commands. It is not generating a new filmed video or writing an arbitrary shader from scratch. Check the result with your own eyes; broad instructions can be interpreted in several ways.</p>
+<p>Hold the dock AI button to speak, or use <strong>HOLD TO TALK</strong>. Release after a short instruction. The voice capture is short (up to about nine seconds), and very short/silent clips may be rejected. The app may duck music monitoring while you speak. If the browser cannot open the mic, use typing instead.</p>
+<p><strong>CHECK</strong> refreshes the Gemini connection status. If the app reports no server key or an unavailable service, ordinary visuals/recording still work. The owner connects Gemini on the server; a guest should not paste an API key into a public prompt or share it in a recording. Usage/availability depends on the connected provider and its limits.</p>
+<h3 id="ai-director-versus-autopilot">AI DIRECTOR versus AUTOPILOT</h3><p>AUTOPILOT drifts selected parameters. The DIRECTOR follows changes in the analyzed song energy and classifies broad sections such as <strong>INTRO, GROOVE, BUILD, DROP, DRIVE and BREAK</strong>. The song map and energy history show what it thinks is happening. It is a live estimate, not an imported cue sheet or a guaranteed prediction of an upcoming drop.</p>
+<p>With GEMINI LOOKS off or unavailable, a local plan still supplies groove/build/drop/break looks. With Gemini connected and that switch on, the service can design the plan. DRIVE sets how hard modulation pushes; CHANGE RATE influences how often it looks for groove/drive changes. Manual edits get a short grace period before automatic look changes resume, but modulation can still be audible/visible in the result. Turn the director off if a value must stay fixed.</p>
+<p><strong>LIKE</strong> stores feedback about a look you enjoy. <strong>SKIP</strong> marks the current look as unwanted and chooses another. That taste is stored in this browser, not a universal model retrained for every user. <strong>REPLAN</strong> asks for/rebuilds the section plan. Local planning remains available when an online look request cannot complete.</p>
+<h3 id="conduct-with-your-hands">Conduct with your hands</h3><p>Enable HAND TRACKING, let the model load, and make sure your hands appear in the preview. It opens the front camera if it needs to open its own camera, but an already-active rear camera can remain in use—choose <strong>CAMERA → FACING → FRONT</strong> deliberately for self-conducting.</p>
+<table>
+<thead>
+<tr>
+<th>Gesture</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Raise/lower your hands</td>
+<td>Adds or reduces energy-related speed/brightness/glow modulation.</td>
+</tr>
+<tr>
+<td>Move left/right</td>
+<td>Shifts color/hue.</td>
+</tr>
+<tr>
+<td>Open/close your hands</td>
+<td>Changes warp strength.</td>
+</tr>
+<tr>
+<td>Use two hands, move apart/together</td>
+<td>Changes zoom/scale.</td>
+</tr>
+<tr>
+<td>Tilt the line between two hands</td>
+<td>Adds visual twist/rotation.</td>
+</tr>
+<tr>
+<td>Pinch thumb and index finger</td>
+<td>Acts like a touch effect at the tracked fingertip when PINCH FX is enabled.</td>
+</tr>
+<tr>
+<td>Fist, then open quickly</td>
+<td>Triggers a burst/punch, which can include a flash.</td>
+</tr>
+<tr>
+<td>Fast open-hand swipe</td>
+<td>Can change to the next/previous scene.</td>
+</tr>
+</tbody></table>
+<p>Use good lighting, keep hands in frame, and begin with HAND FORCE around 30–50%. SHOW SKELETON affects the operator overlay; the saved video&#39;s Hand skeletons option is separate. Hiding the visible camera layer does not necessarily release a camera still needed by hands/depth. Turning tracking off is how to stop tracking.</p>
+<h3 id="live-lyrics">Live lyrics</h3><p>Enable LIVE LYRICS with real music/vocals or a live input. <strong>PREVIEW</strong> inserts sample words so you can try typography without treating that as successful transcription. LANGUAGE guides recognition; it does not translate a song into another language. IMPACT, FLOW and KARAOKE change the live presentation.</p>
+<p>STREAM uses an online live-transcription connection; CLIP sends short audio chunks and is normally a few seconds behind. A failed stream can fall back to CLIP. Noise, overlapping voices and music can cause missing/misheard words. The current output recorder renders selected recognized text as a simpler overlay; it does not copy the exact on-screen kinetic typography or promise subtitle-file export.</p>
+<p>Recording silence does not automatically stop online lyric analysis. If you do not want lyric audio transmitted, turn LIVE LYRICS off, rather than only muting the recorded mix.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-aiDir"></a><strong>AI DIRECTOR</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Listens to the main analysis and performs looks according to detected song energy/sections. <strong>Try this:</strong> Give it a few seconds to listen. It can use a local plan without a Gemini key; online Gemini-designed looks are an optional additional layer.</td>
+</tr>
+<tr>
+<td><a id="control-dirAmt"></a><strong>DRIVE</strong></td>
+<td>0–100%; default 65%</td>
+<td>Sets the DIRECTOR&#39;s modulation strength: how hard builds, drops and energy changes push the visual. <strong>Try this:</strong> Try 25–45% when you still want to steer manually. Higher feels more dramatic. It is a creative intensity control, not the audio recording volume.</td>
+</tr>
+<tr>
+<td><a id="control-dirRate"></a><strong>CHANGE RATE</strong></td>
+<td>0–100%; default 50%</td>
+<td>Sets how frequently the DIRECTOR looks for beat-aligned changes in groove/drive sections. <strong>Try this:</strong> Lower gives longer-held looks; higher checks more often. Changes remain conditional, so a higher value does not guarantee a new scene at a fixed interval.</td>
+</tr>
+<tr>
+<td><a id="control-dirGem"></a><strong>GEMINI LOOKS</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Lets the connected Gemini service design a plan of looks for song sections. <strong>Try this:</strong> If Gemini is unavailable, the local director can still make a plan. Turn this off to keep planning local; text prompts/voice/lyrics have their own online requirements.</td>
+</tr>
+<tr>
+<td><a id="control-dirBurst"></a><strong>DROP FX</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Allows the DIRECTOR&#39;s drop flashes, shocks and glitch hits. <strong>Try this:</strong> Turn off for a gentler set or when you want to avoid drop flashes. Also disable BEAT STROBE/BEAT INVERT and avoid burst gestures if flashes are unwanted.</td>
+</tr>
+<tr>
+<td><a id="control-hands"></a><strong>HAND TRACKING</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Tracks up to two hands with the active camera, loading the hand model on first use. <strong>Try this:</strong> FRONT camera is easier for conducting. It can use a camera already running on REAR; set FACING deliberately. Tracking is processed locally after model loading.</td>
+</tr>
+<tr>
+<td><a id="control-handAmt"></a><strong>HAND FORCE</strong></td>
+<td>0–100%; default 70%</td>
+<td>How strongly tracked hand movement pushes the scene. <strong>Try this:</strong> Around 30–50% is easier to learn than full strength. Lower it if small hand movements keep overpowering the look.</td>
+</tr>
+<tr>
+<td><a id="control-handShow"></a><strong>SHOW SKELETON</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Draws tracked hand skeletons on the operator display. <strong>Try this:</strong> Turning the drawing off does not turn tracking off. Recorded hand skeletons have a separate option under RECORD → OUTPUT.</td>
+</tr>
+<tr>
+<td><a id="control-handTouch"></a><strong>PINCH FX</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Makes a thumb/index-finger pinch act like a touch at the fingertip. <strong>Try this:</strong> Choose a TOUCH MODE in SENSE for its character. Keep the hand in frame with clear lighting; pinch recognition is less reliable with occlusion or fast motion.</td>
+</tr>
+<tr>
+<td><a id="control-lyrics"></a><strong>LIVE LYRICS</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Listens for vocals and turns recognized words into animated on-screen text. <strong>Try this:</strong> Needs a working Gemini connection and an audible/input signal. Recognition is approximate and can lag or mishear lyrics; preview a take before treating the words as final captions.</td>
+</tr>
+<tr>
+<td><a id="control-lyrStyle"></a><strong>TYPE STYLE</strong></td>
+<td>IMPACT, FLOW, KARAOKE; default IMPACT</td>
+<td>Chooses IMPACT, FLOW, or KARAOKE for live words. <strong>Try this:</strong> IMPACT emphasizes individual words; FLOW builds lines; KARAOKE highlights words in a line-style presentation. Recorded lyrics use a simpler text rendering rather than an exact copy of these DOM animations.</td>
+</tr>
+<tr>
+<td><a id="control-lyrSize"></a><strong>TYPE SIZE</strong></td>
+<td>0.5–1.6×; default 1.00×</td>
+<td>Scales the live operator-display lyrics. <strong>Try this:</strong> Around 1× is the reference size. This does not promise the same size/style in the recording overlay; use the output preview to judge recorded text.</td>
+</tr>
+<tr>
+<td><a id="control-lyrLang"></a><strong>LANGUAGE</strong></td>
+<td>AUTO, ENGLISH, SPANISH, PORTUGUESE, FRENCH; default AUTO</td>
+<td>Chooses AUTO, ENGLISH, SPANISH, PORTUGUESE, or FRENCH for transcription guidance. <strong>Try this:</strong> Pick the language you expect if AUTO struggles. It guides recognition; it is not a translation-language selector.</td>
+</tr>
+<tr>
+<td><a id="control-lyrEng"></a><strong>ENGINE</strong></td>
+<td>STREAM, CLIP; default STREAM</td>
+<td>Chooses STREAM or CLIP transcription. <strong>Try this:</strong> STREAM means live transcription, not broadcasting your visual to a platform. CLIP listens in roughly four-second chunks with a few seconds of lag; STREAM can fall back to CLIP if live connection fails.</td>
+</tr>
+</tbody></table>
+<h2 id="16-record-start-pause-and-save-a-take">16. RECORD: start, pause and save a take</h2><p>Open <strong>Menu → RECORD</strong>. Its four subtabs are <strong>RECORD, OUTPUT, AUDIO and LIBRARY</strong>. The dock REC shortcut uses your last settings; the menu is where you make intentional changes before the next take.</p>
+<h3 id="the-whole-recording-flow">The whole recording flow</h3><ol>
+<li>Set the source, visual, camera and effects you want to perform with.</li>
+<li>In OUTPUT, choose A&#39;s shape/resolution/fps, recorded overlays and audio source. If needed, configure B too and enable dual recording in RECORD.</li>
+<li>In AUDIO, set music/mic recording balance, select/enable an extra mic if needed, and check the meters.</li>
+<li>In RECORD, choose video or audio-only, optional companion files and an optional duration limit.</li>
+<li>Use <strong>TEST OUTPUT</strong> for a video configuration. The app renders the selected output(s) for about two seconds and asks for at least 80% of the selected frame rate. A failing test does not secretly drop your resolution; lower the load and test again.</li>
+<li>Tap <strong>REC</strong> in the dock or <strong>● RECORD · 3–2–1</strong> in the page. Preparation can take a moment. Every new take then shows 3, 2, 1 for about a second each. Nothing is captured during those three seconds.</li>
+<li>During that countdown, <strong>CANCEL</strong>, Escape, or the dock preparation control cancels the take and removes its empty prepared files.</li>
+<li>When capture begins, the recording menu closes. Change the visuals as usual. The dock shows elapsed time, a red Stop/Save control, and Pause/Resume.</li>
+<li>Tap red Stop/Save and let saving finish. Open LIBRARY, play the result, and download important work.</li>
+</ol>
+<p>The countdown is fixed for each new take; there is no “None” option. Resume continues the same take rather than starting a fresh countdown. Time spent paused is left out of the saved take. Audio playback and live camera activity can continue while the take is paused.</p>
+<h3 id="every-control-on-the-record-subtab">Every control on the RECORD subtab</h3><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>What to do with it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RECORD · 3–2–1</td>
+<td>Starts with the current setup after preparation/test and the countdown.</td>
+</tr>
+<tr>
+<td>TEST OUTPUT</td>
+<td>Checks the current video composition load. Test with the real camera/effects enabled; a lighter test does not prove a heavier performance will work.</td>
+</tr>
+<tr>
+<td>SNAPSHOT</td>
+<td>Saves/downloads a PNG of the selected output&#39;s current composed picture. Safe guides and recording controls are excluded. It is also listed in Library.</td>
+</tr>
+<tr>
+<td>PAUSE / RESUME</td>
+<td>Temporarily leave time and changes out of the take, then continue. Not the source Play/Pause.</td>
+</tr>
+<tr>
+<td>STOP &amp; SAVE</td>
+<td>Finalizes the current take&#39;s files. Wait for the saved message.</td>
+</tr>
+<tr>
+<td>MARKER</td>
+<td>Adds a timestamp marker to the current take. Later it can be tapped to seek in Library. It does not add a visible title to the picture or split the file automatically.</td>
+</tr>
+<tr>
+<td>Capture</td>
+<td>Video recording, or Audio only · WAV. Audio-only captures the mixed WAV and skips the video-rendering performance test.</td>
+</tr>
+<tr>
+<td>Stop after seconds · 0 = manual</td>
+<td>Optional automatic duration cap, up to 14,400 seconds (four hours). It is a maximum setting, not a guarantee that a phone/storage/codec can sustain it. 0 means you stop manually.</td>
+</tr>
+<tr>
+<td>Record output B at the same time</td>
+<td>Records a second independent visual composition. B&#39;s preview alone does not enable recording B. This is a second shape/mix of the same live rig, not a second camera or a separate song.</td>
+</tr>
+<tr>
+<td>Save separate music and microphone WAV files</td>
+<td>Saves isolated companion sources before the recorder&#39;s gain/mute controls. You may get a silent companion if no corresponding source was active.</td>
+</tr>
+<tr>
+<td>Also save the mixed audio as a WAV file</td>
+<td>Adds a standalone mix WAV alongside video. Audio-only already creates a mix WAV.</td>
+</tr>
+<tr>
+<td>Storage estimate</td>
+<td>Approximate free space available to this browser/site, not necessarily the phone&#39;s entire disk.</td>
+</tr>
+<tr>
+<td>PLAY DEMO</td>
+<td>Starts the built-in demo through the normal main source routing. It changes the main source; use it intentionally.</td>
+</tr>
+<tr>
+<td>PROTECT DEVICE STORAGE</td>
+<td>Requests persistent browser storage where supported. A grant can reduce automatic eviction; it is not a backup or a promise against manual site-data clearing.</td>
+</tr>
+</tbody></table>
+<p>A video normally includes its chosen audio track; companion WAVs are additional files. A/B videos and music/mic/mix companions appear as separate Library items. Removing one companion does not automatically remove the others.</p>
+<h2 id="17-output-decide-what-the-saved-picture-looks-like">17. OUTPUT: decide what the saved picture looks like</h2><p>OUTPUT A and OUTPUT B each have their own profile. Choose the tab before adjusting values. <strong>A is recorded by default</strong>; <strong>B is preview only until dual recording is enabled</strong>. Both use the same live scene/camera performance but render to their own composition sizes and feedback histories.</p>
+<h3 id="shape-resolution-and-motion">Shape, resolution and motion</h3><table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Platform preset</td>
+<td>Sets a starting width/height and approximate preview safe area. It does not connect an account, upload a file or guarantee a platform&#39;s current acceptance limits.</td>
+</tr>
+<tr>
+<td>Width / Height</td>
+<td>Custom pixel dimensions. Each must be even and between 128 and 3840; total area cannot exceed 3840 × 2160 pixels. Device limits also apply.</td>
+</tr>
+<tr>
+<td>Resolution shortcut</td>
+<td>720p for a lighter take, 1080p for more detail, 2160p for permitted desktop configurations.</td>
+</tr>
+<tr>
+<td>Frame rate</td>
+<td>24, 30 or 60 fps. 60 needs a capable configuration and a successful test; it is not automatic motion smoothing.</td>
+</tr>
+<tr>
+<td>Output orientation</td>
+<td>Landscape, portrait or square composition with upright text at rotation 0°.</td>
+</tr>
+<tr>
+<td>Rotate entire picture</td>
+<td>0°, 90° clockwise, 180° or 270° clockwise. Rotates the visual <strong>and all recorded overlays/text</strong>. A 90°/270° rotation swaps encoded width/height.</td>
+</tr>
+<tr>
+<td>Framing</td>
+<td>Render for this shape; Fit operator aspect; or Fill from operator aspect. See below.</td>
+</tr>
+<tr>
+<td>Zoom</td>
+<td>1–2× framing zoom of this output. This is not FORM → ZOOM and does not change both outputs together.</td>
+</tr>
+<tr>
+<td>Frame left/right; up/down</td>
+<td>−1 to +1 positioning of excess image area. If the image already exactly fills that axis, panning there can have little/no visible effect.</td>
+</tr>
+<tr>
+<td>Fit background</td>
+<td>Color behind a letterboxed/pillarboxed fit. It does not replace the scene palette.</td>
+</tr>
+</tbody></table>
+<h3 id="orientation-versus-rotationthe-part-that-causes-confusion">Orientation versus rotation—the part that causes confusion</h3><p><strong>Want a normal landscape video with readable upright words?</strong> Choose Landscape and leave Rotate entire picture at 0°.</p>
+<p><strong>Want a normal vertical phone video?</strong> Choose Portrait and rotation 0°.</p>
+<p><strong>Want the entire saved picture sideways, including letters?</strong> Use 90° or 270°. For example, a 1920 × 1080 base picture at 90° becomes an encoded 1080 × 1920 sideways composition. If you want sideways content <em>inside a landscape-shaped encoded file</em>, start from a portrait base and rotate 90°; check the final pixel readout.</p>
+<p>Physically turning the phone and rotating the recorded composition are separate actions. Keep the device orientation settled during the take: dimensions/fps/orientation/rotation/framing configuration is locked until you stop. For the standard landscape/portrait choice, use Output orientation first and the preview/readout as the final check.</p>
+<h3 id="the-three-framing-modes">The three framing modes</h3><ul>
+<li><strong>Render for this shape · no stretching:</strong> asks the visual engine to make a fresh composition for the output&#39;s aspect. This is usually the best choice when recording both portrait and landscape.</li>
+<li><strong>Fit operator aspect · background:</strong> preserves the operator-aspect picture and fits it completely inside the chosen output, adding background space where necessary.</li>
+<li><strong>Fill from operator aspect · crop:</strong> fills the chosen frame from an operator-aspect rendering, cutting off edges as necessary.</li>
+</ul>
+<p>Neither Fit nor Fill is an exact screenshot of the browser interface. They are visual renders with different aspect handling. If framing cuts off your subject, lower output Zoom, use Fit, or move the frame. Cropping after recording cannot bring back content that was never captured.</p>
+<h3 id="platform-presets-in-this-version">Platform presets in this version</h3><table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Starting pixels</th>
+<th>Shape</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>YouTube · landscape</td>
+<td>1920 × 1080</td>
+<td>16:9</td>
+</tr>
+<tr>
+<td>TikTok · vertical</td>
+<td>1080 × 1920</td>
+<td>9:16</td>
+</tr>
+<tr>
+<td>Instagram Reels</td>
+<td>1080 × 1920</td>
+<td>9:16</td>
+</tr>
+<tr>
+<td>YouTube Shorts</td>
+<td>1080 × 1920</td>
+<td>9:16</td>
+</tr>
+<tr>
+<td>Instagram Stories</td>
+<td>1080 × 1920</td>
+<td>9:16</td>
+</tr>
+<tr>
+<td>Instagram · square</td>
+<td>1080 × 1080</td>
+<td>1:1</td>
+</tr>
+<tr>
+<td>Instagram · portrait feed</td>
+<td>1080 × 1350</td>
+<td>4:5</td>
+</tr>
+<tr>
+<td>Custom</td>
+<td>Starts at 1920 × 1080; editable</td>
+<td>Your valid dimensions</td>
+</tr>
+</tbody></table>
+<p>The dashed safe area is an approximate <strong>preview-only</strong> guide. It is not burned into the video and is not an exact map of a social app&#39;s current buttons, captions or cropping. Check the destination app&#39;s actual upload preview.</p>
+<h3 id="clean-minimal-or-full-recorded-menus">Clean, minimal or full recorded menus</h3><table>
+<thead>
+<tr>
+<th>Menu visibility</th>
+<th>Saved result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Clean · visuals only</td>
+<td>No performance HUD/menu. Separately enabled lyrics, skeletons, title and branding can still draw, so turn those off too for a completely bare picture.</td>
+</tr>
+<tr>
+<td>Minimal performance HUD</td>
+<td>A compact performance strip with whichever Scene name, BPM, Palette and Audio meter items you enabled.</td>
+</tr>
+<tr>
+<td>Full performance menu</td>
+<td>A drawn performance-control panel/navigation using the shared state of the relevant rig page. It is not a screen recording of every button or browser menu.</td>
+</tr>
+</tbody></table>
+<p>Full performance output is a re-created overlay. It can show the active performance controls and a navigation overview, but it is not a pixel-for-pixel copy of the scrollable operating menu. The recording page itself is excluded; the renderer uses the last performance page when you are adjusting recorder settings. Dialogs, source chooser popups, permission prompts and recording controls are not captured as browser screenshots.</p>
+<h3 id="every-overlayaudio-option">Every overlay/audio option</h3><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>What to know</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Scene name</td>
+<td>Shows the active scene/engine name in minimal/full HUD.</td>
+</tr>
+<tr>
+<td>BPM</td>
+<td>Shows the estimated BPM in minimal/full HUD.</td>
+</tr>
+<tr>
+<td>Palette</td>
+<td>Shows the selected palette in minimal/full HUD.</td>
+</tr>
+<tr>
+<td>Audio meter</td>
+<td>Shows analyzed bass/mid/high energy in minimal/full HUD, not a guarantee of recorded audio volume.</td>
+</tr>
+<tr>
+<td>Lyrics</td>
+<td>Adds currently recognized lyric text even in Clean mode. It is simpler than the live animated typography.</td>
+</tr>
+<tr>
+<td>Hand skeletons</td>
+<td>Adds tracked skeleton lines even in Clean mode; tracking must be supplying hands.</td>
+</tr>
+<tr>
+<td>Recorded title</td>
+<td>Optional text, up to 80 characters, drawn near the top of the picture.</td>
+</tr>
+<tr>
+<td>Your branding</td>
+<td>Optional text, up to 60 characters, drawn near the lower part of the picture. It is text, not a logo-image uploader.</td>
+</tr>
+<tr>
+<td>Audio for this output</td>
+<td>Music + microphone mix, Music/system only, Microphone only, or Silent video. Choose independently for A and B.</td>
+</tr>
+<tr>
+<td>Show safe-area guide in preview only</td>
+<td>Toggle composition guidance without recording it.</td>
+</tr>
+</tbody></table>
+<p>Some creative framing/overlay settings can be adjusted live; geometry/format and per-output audio-track choices are fixed while a take runs. Confirm everything in the actual output preview before starting. If you burn a menu, lyric or title into a video, it cannot be switched off afterward like an editable layer.</p>
+<h2 id="18-audio-balance-the-saved-music-and-voice">18. AUDIO: balance the saved music and voice</h2><p>This is the recorder&#39;s mix, separate from REACT. “Music” means the main file/demo/program source or the selected SYSTEM source. “Microphone” means the main live mic when MIC is the selected source, or a separately enabled recording microphone while a different source is playing.</p>
+<h3 id="record-music-and-voice-together">Record music and voice together</h3><ol>
+<li>Choose FILE or DEMO as the main rig source.</li>
+<li>In <strong>RECORD → AUDIO</strong>, tap <strong>ENABLE AUDIO</strong> if necessary.</li>
+<li>Choose a Microphone device and tap <strong>ENABLE MICROPHONE</strong>. This extra mic can run alongside the track. Selecting it here does not automatically make it the rig&#39;s main analysis source.</li>
+<li>Start with Music recording gain around 0.7–1× and Microphone recording gain near 1×. Speak at the real performance level; watch for clipping on the mix meter.</li>
+<li>Use headphones. Keep Microphone headphone level at 0 until you actually need to hear yourself.</li>
+<li>Set <strong>Audio for this output</strong> to Music + microphone mix, and enable separate WAV companions if you want to rebalance after the take.</li>
+</ol>
+<p>The main source selector still chooses one analysis source. An extra recording mic does not automatically make your voice drive the same visual analyzer that is currently listening to the track.</p>
+<h3 id="every-audio-control">Every AUDIO control</h3><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / job</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ENABLE AUDIO</td>
+<td>Resumes/initializes the local audio graph. Browsers often need a user gesture before sound/capture can run.</td>
+</tr>
+<tr>
+<td>PLAY DEMO</td>
+<td>Starts the normal built-in demo source for checking levels.</td>
+</tr>
+<tr>
+<td>Music recording gain</td>
+<td>0–2×. Scales recorded music/system audio. 1× is the starting point; 0 is silence for that source.</td>
+</tr>
+<tr>
+<td>Mute music in outputs</td>
+<td>Mutes the music contribution after its isolated-source tap.</td>
+</tr>
+<tr>
+<td>ENABLE MICROPHONE</td>
+<td>Opens the chosen extra mic, or uses the main mic where appropriate. Permission and hardware availability still apply.</td>
+</tr>
+<tr>
+<td>RELEASE EXTRA MIC</td>
+<td>Stops the separately owned recorder mic. It does not turn off a main mic still selected in INPUT.</td>
+</tr>
+<tr>
+<td>Microphone device</td>
+<td>Browser-exposed input selection for the extra recording mic. Choose first, then enable/re-enable to apply it.</td>
+</tr>
+<tr>
+<td>Microphone recording gain</td>
+<td>0–2× for the captured mic contribution.</td>
+</tr>
+<tr>
+<td>Mute microphone in outputs</td>
+<td>Mutes the mic contribution after its isolated-source tap.</td>
+</tr>
+<tr>
+<td>Mute mixed recording audio · visuals keep reacting</td>
+<td>Mutes the combined mix bus. It does not mute isolated music/mic-only output buses or raw WAV companions; use their own mute settings or choose Silent video when that is your intent.</td>
+</tr>
+<tr>
+<td>Audio sync</td>
+<td>−500 to +500 ms. <strong>Positive delays music; negative delays microphone.</strong> This is source-to-source audio alignment, not a general camera/video timing fix.</td>
+</tr>
+<tr>
+<td>Music headphone level</td>
+<td>0–1. Changes music/program monitoring, initially 0.9. It is separate from Music recording gain. Changing program monitoring can also affect analysis of that monitored program path; recheck visual response if you turn it far down.</td>
+</tr>
+<tr>
+<td>Microphone headphone level</td>
+<td>0–1, initially 0. Use headphones before raising it to avoid speaker feedback. Hearing yourself late can be normal monitoring latency.</td>
+</tr>
+<tr>
+<td>Music / mic / mix meters</td>
+<td>Show peaks for the respective buses. Red means reduce gain/check the source. They help balance, but a meter alone does not prove that the chosen output is using that bus.</td>
+</tr>
+</tbody></table>
+<h3 id="what-separate-audio-really-means">What “separate audio” really means</h3><p>A normal video can contain the chosen audio. Optional <strong>music WAV</strong>, <strong>mic WAV</strong> and <strong>mix WAV</strong> are additional files. Music/mic companions are captured before recorder gain/mutes, which is why a muted final video can still have a useful isolated source to remix. Those companions are not untouched hardware recordings: device processing and the main INPUT TRIM may already have affected the input.</p>
+<p>If the device has already mixed music and voice into one input stream, the app cannot pull them apart into genuinely isolated sources. A “music” or “mic” name describes the routing, not AI source separation. A camera microphone is not silently added just because the camera is visible; enable the audio input you want.</p>
+<p>For a truly silent deliverable, choose <strong>Silent video</strong> for that output. If you also want no audio companion files, turn off the separate/mixed WAV options. Muting an output does not turn off a lyric service or stop the visual analyzer from listening.</p>
+<h2 id="19-library-play-organize-and-protect-your-takes">19. LIBRARY: play, organize and protect your takes</h2><p>Everything here is saved in this browser on this device/site. A take saved in Android Chrome will not automatically appear in iPhone Chrome, a private tab, another browser profile or a different site address. There is no account-based media backup in this version.</p>
+<p>Open <strong>RECORD → LIBRARY</strong>, tap a take, and play it. A/B videos, stems, mix WAVs, PNG snapshots and newly finished exports appear as separate items. The file card shows type, duration, size and dimensions when relevant, plus an interrupted status if saving did not finish normally.</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RENAME</td>
+<td>Change the name field, then tap RENAME. Typing without committing the action is not the same as saving the name.</td>
+</tr>
+<tr>
+<td>DOWNLOAD ORIGINAL</td>
+<td>Downloads the stored original with its actual format/extension. It does not secretly convert WebM to MP4.</td>
+</tr>
+<tr>
+<td>SHARE FILE</td>
+<td>Hands the file to the device&#39;s supported share sheet; if file sharing is unavailable, downloads it for manual upload.</td>
+</tr>
+<tr>
+<td>Marker buttons</td>
+<td>Seek to marked moments in the Library player. They are take-relative navigation aids, not an automatic montage.</td>
+</tr>
+<tr>
+<td>USE CURRENT FRAME AS THUMBNAIL</td>
+<td>For a video, play or seek to a frame, then save it as the Library thumbnail.</td>
+</tr>
+<tr>
+<td>DOWNLOAD COVER IMAGE</td>
+<td>Downloads the stored thumbnail as a separate image. Social apps may require choosing their own cover during upload.</td>
+</tr>
+<tr>
+<td>CREATE NEW EXPORT</td>
+<td>Opens the finishing workflow for the chosen range/format/framing/audio options. Creates a new Library item.</td>
+</tr>
+<tr>
+<td>CANCEL EXPORT</td>
+<td>Stops the current conversion job; keeps the original.</td>
+</tr>
+<tr>
+<td>DELETE FROM THIS DEVICE</td>
+<td>Deletes this one item after confirmation. Download a copy first if you need it. There is no in-app trash/undo.</td>
+</tr>
+<tr>
+<td>← LIBRARY</td>
+<td>Returns to the list.</td>
+</tr>
+</tbody></table>
+<p>Browser storage is working storage, not an archive. Download important takes, and check that the downloaded file actually plays. Protect Device Storage is worth requesting, but it cannot prevent you or the browser/OS from clearing site data. The update recovery page deliberately preserves recordings/settings; the browser&#39;s general <strong>Clear site data</strong> command does not make that promise.</p>
+<p>If a take is marked <strong>INTERRUPTED</strong>, download the original before trying to finish it. Saved chunks may be useful, incomplete, or unplayable depending on the interruption/container. The label is an honest status, not a guarantee of repair.</p>
+<h2 id="20-finish-export-and-share">20. Finish, export and share</h2><p>Recording saves the live take. Exporting makes a new trimmed/reframed/converted file from a saved item. The original stays unchanged, so you can make several versions—but each finished version uses more device storage.</p>
+<h3 id="trim-and-export-a-video">Trim and export a video</h3><ol>
+<li>Open the take in LIBRARY and check playback.</li>
+<li>Set <strong>Start · seconds</strong> and <strong>End · seconds</strong> under FINISH &amp; EXPORT. Example: Start 12.0 and End 42.0 makes an approximately 30-second section. End must be after Start and inside the take.</li>
+<li>Pick <strong>MP4 · H.264 + AAC</strong>, <strong>MP4 · silent video</strong>, or <strong>WAV · audio only</strong>. Audio items offer WAV; image snapshots do not go through this video/audio export form.</li>
+<li>Keep recorded dimensions or choose a destination framing preset.</li>
+<li>Choose <strong>Fit · preserve complete picture</strong> or <strong>Fill · crop edges</strong>.</li>
+<li>Set <strong>Audio level</strong>, initially 1×, from 0–2×. Lower it if the mixed file is too loud.</li>
+<li>If usable companion sources exist, optionally enable remixing and set their separate levels/offset.</li>
+<li>Tap <strong>CREATE NEW EXPORT</strong> and keep the tab open until the new Library item appears. Download/share that new item, or cancel and keep the original.</li>
+</ol>
+<h3 id="remix-companions-after-a-take">Remix companions after a take</h3><p>When music/mic companion files from the same take are available, the export form offers <strong>Remix available companion sources instead of recorded audio</strong>. With it enabled, the source WAVs replace the existing recorded audio for that new export.</p>
+<p>Use <strong>Music level</strong> and <strong>Microphone level</strong> from 0–2×. <strong>Microphone offset · seconds</strong> ranges from −0.5 to +0.5; here, <strong>positive delays the mic, negative moves it earlier relative to music</strong>. Notice the difference from the live AUDIO page&#39;s sync sign convention. Test a short section with an obvious clap or spoken consonant before committing a long export.</p>
+<p>If there are no companion files, the form tells you so. You can change the existing mix&#39;s overall level, but you cannot recover an isolated voice/music part that was never saved. Deleting a needed companion removes its usefulness for later remixing. WAV can extract existing audio or make a remix; it does not generate a missing audio source from a silent video.</p>
+<h3 id="fit-versus-fill-after-recording">Fit versus Fill after recording</h3><p><strong>Fit</strong> preserves the whole recorded picture with padding where necessary. <strong>Fill</strong> crops it to fill the target. Both operate on the finished saved frame, including anything burned into it. Reframing cannot invent what was outside the original camera/visual frame, and it cannot turn a burned-in menu or caption into an editable layer. Plan two output shapes at recording time when you need truly independent portrait/landscape compositions.</p>
+<h3 id="mp4-webm-and-wavwhy-you-may-see-more-than-one">MP4, WebM and WAV—why you may see more than one</h3><p>The live recorder uses a supported native format: MP4 if a suitable recorder codec is available, otherwise WebM. A file named .webm really is WebM; renaming it to .mp4 is not conversion. WAV is uncompressed PCM audio and can be much larger than an AAC audio track of the same length.</p>
+<p>The finish/export worker attempts supported local H.264/AAC conversion and can fall back to a bundled local software converter. It does not upload your take to a conversion service. Unsupported/large jobs can fail honestly while leaving the downloadable original intact.</p>
+<table>
+<thead>
+<tr>
+<th>Export limit in this version</th>
+<th>What it means in practice</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Touch/mobile source memory budget: 64 MB</td>
+<td>The source recording plus any companion sources used for remixing must fit that job&#39;s input budget. A very short trim of a huge source still has a huge source to open.</td>
+</tr>
+<tr>
+<td>Desktop source memory budget: 256 MB</td>
+<td>More headroom, not a promise that every browser has suitable codecs or unlimited RAM.</td>
+</tr>
+<tr>
+<td>Software fallback: 64 MB of source files and a five-minute processing timeout</td>
+<td>The conversion job must finish within that time. This is a processing-time limit, not a promise about how long a source clip can be.</td>
+</tr>
+<tr>
+<td>Storage headroom check</td>
+<td>You need room for the new output as well as the original. Trimming does not automatically delete source media.</td>
+</tr>
+</tbody></table>
+<h3 id="how-much-space-should-you-allow">How much space should you allow?</h3><p>These are rough planning figures, not fixed output sizes. Actual codecs, content and the browser can change them. Uncompressed WAV companions can add up surprisingly quickly.</p>
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Approximate storage per minute</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>One 720p/30 video</td>
+<td>About 25 MB of video, plus its audio track.</td>
+</tr>
+<tr>
+<td>One 1080p/30 video</td>
+<td>About 56 MB of video, plus its audio track.</td>
+</tr>
+<tr>
+<td>One 1080p/60 video</td>
+<td>About 112 MB of video, plus its audio track.</td>
+</tr>
+<tr>
+<td>One stereo PCM16 WAV at 48 kHz</td>
+<td>About 11.5 MB. The actual audio-context sample rate can differ.</td>
+</tr>
+<tr>
+<td>Music + mic + mix WAVs together at 48 kHz</td>
+<td>About 34.6 MB, on top of any video files.</td>
+</tr>
+</tbody></table>
+<p>Companion WAVs use 16-bit PCM stereo at the active audio context&#39;s sample rate. Two video outputs also add their own video storage. A minute of 1080p video plus companions can easily exceed a phone&#39;s 64 MB local-export input budget when remixing, even if storage has room for the take. For mobile editing/sharing, try short 15–30-second takes first and verify one export before recording a long performance.</p>
+<p>If finishing fails, download the original and finish on a device/editor that can handle it, or record shorter takes next time. Do not delete the only source file just to make a failed export form look empty.</p>
+<h3 id="hand-it-to-instagram-tiktok-youtube-or-another-app">Hand it to Instagram, TikTok, YouTube or another app</h3><p>Use <strong>SHARE FILE</strong> when your device offers the destination. Installed apps decide whether they accept that type/length/size. If sharing is absent or rejected, download the appropriate original/export, open the destination app&#39;s upload flow, and select the file there. Typical routes are Reels/Stories for Instagram, Create/Upload for TikTok, and Create → Upload video for YouTube; platform wording and requirements can change.</p>
+<p>These presets and share actions do not schedule posts, add platform captions/hashtags, connect social accounts, or start a stream. Always check the destination preview for cropping, overlays, orientation, audio level and cover selection before you publish.</p>
+<h2 id="21-practical-mix-recipes">21. Practical mix recipes</h2><p>The numbers below are suggested starting points, not built-in presets. Save your own result in a bank once it works. Before each recipe, turn off AUTOPILOT/AI DIRECTOR/BEAT JUMP unless the recipe calls for them; other modulation can change what the same dial numbers appear to do.</p>
+<h3 id="a-clean-music-visual-no-camera">A. Clean music visual, no camera</h3><p>Load LIQUID SUN or OUTRUN. Turn CAMERA off, set FEEDBACK around 55–70%, BLOOM 30–50%, EXPOSURE near 1×, and keep GLITCH low. Use BASS › ZOOM around 15–25%, MID › WARP 10–25%, and HIGH › CHROMA 10–20%. Set output Clean with no optional text/skeletons if you want only the art. Record a short test with the real track.</p>
+<h3 id="b-a-person-inside-the-neon">B. A person inside the neon</h3><p>Turn CAMERA on, pick FRONT/REAR intentionally, choose SCREEN and set CAM MIX to 35% to begin. Set EDGE GLOW around 15%, CAM WARP around 5–10%, and CAM TRAILS off. Ease CAM MIX to 50% for the full blend, then toward 75–85% when the person needs to read more clearly. If the whole mix washes out, lower BLOOM/EXPOSURE rather than simply adding more saturation.</p>
+<h3 id="c-camera-reveal-for-a-transition">C. Camera reveal for a transition</h3><p>Build a look around 25–40% CAM MIX. At your chosen moment, move toward 100%. The visual layer and its effects fade out, leaving camera only. Hold that shot, then crossfade back to 50% or lower. Use a clean recorded output and disable optional overlays for a truly bare camera deliverable. Record and review a short pass to judge your pacing.</p>
+<h3 id="d-long-dreamy-tunnels">D. Long, dreamy tunnels</h3><p>Load DMT GATE or HYPERSPACE. Try TIME 0.4–0.7×, THRUST 0.5–1×, FEEDBACK 85–92%, TRAIL ZOOM around +0.005 to +0.015, and a small TRAIL SPIN around ±0.003 to ±0.008. Keep SPIN and WOBBLE low, and leave GLITCH/strobe off. Lower INPUT GAIN or reactivity if the music keeps breaking the calm. Long trails amplify small moves, so let a change settle before adding another.</p>
+<h3 id="e-crisp-beat-driven-geometry">E. Crisp beat-driven geometry</h3><p>Use SONIC MANDALA, CELL DIVISION or a low-feedback KALI VORTEX. Try FEEDBACK 35–60%, BLOOM 20–40%, BASS › ZOOM 25–35%, and BEAT PUNCH on. Use lower SMOOTHING for a snappier release. Keep BEAT STROBE off unless flashes are a deliberate part of the performance. Raise BEAT THRESHOLD if every small fluctuation counts as a kick.</p>
+<h3 id="f-your-voice-over-a-track">F. Your voice over a track</h3><p>Choose FILE/DEMO as the main source. In RECORD → AUDIO, enable an extra mic, use headphones, keep mic monitoring initially at 0, and balance music/voice around normal speech. Choose mixed audio for Output A and enable separate WAVs. Make a ten-second take with a loud sentence and a quiet sentence; listen before doing the full performance. Use the companions to rebalance later rather than trying to fix an overloaded source.</p>
+<h3 id="g-silent-visuals-now-flexible-audio-later">G. Silent visuals now, flexible audio later</h3><p>Choose Silent video for the output. If you want audio available for later remixing, leave separate music/mic WAV capture on. If you want no saved audio files at all, turn companion/mix WAV options off too. The visual can still react to audio; “silent video” describes the file, not whether the analyzer or lyric service is running.</p>
+<h3 id="h-one-performance-portrait-and-landscape">H. One performance, portrait and landscape</h3><p>Set A to 1920 × 1080 and B to 1080 × 1920, both rotation 0° and Render for this shape. Give each its own overlay/audio choices. Enable “Record output B at the same time,” then TEST OUTPUT with the actual effects/camera active. On a phone, start with 720p equivalents—1280 × 720 and 720 × 1280—and 24/30 fps. If the test fails, lower quality or record one shape. Dual output is extra rendering and encoding, not a free duplicate.</p>
+<h3 id="i-hand-conducted-performance-without-visible-camera">I. Hand-conducted performance without visible camera</h3><p>Enable HAND TRACKING, set FACING to FRONT, and check the tracker preview. Set HAND FORCE around 35%. Turn the visible CAMERA layer off if you want only procedural visuals while still tracking. Start with slow open/close and left/right gestures; add pinch after those feel predictable. Disable SHOW SKELETON on the operator display if desired, and separately leave recorded Hand skeletons off. Avoid fist-open bursts if you want no flashes.</p>
+<h3 id="j-a-live-3d-silhouette">J. A live 3D silhouette</h3><p>Enable AI DEPTH with good light. Start FAST depth, LOW/MEDIUM cloud density, CLOUD GAIN around 50%, POINT SIZE near 1× and BASS › BURST around 10–25%. Use modest ORBIT. If the cloud is hard to distinguish from the procedural background, simplify FORM/FX or reduce background brightness first. Lower model/point settings if the phone warms up; rendering more dots does not fix a poor depth estimate.</p>
+<h3 id="k-gentle-hands-free-set">K. Gentle hands-free set</h3><p>Pick one automation approach first: low-rate AUTOPILOT for gradual drift, or AI DIRECTOR around DRIVE 25–40% with a slower CHANGE RATE for song-aware changes. Leave DROP FX, BEAT STROBE and BEAT INVERT off for a less aggressive set. Judge a full quiet-to-loud section before adding more automation. Save a manual recovery look in a bank so you have somewhere dependable to return.</p>
+<h2 id="22-system-performance-offline-use-and-privacy">22. SYSTEM, performance, offline use and privacy</h2><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Range / initial default</th>
+<th>What it does, and how to mix it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="control-hudOp"></a><strong>HUD OPACITY</strong></td>
+<td>30–100%; default 96%</td>
+<td>Changes opacity of the on-screen operator HUD/interface. <strong>Try this:</strong> Lower it if the controls feel too heavy over the art. It does not set the opacity of menus burned into the recorded output.</td>
+</tr>
+<tr>
+<td><a id="control-uiSnd"></a><strong>UI SOUND</strong></td>
+<td>0–100%; default 50%</td>
+<td>Sets the app&#39;s interface click/chime volume. <strong>Try this:</strong> 0% makes the controls quiet. These sounds are excluded from direct internal recordings, but a physical microphone near speakers can still pick them up acoustically.</td>
+</tr>
+<tr>
+<td><a id="control-res"></a><strong>RESOLUTION</strong></td>
+<td>ECO, BALANCED, HIGH, MAX; default HIGH</td>
+<td>Sets the operator-screen rendering level: ECO, BALANCED, HIGH, or MAX. <strong>Try this:</strong> Lower this when the phone gets hot or the live view stutters. It is separate from recording width/height/fps, so also test the actual output before a take.</td>
+</tr>
+<tr>
+<td><a id="control-glass"></a><strong>GLASS BLUR</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Turns frosted panel blur on/off. <strong>Try this:</strong> OFF can ease interface rendering cost on a struggling phone. It changes the menu appearance, not the recorded video&#39;s creative blur effect.</td>
+</tr>
+<tr>
+<td><a id="control-stats"></a><strong>TELEMETRY</strong></td>
+<td>OFF / ON; default OFF</td>
+<td>Shows rendering/audio telemetry on the operator screen. <strong>Try this:</strong> Use it to see whether the rig is struggling and to check what is running. It is not a recording-quality guarantee or a cloud analytics dashboard.</td>
+</tr>
+<tr>
+<td><a id="control-wake"></a><strong>KEEP AWAKE</strong></td>
+<td>OFF / ON; default ON</td>
+<td>Requests that the browser keep the screen awake while the rig is playing. <strong>Try this:</strong> Support varies, and it is not permission to background the app. Recording also requests a screen wake lock where available; keep the tab visible and the phone unlocked.</td>
+</tr>
+</tbody></table>
+<h3 id="app-updates">APP UPDATES</h3><p>Open <strong>SYSTEM → APP UPDATES → LOAD LATEST VERSION</strong> if the app appears unchanged after a release. This takes you to the recovery page. Tap <strong>UPDATE AND OPEN NEUROFLUX</strong> while online. It removes the app&#39;s offline-file cache/service-worker registration, then loads the latest app; it leaves local settings and recorded media stores alone. It blocks when another tab holds an active capture lock. Finish exports first too.</p>
+<p>A normal refresh and a deployed release are different facts: a phone can keep running its older offline shell even after the server is updated. Each browser/device needs its own refresh/update. Do not use general site-data clearing as your first fix if you need recordings stored there.</p>
+<h3 id="a-quality-setting-that-actually-runs-is-the-good-setting">A quality setting that actually runs is the good setting</h3><p>SYSTEM RESOLUTION affects the operator screen. RECORD OUTPUT width/height/fps affects the saved composition. Lowering just the operator setting does not automatically lower recording quality or make a heavy dual-output take pass its test.</p>
+<p>For a comfortable phone starting point, choose ECO or BALANCED operator resolution, one 720p output at 24/30 fps, and moderate detail/effects. Move up after testing. On desktop, 1080p/30 is a sensible starting point, with higher quality only after the configuration passes. 4K recording is blocked on touch/mobile-class devices in this version; some touch-capable desktops can also be classified conservatively.</p>
+<p>If the rig stutters or the phone gets hot, simplify in this order: record one output; lower output resolution/fps; lower operator resolution; reduce high DETAIL and heavy scene choices; lower depth resolution/cloud density/splat density; disable tracking/depth you are not using; turn off GLASS BLUR. High feedback can also make a picture look smeary even when frame rate is healthy, so diagnose motion quality and performance separately.</p>
+<p>A short performance-test pass is not a promise that a phone will stay cool for a long take. The app can warn that recording is running below selected frame rate without changing the settings for you. Stop, choose a lighter setup and test again when sustained capture is struggling.</p>
+<h3 id="keep-a-take-alive">Keep a take alive</h3><p>Keep the app visible, screen unlocked and device powered comfortably. Avoid app switching, calls, notifications that take over the screen, and phone rotation during a serious take. Wake locks help where available but cannot stop every mobile-browser suspension. Capture stops near severe storage pressure and WAV capture stops before its format-size limit. These are protective stops, not permission to ignore available space.</p>
+<h3 id="what-works-offline">What works offline</h3><p>After a successful online load, the app can cache its capture/export assets, including a roughly 31 MB local software-conversion component. Wait for the “available offline” message before relying on it. Loading the page once and immediately losing internet is not the same as finishing that installation.</p>
+<p>Core visuals and local recording/export can work offline once the needed assets are present. Online Gemini prompts, voice and live lyrics still need internet. First-time hand/depth runtime/model downloads need internet; later availability depends on their own browser cache and what was actually loaded. Downloaded external models are not the same cache as the core app, so test your exact offline setup before an event.</p>
+<h3 id="where-your-information-goes">Where your information goes</h3><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>What happens to the data</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Visuals, camera blending and ordinary recording/export</td>
+<td>Processed locally in the browser; takes live in local browser storage until you download/share them.</td>
+</tr>
+<tr>
+<td>Hand/depth models</td>
+<td>Model/runtime files are downloaded when needed; hand/depth inference is local. Ordinary tracking/depth is not a camera-upload service.</td>
+</tr>
+<tr>
+<td>Typed AI instructions</td>
+<td>Prompt and relevant visual/context metadata are sent to the connected Gemini service through the app&#39;s server.</td>
+</tr>
+<tr>
+<td>Voice instructions</td>
+<td>A short captured voice clip is sent for the online instruction request.</td>
+</tr>
+<tr>
+<td>Live lyrics</td>
+<td>Audio is sent to the online transcription service via its live/clip workflow. Muting saved output is not the same as turning this service off.</td>
+</tr>
+<tr>
+<td>Share File / manual social upload</td>
+<td>Your device and the destination app handle the file when you choose to share/upload.</td>
+</tr>
+</tbody></table>
+<p>There is no built-in account library/cloud media backup. Do not treat a private/incognito session as durable recording storage. If you need a keep-forever copy, download and back it up somewhere you control.</p>
+<h2 id="23-when-something-feels-wrong">23. When something feels wrong</h2><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>What to check, in order</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>The app looks like nothing changed after an update</td>
+<td>Finish current work, use the update recovery page in that same browser, and reopen the app. Do this separately on each phone/browser. Avoid clearing all site data if you need local takes.</td>
+</tr>
+<tr>
+<td>CAM MIX 100% still shows the old visual blend</td>
+<td>Confirm the camera preview is live, update the app, and test 100% again. Separately enabled recorded titles/lyrics/skeletons can still overlay a camera-only base.</td>
+</tr>
+<tr>
+<td>Camera is black/unavailable</td>
+<td>Check site camera permission and OS permission, close other apps using it, choose FRONT/REAR deliberately, and use the direct HTTPS app rather than a restrictive embedded viewer.</td>
+</tr>
+<tr>
+<td>Visuals move even though the mic is not working</td>
+<td>You may be on SIM or on the fallback simulated signal. Check the source chip and actual INPUT level/status.</td>
+</tr>
+<tr>
+<td>Mic is allowed but no useful input appears</td>
+<td>Connect/pair the device through the OS, grant mic access, tap SCAN, and select the actual device. Check that another call/recorder is not holding it.</td>
+</tr>
+<tr>
+<td>Bluetooth looks late or high frequencies barely react</td>
+<td>Call-mode audio can be narrow-band and delayed. Try a wired/USB route, then retune REACT. Audio sync adjusts source audio alignment, not every source of visual/video delay.</td>
+</tr>
+<tr>
+<td>SYSTEM audio is missing on a phone</td>
+<td>This version hides it on mobile/touch layouts and unsupported browsers. Use a supported desktop sharing route, a file, or an OS-exposed live input.</td>
+</tr>
+<tr>
+<td>Desktop SYSTEM share produces no audio</td>
+<td>Share again and enable the picker&#39;s audio-sharing option. Some browser/OS/window combinations cannot provide the requested sound.</td>
+</tr>
+<tr>
+<td>Input is too jumpy or too quiet visually</td>
+<td>Check INPUT TRIM/gate, then REACT gain and smoothing. Lower BEAT THRESHOLD for more triggers or raise it for fewer.</td>
+</tr>
+<tr>
+<td>Colors/trails are a white smear</td>
+<td>Lower EXPOSURE and BLOOM; drop FEEDBACK briefly, then bring it back more gently. Check ADD blend, CHROMA and automation too.</td>
+</tr>
+<tr>
+<td>A dial will not stay put</td>
+<td>Disable AUTOPILOT, AI DIRECTOR, BEAT JUMP and unwanted sensor/hand modulation. Preset recall can also still be easing into place.</td>
+</tr>
+<tr>
+<td>FREEZE still has movement</td>
+<td>It holds procedural time; audio, camera, feedback/post effects and gestures can still move. Pause the recorder if you need that period excluded from the take.</td>
+</tr>
+<tr>
+<td>I cannot find a menu tab</td>
+<td>Scroll the horizontal tab rail and the page body separately. On mobile, expand the menu sheet if needed.</td>
+</tr>
+<tr>
+<td>Controls vanished</td>
+<td>Use the reveal control, double-tap the exposed canvas, or H on a keyboard. Check whether HIDE UI is active.</td>
+</tr>
+<tr>
+<td>Recording will not start</td>
+<td>Read the status: storage may not be ready, output may fail its test, an export may be active, another tab may hold a capture lock, or the browser may lack required capture support. Solve the stated condition first.</td>
+</tr>
+<tr>
+<td>I see CHECK/READY before 3–2–1</td>
+<td>The app is testing/preparing. The three-second countdown happens immediately before capture, not necessarily immediately after tapping REC.</td>
+</tr>
+<tr>
+<td>B appears in preview but there is only one video</td>
+<td>Enable “Record output B at the same time” in RECORD. Viewing/editing B is not the enable switch.</td>
+</tr>
+<tr>
+<td>Recording has no sound</td>
+<td>Check the active source, output audio choice, record gains/mutes and actual source presence. SIM is silent; camera video does not automatically imply audio.</td>
+</tr>
+<tr>
+<td>Video is silent but WAV companions have audio</td>
+<td>That is expected when raw companions were enabled: recorder/output mute is downstream of those taps.</td>
+</tr>
+<tr>
+<td>My extra mic does not change the visual</td>
+<td>An extra recording mic is not automatically the main analysis source. INPUT determines what drives the rig.</td>
+</tr>
+<tr>
+<td>Clean output still has words/lines</td>
+<td>Disable recorded Lyrics, Hand skeletons, Recorded title and Branding as well as choosing Clean.</td>
+</tr>
+<tr>
+<td>Full output is not an exact screen copy</td>
+<td>It is a drawn performance overlay, not a browser screenshot. Recorder settings/dialogs are intentionally excluded.</td>
+</tr>
+<tr>
+<td>Landscape file or text is sideways</td>
+<td>Use Output orientation for the shape and leave picture rotation at 0° for upright text. Use 90°/270° only when you want the entire picture sideways. Check the final dimensions readout.</td>
+</tr>
+<tr>
+<td>Export fails on a long take</td>
+<td>The whole source/companions may exceed the device memory budget even if you choose a short trim. Download the original, finish elsewhere, or record shorter/lighter takes next time.</td>
+</tr>
+<tr>
+<td>Another app rejects the file</td>
+<td>Try a genuine MP4 export if the original is WebM, check dimensions/orientation/size/duration, or download and upload manually. Renaming the extension is not conversion.</td>
+</tr>
+<tr>
+<td>A saved take is INTERRUPTED</td>
+<td>Download the original first. Some containers/chunks survive interruption better than others; recoverability is not guaranteed.</td>
+</tr>
+<tr>
+<td>Library is empty on another phone/browser</td>
+<td>Storage is local to the original device/profile/site. Look there and check downloaded files/backups.</td>
+</tr>
+<tr>
+<td>Hand/depth loading fails</td>
+<td>Reconnect for model/runtime downloads, check camera permission and status, lower load, and try again. Browser GPU/CPU/model compatibility varies.</td>
+</tr>
+<tr>
+<td>Gemini prompts/lyrics do nothing</td>
+<td>Use AI → CHECK and read the connection/key status. Verify internet and a real input; local visual/recording features do not require that online service.</td>
+</tr>
+<tr>
+<td>Lyrics are wrong or late</td>
+<td>Improve the source, set the expected language, and check STREAM/CLIP status. Recognized words are not a guaranteed official lyric transcript.</td>
+</tr>
+<tr>
+<td>Phone is hot or frame rate drops</td>
+<td>Lower output load and heavy model/3D/detail settings; keep the app visible. A one-time output test does not certify a long thermal run.</td>
+</tr>
+</tbody></table>
+<h2 id="24-keyboard-shortcuts-and-a-small-glossary">24. Keyboard shortcuts and a small glossary</h2><p>Keyboard shortcuts work after the start screen is dismissed. When a dial, button or text field has focus, its own interaction can take priority. Click the exposed canvas or another neutral area before trying a global shortcut.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Space</td>
+<td>Main source Play/Pause; not recorder Pause.</td>
+</tr>
+<tr>
+<td>Left / Right arrows</td>
+<td>Previous/next engine when focus is not on a control.</td>
+</tr>
+<tr>
+<td>Escape</td>
+<td>Closes the source chooser/menu or opens the menu according to current state. During recording preparation it cancels that preparation/countdown.</td>
+</tr>
+<tr>
+<td>Q / E</td>
+<td>Previous/next menu tab while the menu is open.</td>
+</tr>
+<tr>
+<td>1–9</td>
+<td>Load the nine factory scenes.</td>
+</tr>
+<tr>
+<td>R</td>
+<td>Randomize the visual. <strong>Not Record.</strong></td>
+</tr>
+<tr>
+<td>A</td>
+<td>Toggle AUTOPILOT.</td>
+</tr>
+<tr>
+<td>M</td>
+<td>Toggle/release live microphone-type input; a live system input is also released by this shortcut.</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Hide/show the operator interface.</td>
+</tr>
+<tr>
+<td>/ or I</td>
+<td>Open the typed AI prompt.</td>
+</tr>
+<tr>
+<td>L</td>
+<td>Like the current director/look state.</td>
+</tr>
+<tr>
+<td>K</td>
+<td>Skip the current look.</td>
+</tr>
+<tr>
+<td>Arrow keys on a focused slider/dial</td>
+<td>Increment/decrement that value.</td>
+</tr>
+<tr>
+<td>Enter / Space on a focused switch</td>
+<td>Toggle it.</td>
+</tr>
+<tr>
+<td>Left / Right, Home / End in RECORD&#39;s subtab row</td>
+<td>Move among Record, Output, Audio and Library.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Word</th>
+<th>What we mean here</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Engine / shader core</td>
+<td>The basic procedural world.</td>
+</tr>
+<tr>
+<td>Factory scene / look</td>
+<td>An engine plus a chosen collection of styling values.</td>
+</tr>
+<tr>
+<td>Modulation</td>
+<td>Something such as bass, hands or a director adding movement to a base setting.</td>
+</tr>
+<tr>
+<td>Feedback / trails</td>
+<td>Previous frames fed back into the next image.</td>
+</tr>
+<tr>
+<td>HUD</td>
+<td>On-screen performance information such as name, meters or BPM.</td>
+</tr>
+<tr>
+<td>Operator view</td>
+<td>The app screen you use while performing.</td>
+</tr>
+<tr>
+<td>Output profile</td>
+<td>One saved-picture configuration: shape, fps, overlays, framing and audio choice.</td>
+</tr>
+<tr>
+<td>Take</td>
+<td>One recording session, potentially producing A/B and several audio companions.</td>
+</tr>
+<tr>
+<td>Stem / companion</td>
+<td>An additional isolated source file from the take, before recorder gain/mutes.</td>
+</tr>
+<tr>
+<td>Monitor</td>
+<td>What you hear while working, separate from the saved-output gain choices.</td>
+</tr>
+<tr>
+<td>Fit / Fill</td>
+<td>Preserve the whole picture with padding, or fill the frame by cropping.</td>
+</tr>
+<tr>
+<td>Frame rate / fps</td>
+<td>How many video pictures per second are requested/drawn.</td>
+</tr>
+<tr>
+<td>Resolution</td>
+<td>Pixel dimensions; SYSTEM and recording resolution are separate jobs.</td>
+</tr>
+<tr>
+<td>Key</td>
+<td>A brightness/depth threshold used to choose where camera content replaces the visual.</td>
+</tr>
+<tr>
+<td>Point cloud / splat</td>
+<td>A 3D representation made from many points rather than a normal flat photograph.</td>
+</tr>
+<tr>
+<td>Offline cache</td>
+<td>App files held by the browser for offline use; distinct from the recorded media library.</td>
+</tr>
+</tbody></table>
+<h2 id="25-before-you-keep-a-serious-take">25. Before you keep a serious take</h2><ol>
+<li>Confirm the actual source and the actual camera preview.</li>
+<li>Make a look you can read and turn off automation you do not want.</li>
+<li>Check A/B shape, rotation, final pixel readout, overlays and output audio choice.</li>
+<li>Balance the audio and decide whether to keep companions.</li>
+<li>Test the exact output configuration and make a short real take.</li>
+<li>Play that take back: check framing, sound, sync, text, camera balance and dropped/stuttering motion.</li>
+<li>Keep the app visible and stop/save deliberately.</li>
+<li>Download the original and any important companion files. Keep a backup before deleting local items.</li>
+</ol>
+<p>There is no magic “best” position for every dial. A good mix is a clear idea, a few intentional movements, and a recording setup you have actually checked. Start small, make one change, watch a few beats, and save the moments that work.</p>
+<h2 id="26-control-finder">26. Control finder</h2><p>The names below are the labels used in the app. Use this index, the contents links, or Find in your browser/PDF reader to jump to a control. Some controls appear in more than one place because QUICK pins are shortcuts to their original pages.</p>
+<p><strong>INPUT:</strong> <a href="#control-micTrim">INPUT TRIM</a> · <a href="#control-gate">NOISE GATE</a> · <a href="#control-aec">ECHO CANCEL</a> · <a href="#control-ns">NOISE SUPPRESS</a> · <a href="#control-agc">AUTO LEVEL</a></p>
+<p><strong>FORM:</strong> <a href="#control-cx">DETAIL</a> · <a href="#control-scale">ZOOM</a> · <a href="#control-sym">SYMMETRY</a> · <a href="#control-warp">WARP</a> · <a href="#control-density">DENSITY</a> · <a href="#control-morph">MORPH</a> · <a href="#control-twist">TWIST</a> · <a href="#control-ring">SPECTRUM RING</a></p>
+<p><strong>MOTION:</strong> <a href="#control-speed">TIME</a> · <a href="#control-ox">ORIGIN</a> · <a href="#control-oy">ORIGIN Y</a> · <a href="#control-rotSpd">SPIN</a> · <a href="#control-travel">THRUST</a> · <a href="#control-wobble">WOBBLE</a> · <a href="#control-freeze">FREEZE</a> · <a href="#control-reverse">REVERSE</a> · <a href="#control-autopilot">AUTOPILOT</a> · <a href="#control-autoRate">DRIFT RATE</a></p>
+<p><strong>COLOR:</strong> <a href="#control-pal">PALETTE</a> · <a href="#control-hue">HUE</a> · <a href="#control-hueSpd">HUE DRIFT</a> · <a href="#control-bright">EXPOSURE</a> · <a href="#control-sat">SATURATION</a> · <a href="#control-contrast">CONTRAST</a> · <a href="#control-fbHue">TRAIL HUE</a> · <a href="#control-poster">POSTERIZE</a> · <a href="#control-invert">INVERT</a></p>
+<p><strong>FX:</strong> <a href="#control-fb">FEEDBACK</a> · <a href="#control-fbZoom">TRAIL ZOOM</a> · <a href="#control-fbRot">TRAIL SPIN</a> · <a href="#control-fbWarp">TRAIL WARP</a> · <a href="#control-chroma">CHROMA</a> · <a href="#control-bloom">BLOOM</a> · <a href="#control-glitch">GLITCH</a> · <a href="#control-fish">LENS</a> · <a href="#control-mirror">MIRROR</a> · <a href="#control-swirl">SWIRL</a> · <a href="#control-ripple">RIPPLE</a> · <a href="#control-wave">WAVE</a> · <a href="#control-pixel">PIXELATE</a> · <a href="#control-scan">SCANLINES</a> · <a href="#control-grain">GRAIN</a> · <a href="#control-vig">VIGNETTE</a></p>
+<p><strong>REACT:</strong> <a href="#control-gain">INPUT GAIN</a> · <a href="#control-rBass">BASS › ZOOM</a> · <a href="#control-rMid">MID › WARP</a> · <a href="#control-rHigh">HIGH › CHROMA</a> · <a href="#control-rSpeed">LEVEL › TIME</a> · <a href="#control-beatThr">BEAT THRESHOLD</a> · <a href="#control-smooth">SMOOTHING</a> · <a href="#control-beatKick">BEAT PUNCH</a> · <a href="#control-strobe">BEAT STROBE</a> · <a href="#control-beatInv">BEAT INVERT</a> · <a href="#control-beatJump">BEAT JUMP</a></p>
+<p><strong>CAMERA:</strong> <a href="#control-cam">CAMERA</a> · <a href="#control-camFace">FACING</a> · <a href="#control-camMix">CAM MIX</a> · <a href="#control-camBlend">BLEND</a> · <a href="#control-camKey">KEY LEVEL</a> · <a href="#control-camEdge">EDGE GLOW</a> · <a href="#control-camWarp">CAM WARP</a> · <a href="#control-camMotion">MOTION › PULSE</a> · <a href="#control-camTrails">CAM TRAILS</a></p>
+<p><strong>SENSE:</strong> <a href="#control-motion">MOTION SENSORS</a> · <a href="#control-tiltOrigin">TILT › ORIGIN</a> · <a href="#control-tiltFlow">TILT › FLOW</a> · <a href="#control-gyroSpin">GYRO › SPIN</a> · <a href="#control-shake">SHAKE › PUNCH</a> · <a href="#control-touch">TOUCH FX</a> · <a href="#control-touchMode">TOUCH MODE</a> · <a href="#control-touchAmt">TOUCH FORCE</a> · <a href="#control-compHue">COMPASS › HUE</a> · <a href="#control-lightGlow">LIGHT › GLOW</a></p>
+<p><strong>3D:</strong> <a href="#control-depth">AI DEPTH</a> · <a href="#control-depthRes">DEPTH RES</a> · <a href="#control-cloudRes">CLOUD DENSITY</a> · <a href="#control-cloud">CLOUD GAIN</a> · <a href="#control-ptSize">POINT SIZE</a> · <a href="#control-explode">BASS › BURST</a> · <a href="#control-orbit">ORBIT</a> · <a href="#control-splatGain">SPLAT GAIN</a> · <a href="#control-splatDensity">SPLAT DENSITY</a> · <a href="#control-splatSpin">SPLAT SPIN</a> · <a href="#control-splatFlip">SPLAT FLIP</a></p>
+<p><strong>AI:</strong> <a href="#control-aiDir">AI DIRECTOR</a> · <a href="#control-dirAmt">DRIVE</a> · <a href="#control-dirRate">CHANGE RATE</a> · <a href="#control-dirGem">GEMINI LOOKS</a> · <a href="#control-dirBurst">DROP FX</a> · <a href="#control-hands">HAND TRACKING</a> · <a href="#control-handAmt">HAND FORCE</a> · <a href="#control-handShow">SHOW SKELETON</a> · <a href="#control-handTouch">PINCH FX</a> · <a href="#control-lyrics">LIVE LYRICS</a> · <a href="#control-lyrStyle">TYPE STYLE</a> · <a href="#control-lyrSize">TYPE SIZE</a> · <a href="#control-lyrLang">LANGUAGE</a> · <a href="#control-lyrEng">ENGINE</a></p>
+<p><strong>SYSTEM:</strong> <a href="#control-hudOp">HUD OPACITY</a> · <a href="#control-uiSnd">UI SOUND</a> · <a href="#control-res">RESOLUTION</a> · <a href="#control-glass">GLASS BLUR</a> · <a href="#control-stats">TELEMETRY</a> · <a href="#control-wake">KEEP AWAKE</a></p>
+<p><strong>Recording finder:</strong> Start/Pause/Stop/Markers/Snapshots → chapter 16. A/B, orientation, rotation, clean/minimal/full and safe guides → chapter 17. Gain, mute, monitoring, sync and companions → chapter 18. Playback, rename, cover, deletion and recovery → chapter 19. Trim, MP4/WebM/WAV, remix, fit/fill and sharing → chapter 20.</p>
+<p><strong>About this edition.</strong> Written against the current application&#39;s actual control catalog and recording/export implementation. Practical numeric recipes are suggestions. Browser permissions, codecs, hardware routes, AI/model availability and social-app requirements can differ; the app&#39;s status messages and your short device test are the final check. No physical Android/iPhone performance certification is implied by this guide.</p>
+</main></html>

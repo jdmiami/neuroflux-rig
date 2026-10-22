@@ -7,6 +7,7 @@ const BASE = (process.env.GEMINI_BASE || 'https://generativelanguage.googleapis.
 const list = (v, d) => (v || d).split(',').map(s => s.trim()).filter(Boolean);
 const SCENE_MODELS = list(process.env.GEMINI_MODEL, 'gemini-3.8-flash,gemini-3.5-flash,gemini-3.5-flash-lite');
 const FAST_MODELS = list(process.env.GEMINI_FAST_MODEL, 'gemini-3.5-flash-lite,gemini-3.1-flash-lite,gemini-3.8-flash');
+const GUIDE_MODELS = list(process.env.GEMINI_GUIDE_MODEL, 'gemini-3.8-flash,gemini-3.5-flash,gemini-3.5-flash-lite');
 const LIVE_MODEL = (process.env.GEMINI_LIVE_MODEL || 'gemini-3.5-transcribe-live').trim();
 
 const key = () => (process.env.GEMINI_API_KEY || '').trim();
@@ -137,17 +138,35 @@ module.exports = async (req, res) => {
   const ip = String(req.headers['x-forwarded-for'] || req.socket && req.socket.remoteAddress || '?').split(',')[0].trim();
 
   if (action === 'status') {
-    return send(res, 200, { ok: true, key: keyOK(), models: { scene: WORKS.scene || SCENE_MODELS[0], fast: WORKS.lyrics || FAST_MODELS[0], live: LIVE_MODEL } });
+    return send(res, 200, { ok: true, key: keyOK(), models: { scene: WORKS.scene || SCENE_MODELS[0], fast: WORKS.lyrics || FAST_MODELS[0], live: LIVE_MODEL, guide: GUIDE_MODELS[0] } });
   }
   if (req.method !== 'POST') return send(res, 405, { ok: false, error: 'method' });
   if (!keyOK()) return send(res, 503, { ok: false, error: 'no_key', message: 'Add your Gemini key as GEMINI_API_KEY in Vercel, then redeploy.' });
-  if (limited(ip, action === 'token' ? 'tok' : 'gen', action === 'token' ? 8 : action === 'lyrics' ? 40 : 30)) return send(res, 429, { ok: false, error: 'rate', message: 'Slow down: too many AI requests this minute.' });
+  if (limited(ip, action === 'token' ? 'tok' : action === 'guide' ? 'guide' : 'gen', action === 'token' ? 8 : action === 'guide' ? 12 : action === 'lyrics' ? 40 : 30)) return send(res, 429, { ok: false, error: 'rate', message: 'Slow down: too many AI requests this minute.' });
 
   const catalog = clip(body.catalog, 9000);
   const state = clip(JSON.stringify(body.state || {}), 4000);
   const ctx = clip(JSON.stringify(body.ctx || {}), 1500);
 
   try {
+    if (action === 'guide') {
+      if (typeof body.goal !== 'string' || !body.goal.trim() || body.goal.length > 1200 || Buffer.byteLength(JSON.stringify(body)) > 40000)
+        return send(res, 400, { ok: false, error: 'bad_request', message: 'Describe your Neuroflux goal in 1–1200 characters.' });
+      const controller = new AbortController();
+      res.on?.('close', () => { if (!res.writableEnded) controller.abort(); });
+      try {
+        const { createWalkthrough } = require('../lib/guide.cjs');
+        if (body.knowledgeVersion && body.knowledgeVersion !== require('../lib/guide-index.json').version)
+          return send(res, 409, { ok: false, error: 'guide_version', message: 'Your guide tools are from an older app version. Use SYSTEM → APP UPDATES, then try again.' });
+        const plan = await createWalkthrough({ goal: body.goal.trim(), state: body.state, feedback: body.feedback,
+          completed: body.completed, apiKey: key(), baseURL: BASE, models: GUIDE_MODELS, signal: controller.signal });
+        return send(res, 200, { ok: true, ...plan });
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        return send(res, error.status || 502, { ok: false, error: error.code || 'guide_unavailable',
+          message: 'Gemini could not build a walkthrough right now. Try again, or open the full manual.' });
+      }
+    }
     if (action === 'scene') {
       const prompt = clip(body.prompt, 500).trim();
       const audio = body.audio;

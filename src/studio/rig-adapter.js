@@ -41,6 +41,36 @@ window.NFXRig = {
   },
   selectSource: nn,
   setParam: nt,
+  guideOpen(page) {
+    if (!Le.some(p => p.id === page)) throw new Error('That app page is unavailable.');
+    if (document.body.classList.contains('clean')) $n();
+    // A half-height phone sheet cannot fit both coaching and the real control.
+    if (!qt()) Nt.snap = 'full';
+    Oa(); jt(page);
+  },
+  mountGuide(panel) { Dt.ai.insertBefore(panel, Dt.ai.firstChild); },
+  placeGuideBanner(banner) {
+    const parent = Nt.open ? Lt : document.body;
+    if (banner.parentElement !== parent) {
+      if (Nt.open) parent.insertBefore(banner, It); else parent.appendChild(banner);
+    }
+    banner.classList.toggle('nfx-guide-floating', !Nt.open);
+  },
+  guideState() {
+    const studio = window.NFXStudio;
+    return {
+      controls: Object.fromEntries(De.map(p => [p.id, Be[p.id]])),
+      source: G, outputs: studio?.profiles || [], recording: studio?.settings || {}, audio: studio?.mixer.settings || {},
+      capture: studio?.exporting ? 'exporting' : studio?.session?.status || 'idle',
+      ui: { page: Ct, menuOpen: Nt.open },
+      capabilities: { camera: !!navigator.mediaDevices?.getUserMedia, microphone: !!navigator.mediaDevices?.getUserMedia,
+        systemAudio: !Ae && !!navigator.mediaDevices?.getDisplayMedia, recorder: !!window.MediaRecorder && !!HTMLCanvasElement.prototype.captureStream,
+        secure: isSecureContext, mobile: Ae, webgl: T, audioWorklet: !!F.ctx?.audioWorklet, storage: !!studio?.storageReady },
+      services: { camera: !!(Qn.on && Qn.video?.readyState >= 2), hands: !!To.on, depth: !!oa.on, motion: !!Xn.on, lyrics: !!Ro.on,
+        extraMic: !!studio?.mixer.ownedMic || (G === 'mic' && !!re.stream),
+        outputTestPassed: !!studio?.outputTests.get(studio.testKey()) },
+    };
+  },
   monitor(volume) { if (F.master) F.master.gain.setTargetAtTime(volume, F.ctx.currentTime, 0.01); },
   mountRecording(panel, onVisibility) {
     const entry = { id: 'recording', n: 'RECORD', c: '#45f0ff', d: 'Recording · framing · audio · saved takes' };

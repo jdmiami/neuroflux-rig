@@ -13,6 +13,9 @@ fs.mkdirSync(output, { recursive: true });
 fs.copyFileSync(path.join(root, 'src/update.html'), path.join(output, 'update.html'));
 esbuild.buildSync({ entryPoints: [path.join(root, 'src/studio.js')], bundle: true,
   outfile: path.join(output, 'studio.js'), format: 'iife', target: 'es2022', minify: true });
+esbuild.buildSync({ entryPoints: [path.join(root, 'src/guide.js')], bundle: true,
+  outfile: path.join(output, 'guide.js'), format: 'iife', target: 'es2022', minify: true });
+fs.copyFileSync(path.join(root, 'src/guide/guide.css'), path.join(output, 'guide.css'));
 esbuild.buildSync({ entryPoints: [path.join(root, 'src/studio/export.worker.js')], bundle: true,
   outfile: path.join(output, 'export.worker.js'), format: 'esm', target: 'es2022', minify: true });
 fs.copyFileSync(path.join(root, 'src/studio/studio.css'), path.join(output, 'studio.css'));
@@ -35,9 +38,10 @@ if (!unchanged) {
 const decoded = zlib.gunzipSync(Buffer.concat(chunks.map(p => fs.readFileSync(p))));
 if (!decoded.equals(source)) throw new Error('Browser payload does not match src/app.html');
 console.log(`Built Neuroflux: ${source.length} bytes; ${unchanged ? 'original payload preserved' : 'payload regenerated'}.`);
-const assets = ['/','/index.html','/studio.js','/studio.css','/export.worker.js','/pcm.worklet.js',
+const assets = ['/','/index.html','/studio.js','/studio.css','/guide.js','/guide.css','/guide-index.json','/manual.html','/export.worker.js','/pcm.worklet.js',
   ...chunks.map(p => '/' + path.basename(p)), '/THIRD-PARTY-NOTICES.txt'];
 assets.push(...fs.readdirSync(path.join(output, 'vendor-licenses')).map(name => '/vendor-licenses/' + name));
+assets.push(...fs.readdirSync(path.join(output, 'manual-assets')).map(name => '/manual-assets/' + name));
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const name = path.join(dir, entry.name);
