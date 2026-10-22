@@ -5,7 +5,12 @@ import { RecordingStore } from './studio/storage.js';
 import { CaptureSession, recordingMime } from './studio/capture.js';
 
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms, signal) => new Promise((resolve, reject) => {
+  if (signal?.aborted) return reject(new DOMException('Recording canceled.', 'AbortError'));
+  const cancel = () => { clearTimeout(timer); reject(new DOMException('Recording canceled.', 'AbortError')); };
+  const timer = setTimeout(() => { signal?.removeEventListener('abort', cancel); resolve(); }, ms);
+  signal?.addEventListener('abort', cancel, { once: true });
+});
 const $ = selector => document.querySelector(selector);
 const select = (label, key, values, current, locked = false) => `<label>${label}<select data-field="${key}" ${locked ? 'disabled' : ''}>${Object.entries(values).map(([value, text]) => `<option value="${escape(value)}" ${String(current) === value ? 'selected' : ''}>${escape(text)}</option>`).join('')}</select></label>`;
 const number = (label, key, value, min, max, step = 1, locked = false) => `<label>${label}<input data-field="${key}" type="number" value="${value}" min="${min}" max="${max}" step="${step}" ${locked ? 'disabled' : ''}></label>`;
@@ -44,6 +49,7 @@ class RecordingStudio {
         validateProfile(p);
       });
       if (saved?.settings) Object.assign(this.settings, saved.settings);
+      this.settings.countdown = 3;
       if (saved?.audio) {
         for (const key of ['music', 'mic', 'musicMonitor']) if (Number.isFinite(saved.audio[key]))
           this.mixer.settings[key] = Math.max(0, Math.min(key === 'musicMonitor' ? 1 : 2, saved.audio[key]));
@@ -56,27 +62,38 @@ class RecordingStudio {
     try { localStorage.setItem('nfx.studio.v1', JSON.stringify({ profiles: this.profiles, settings: this.settings, audio: this.mixer.settings })); } catch {}
   }
   mount() {
-    document.body.insertAdjacentHTML('beforeend', `<div id="nfxStudioBar" aria-label="Recording controls">
-      <button data-action="open" aria-expanded="false" aria-controls="nfxStudioPanel">◉ STUDIO</button>
-      <span id="nfxStudioTime" aria-live="off">LOCAL</span><button data-action="pause" hidden aria-label="Pause recording">Ⅱ</button>
-      <button data-action="stop" hidden aria-label="Stop and save recording">■ SAVE</button></div>
-      <section id="nfxStudioPanel" role="dialog" aria-label="Recording Studio" hidden>
-      <header><div><strong>RECORDING STUDIO</strong><span class="nfx-eyebrow">YOUR PICTURE. YOUR TAKE.</span></div>
-      <button data-action="close" aria-label="Close Recording Studio">✕</button></header>
-      <nav role="tablist" aria-label="Studio sections">${['record','output','audio','library'].map(t => `<button role="tab" id="nfx-tab-${t}" aria-controls="nfxStudioBody" data-tab="${t}">${t.toUpperCase()}</button>`).join('')}</nav>
+    let dock = $('#dock');
+    if (!dock) { dock = document.createElement('nav'); dock.id = 'dock'; document.body.appendChild(dock); }
+    dock.classList.add('nfx-has-recording');
+    const controls = document.createElement('div'); controls.id = 'nfxRecordControls';
+    controls.innerHTML = `<button class="dk dk-record" id="btnRecord" data-action="recordToggle" aria-label="Record with 3-second countdown" title="Record · 3-second countdown. Settings in the RECORD menu.">
+      <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle class="nfx-rec-circle" cx="12" cy="12" r="7"/><rect class="nfx-rec-stop" x="6" y="6" width="12" height="12"/></svg>
+      <span id="nfxStudioTime" aria-live="off">REC</span></button>
+      <button class="dk dk-record-pause" data-action="pause" hidden aria-label="Pause recording"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path class="nfx-pause-icon" d="M8 5v14M16 5v14"/><path class="nfx-resume-icon" d="m8 5 11 7-11 7Z"/></svg></button>`;
+    dock.insertBefore(controls, $('#btnMenu'));
+    document.body.insertAdjacentHTML('beforeend', `<section id="nfxStudioPanel" aria-label="Recording settings" hidden>
+      <nav role="tablist" aria-label="Recording sections">${['record','output','audio','library'].map(t => `<button role="tab" id="nfx-tab-${t}" aria-controls="nfxStudioBody" data-tab="${t}">${t.toUpperCase()}</button>`).join('')}</nav>
       <div id="nfxStudioMessage" class="nfx-status" role="status" aria-live="polite">Opening device storage…</div>
       <div id="nfxStudioBody" class="nfx-body" role="tabpanel"></div></section>
-      <div id="nfxStudioCountdown" hidden aria-live="assertive"></div>`);
+      <div id="nfxStudioCountdown" hidden><div class="nfx-countdown-card" role="dialog" aria-label="Recording countdown">
+        <span>RECORDING IN</span><strong id="nfxCountdownNumber" role="status" aria-live="assertive" aria-atomic="true">3</strong>
+        <button data-action="cancelCountdown">CANCEL</button><small>Countdown stays out of your video</small>
+      </div></div>`);
     this.panel = $('#nfxStudioPanel'); this.body = $('#nfxStudioBody');
-    for (const el of [this.panel, $('#nfxStudioBar')]) {
-      el.addEventListener('click', event => this.handleClick(event).catch(error => this.message(error.message)));
+    this.nativeMenu = !!this.rig.mountRecording;
+    if (this.nativeMenu) this.rig.mountRecording(this.panel, visible => this.setVisible(visible));
+    for (const el of [this.panel, controls, $('#nfxStudioCountdown')]) {
+      el.addEventListener('click', event => this.handleClick(event).catch(error => this.reportError(error)));
       el.addEventListener('keydown', event => {
         event.stopPropagation();
-        if (event.key === 'Escape') { if (this.busy) return; this.open(false); }
+        if (event.key === 'Escape') { if (this.starting) this.cancelPreparation(); else this.open(false); }
       });
       el.addEventListener('pointerdown', event => event.stopPropagation());
       el.addEventListener('pointerup', event => event.stopPropagation());
     }
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && this.starting) { event.preventDefault(); event.stopPropagation(); this.cancelPreparation(); }
+    }, true);
     this.panel.querySelector('nav').addEventListener('keydown', event => {
       const tabs = ['record','output','audio','library'], current = tabs.indexOf(this.tab);
       if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
@@ -103,11 +120,27 @@ class RecordingStudio {
   }
   get active() { return !!this.session && ['preparing', 'recording', 'paused', 'saving'].includes(this.session.status); }
   message(text) { $('#nfxStudioMessage').textContent = text; }
+  reportError(error) {
+    this.message(error.message);
+    if (error.name !== 'AbortError') this.open(true);
+    else $('#btnRecord').focus();
+  }
+  setVisible(value) {
+    if (this.opened === value) return;
+    this.opened = value;
+    if (value) this.render();
+    else {
+      this.clearUrls();
+      this.outputs.forEach((o, i) => { if (!this.active || (!this.settings.dual && i === 1)) o.release(); });
+    }
+  }
   open(value = true) {
-    this.opened = value; this.panel.hidden = !value;
-    $('#nfxStudioBar [data-action=open]').setAttribute('aria-expanded', value);
-    if (value) { this.render(); this.panel.querySelector('[data-action=close]').focus(); }
-    else { this.outputs.forEach((o, i) => { if (!this.active || (!this.settings.dual && i === 1)) o.release(); }); $('#nfxStudioBar [data-action=open]').focus(); }
+    if (this.nativeMenu) {
+      if (value) this.rig.openRecording(); else this.rig.closeRecording();
+    } else this.panel.hidden = !value;
+    this.setVisible(value);
+    if (value) this.panel.querySelector('[aria-selected="true"]')?.focus();
+    else $('#btnRecord').focus();
   }
   render() {
     this.clearUrls();
@@ -127,13 +160,13 @@ class RecordingStudio {
   }
   recordView() {
     const s = this.settings, locked = this.active || this.busy || this.exporting;
-    this.body.innerHTML = this.previewMarkup() + `<div class="nfx-row"><button data-action="start" class="nfx-primary" ${locked || !this.storageReady ? 'disabled' : ''}>● RECORD</button>
+    this.body.innerHTML = `<p class="nfx-note">REC in the dock uses your last settings. Every new take begins with 3–2–1.</p><div class="nfx-row"><button data-action="start" class="nfx-primary" ${locked || !this.storageReady ? 'disabled' : ''}>● RECORD · 3–2–1</button>
       <button data-action="test" ${locked ? 'disabled' : ''}>TEST OUTPUT</button><button data-action="snapshot">SNAPSHOT</button></div>
-      <div class="nfx-row"><button data-action="pause" ${!this.session || !['recording','paused'].includes(this.session.status) ? 'disabled' : ''}>${this.session?.status === 'paused' ? 'RESUME' : 'PAUSE'}</button>
+      <div class="nfx-row" ${!this.session?.started ? 'hidden' : ''}><button data-action="pause" ${!this.session || !['recording','paused'].includes(this.session.status) ? 'disabled' : ''}>${this.session?.status === 'paused' ? 'RESUME' : 'PAUSE'}</button>
       <button data-action="stop" ${!this.session || this.session.status === 'saving' ? 'disabled' : ''}>STOP & SAVE</button><button data-action="mark" ${!this.session?.started ? 'disabled' : ''}>MARKER</button></div>
       ${select('Capture', 'settings.kind', { video: 'Video recording', audio: 'Audio only · WAV' }, s.kind, locked)}
-      <div class="nfx-row">${select('Countdown', 'settings.countdown', { 0: 'None', 3: '3 seconds', 5: '5 seconds', 10: '10 seconds' }, s.countdown, locked)}
-      ${number('Stop after seconds · 0 = manual', 'settings.limit', s.limit, 0, 14400, 1, locked)}</div>
+      ${this.previewMarkup()}
+      ${number('Stop after seconds · 0 = manual', 'settings.limit', s.limit, 0, 14400, 1, locked)}
       ${check('Record output B at the same time', 'settings.dual', s.dual, locked || s.kind === 'audio')}
       ${check('Save separate music and microphone WAV files', 'settings.stems', s.stems, locked)}
       ${check('Also save the mixed audio as a WAV file', 'settings.mixed', s.mixed, locked || s.kind === 'audio')}
@@ -199,7 +232,8 @@ class RecordingStudio {
     if (typeof value === 'number' && !Number.isFinite(value)) throw new Error('Enter a valid number.');
     if (scope === 'settings') {
       if (this.active || this.busy) return;
-      if (['countdown', 'limit'].includes(name)) value = Number(value);
+      if (name === 'countdown') return;
+      if (name === 'limit') value = Number(value);
       if (name === 'limit' && (value < 0 || value > 14400)) throw new Error('Choose a duration from 0 to 14400 seconds.');
       this.settings[name] = value; if (name === 'dual' || name === 'kind') this.render();
     }
@@ -233,7 +267,12 @@ class RecordingStudio {
     if (button.dataset.output) { this.current = Number(button.dataset.output); this.render(); return; }
     if (button.dataset.asset) return this.showAsset(button.dataset.asset);
     const action = button.dataset.action;
-    if (action === 'open') this.open(!this.opened);
+    if (action === 'recordToggle') {
+      if (this.starting || this.session?.status === 'preparing') this.cancelPreparation();
+      else if (this.session?.started) await this.stop();
+      else await this.start();
+    }
+    if (action === 'cancelCountdown') this.cancelPreparation();
     if (action === 'close') this.open(false);
     if (action === 'start') await this.start();
     if (action === 'stop') await this.stop();
@@ -293,7 +332,7 @@ class RecordingStudio {
   }
   async start() {
     if (this.active || this.busy || this.starting) return;
-    this.starting = true; this.updateButtons();
+    this.cancelStart = false; this.starting = true; this.updateButtons();
     try {
       if (navigator.locks) {
         const locked = await new Promise((resolve, reject) => {
@@ -317,10 +356,10 @@ class RecordingStudio {
     if (!this.storageReady) throw new Error('Recording storage is not ready.');
     // Resume audio inside this user gesture before countdown or capability awaits.
     await this.mixer.init();
-    if (this.settings.kind !== 'audio' && !await this.testOutputs()) return;
+    if (this.settings.kind !== 'audio' && !await this.testOutputs()) { this.tab = 'output'; this.open(true); return; }
+    if (this.cancelStart) throw new DOMException('Recording canceled.', 'AbortError');
     this.busy = true; this.render();
     try {
-      this.cancelStart = false;
       for (const output of this.selectedOutputs()) output.profile.sourceAspect = innerWidth / innerHeight;
       const session = new CaptureSession(this.store, this.mixer, error => {
         this.message(`Recording interrupted: ${error.message}. Saving available chunks.`);
@@ -329,28 +368,38 @@ class RecordingStudio {
       this.session = session; this.updateButtons();
       await session.prepare(this.settings.kind === 'audio' ? [] : this.selectedOutputs(), { ...this.settings });
       await this.wake();
-      const countdown = $('#nfxStudioCountdown');
-      for (let i = this.settings.countdown; i > 0; i--) {
-        countdown.hidden = false; countdown.textContent = String(i); await sleep(1000);
-        if (this.cancelStart) throw new Error('Countdown canceled. No recording was saved.');
-      }
-      countdown.hidden = true;
       for (const output of this.selectedOutputs()) {
         const blob = await new Promise(resolve => output.canvas.toBlob(resolve, 'image/jpeg', .65));
         const asset = session.recorders.find(r => r.asset.profile?.id === output.profile.id)?.asset;
         if (blob && asset) asset.thumbnail = blob;
       }
-      session.start(); this.busy = false; this.wasHidden = false; this.render();
-      this.message('Recording on this device. You can close Studio and adjust the rig.');
+      if (this.cancelStart) throw new DOMException('Recording canceled.', 'AbortError');
+      const countdown = $('#nfxStudioCountdown');
+      this.countdownController = new AbortController();
+      countdown.hidden = false;
+      countdown.querySelector('button').focus();
+      for (let i = 3; i > 0; i--) {
+        $('#nfxCountdownNumber').textContent = String(i);
+        await sleep(1000, this.countdownController.signal);
+        if (this.cancelStart) throw new DOMException('Recording canceled.', 'AbortError');
+      }
+      countdown.hidden = true; this.countdownController = null;
+      session.start(); this.busy = false; this.wasHidden = false; this.render(); this.open(false);
+      this.message('Recording on this device. Pause or stop with the dock controls; adjust visuals as usual.');
     } catch (error) {
-      $('#nfxStudioCountdown').hidden = true;
+      $('#nfxStudioCountdown').hidden = true; this.countdownController = null;
       if (this.session?.started) await this.session.stop(); else await this.session?.abort();
       this.session = null; this.busy = false; await this.releaseWake(); this.render(); throw error;
     }
   }
+  cancelPreparation() {
+    if (!this.starting && this.session?.status !== 'preparing') return;
+    this.cancelStart = true; this.countdownController?.abort();
+    this.message('Recording canceled. No take will be saved.');
+  }
   async stop() {
     const session = this.session;
-    if (session?.status === 'preparing') { this.cancelStart = true; this.message('Canceling countdown…'); return; }
+    if (session?.status === 'preparing') { this.cancelPreparation(); return; }
     if (!session || this.busy || session.status === 'saving') return;
     this.busy = true; this.updateButtons(); this.message('Saving recording data to this device…');
     try {
@@ -377,10 +426,19 @@ class RecordingStudio {
   }
   updateButtons() {
     const recording = this.session && ['recording','paused'].includes(this.session.status);
-    $('#nfxStudioBar [data-action=pause]').hidden = !recording;
-    $('#nfxStudioBar [data-action=stop]').hidden = !recording && this.session?.status !== 'preparing';
-    $('#nfxStudioBar [data-action=pause]').textContent = this.session?.status === 'paused' ? '▶' : 'Ⅱ';
-    $('#nfxStudioBar [data-action=open]').classList.toggle('nfx-recording', !!recording);
+    const preparing = this.starting || this.session?.status === 'preparing';
+    const saving = this.session?.status === 'saving';
+    const button = $('#btnRecord'), pause = $('#nfxRecordControls [data-action=pause]');
+    pause.hidden = !recording;
+    pause.classList.toggle('nfx-paused', this.session?.status === 'paused');
+    pause.setAttribute('aria-label', this.session?.status === 'paused' ? 'Resume recording' : 'Pause recording');
+    button.classList.toggle('nfx-recording', !!recording);
+    button.classList.toggle('nfx-preparing', !!preparing);
+    button.disabled = saving || this.exporting || !this.storageReady || (this.busy && !preparing && !recording);
+    button.setAttribute('aria-label', recording ? 'Stop and save recording' : preparing ? 'Cancel recording preparation' : 'Record with 3-second countdown');
+    button.title = recording ? 'Stop and save recording' : preparing ? 'Cancel recording preparation' : 'Record · 3-second countdown. Settings in the RECORD menu.';
+    $('#dock').classList.toggle('nfx-capturing', !!recording);
+    if (!this.session?.started) $('#nfxStudioTime').textContent = preparing ? 'READY' : saving ? 'SAVING' : 'REC';
     this.body.querySelectorAll('[data-action=start],[data-action=test]').forEach(el => el.disabled = this.active || this.busy || this.starting || this.exporting || !this.storageReady);
   }
   frame(now) {
@@ -407,7 +465,8 @@ class RecordingStudio {
     this.lastUi = now;
     const session = this.session;
     const bytes = session?.recorders.reduce((n,r) => n + (r.asset?.bytes || 0), 0) || 0;
-    $('#nfxStudioTime').textContent = session?.started ? `${session.status === 'paused' ? 'Ⅱ ' : '● '}${formatTime(session.seconds)} · ${formatBytes(bytes)}` : this.busy ? 'TESTING' : 'LOCAL';
+    $('#nfxStudioTime').textContent = session?.status === 'saving' ? 'SAVE' : session?.started ? formatTime(session.seconds) : this.testing ? 'CHECK' : this.starting ? 'READY' : 'REC';
+    if (session?.started) $('#btnRecord').title = `Stop and save · ${formatTime(session.seconds)} · ${formatBytes(bytes)}`;
     for (const [name, peak] of Object.entries(this.mixer.levels())) {
       const meter = this.body.querySelector(`[data-meter=${name}]`);
       if (meter) { meter.firstChild.style.width = `${Math.min(100, peak * 100)}%`; meter.classList.toggle('nfx-clip', peak >= .98); }

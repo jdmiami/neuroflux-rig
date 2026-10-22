@@ -1,5 +1,6 @@
 // Inserted inside the rig closure by the build. Never exposes keys or AI state.
 const studioTargets = new Map();
+let studioPerformanceTab = 'quick';
 window.NFXRig = {
   ready: () => T && !!v,
   audio() {
@@ -7,28 +8,50 @@ window.NFXRig = {
     return { context: F.ctx, music: F.program, live: F.micGain, kind: G, stream: re.stream };
   },
   state() {
+    if (Ct !== 'recording') studioPerformanceTab = Ct;
+    const tab = Ct === 'recording' ? studioPerformanceTab : Ct;
     const sheet = Lt.getBoundingClientRect();
-    const visible = Array.from(Dt[Ct]?.querySelectorAll('[data-id]') || []).filter(node => {
+    const visible = Array.from(Dt[tab]?.querySelectorAll('[data-id]') || []).filter(node => {
       const r = node.getBoundingClientRect();
       return r.width > 0 && r.height > 0 && r.bottom > sheet.top && r.top < sheet.bottom;
     }).map(node => node.dataset.id);
     const ids = Array.from(new Set(visible));
     const controls = ids.length && Nt.open ? ids.map(id => Ue[id]).filter(Boolean)
-      : Ct === 'quick' ? ze.map(id => Ue[id]).filter(Boolean) : De.filter(p => p.page === Ct);
+      : tab === 'quick' ? ze.map(id => Ue[id]).filter(Boolean) : De.filter(p => p.page === tab);
     return {
       scene: xe[Be.mode][0], palette: Me[Be.pal], bpm: U.bpm,
       bass: U.bass, mid: U.mid, high: U.high, level: U.level,
-      source: G, tab: Ct, menuOpen: Nt.open, hands: To.on ? To.hands : [],
+      source: G, tab, menuOpen: Nt.open, hands: To.on ? To.hands : [],
       lyrics: document.getElementById('lyr').innerText,
       controls: controls.filter(p => !['xy', 'xy2', 'pads'].includes(p.type))
         .map(p => ({ id: p.id, label: p.label, value: Be[p.id], min: p.min, max: p.max,
           text: p.fmt ? p.fmt(Be[p.id]) : String(Be[p.id]) })),
-      tabs: Le.map(p => ({ id: p.id, label: p.n })),
+      tabs: Le.filter(p => p.id !== 'recording').map(p => ({ id: p.id, label: p.n })),
     };
   },
   selectSource: nn,
   setParam: nt,
   monitor(volume) { if (F.master) F.master.gain.setTargetAtTime(volume, F.ctx.currentTime, 0.01); },
+  mountRecording(panel, onVisibility) {
+    const entry = { id: 'recording', n: 'RECORD', c: '#45f0ff', d: 'Recording · framing · audio · saved takes' };
+    Le.splice(1, 0, entry);
+    const button = document.createElement('button');
+    button.className = 'rt'; button.dataset.p = 'recording';
+    button.style.setProperty('--tc', entry.c); button.setAttribute('aria-label', 'Recording menu');
+    button.innerHTML = '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg><span>RECORD</span>';
+    button.addEventListener('click', () => jt('recording'));
+    At.insertBefore(button, At.querySelectorAll('.rt')[1] || null);
+    panel.classList.add('page'); panel.hidden = false;
+    panel.style.setProperty('--acc', entry.c); Dt.recording = panel;
+    It.appendChild(panel);
+    const sync = () => onVisibility(Nt.open && Ct === 'recording');
+    const observer = new MutationObserver(sync);
+    observer.observe(Lt, { attributes: true, attributeFilter: ['aria-hidden', 'class'] });
+    observer.observe(panel, { attributes: true, attributeFilter: ['class'] });
+    sync();
+  },
+  openRecording() { if (document.body.classList.contains('clean')) $n(); jt('recording'); },
+  closeRecording() { if (Ct === 'recording') Kt(); },
   render(id, width, height) {
     if (!T || !M || !v) throw new Error('WebGL visual engine is unavailable.');
     let target = studioTargets.get(id);

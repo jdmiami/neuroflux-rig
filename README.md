@@ -17,9 +17,9 @@ Repository: https://github.com/jdmiami/neuroflux-rig
 
 ## Recording Studio
 
-Open **◉ STUDIO** from the floating recording bar. Studio is entirely local: it does not add streaming, cloud media storage, account connections, or direct publishing.
+Tap **REC** in the existing bottom dock to record with your last settings. Open the app menu and choose **RECORD** for recording settings, framing, audio, and saved takes. The recording tools use the app's native menu sheet; there is no floating Studio toolbar. Everything is local: no streaming, cloud media storage, account connections, or direct publishing.
 
-- **Record:** record/pause/resume/stop, cancelable countdown, duration limit, markers, PNG snapshots, optional second output, and separate music/microphone/mixed WAV files.
+- **Record:** every new take shows a cancelable **3–2–1** after preparation and before capture. Legacy saved “None” preferences cannot disable it. The countdown and recorder settings never appear in the saved picture. While recording, the dock shows a red stop icon and elapsed time, plus Pause/Resume. Tap the red stop control to save. Also supports a duration limit, markers, PNG snapshots, optional second output, and separate music/microphone/mixed WAV files.
 - **Output:** independent A/B compositions; clean, minimal HUD, or full performance control overlay; platform presets for YouTube, TikTok, Reels, Stories, Shorts, square and portrait feed; custom even dimensions; preview-only safe guides; fit/crop/framing; explicit picture rotation; optional lyrics, hand skeletons, title, and branding.
 - **Audio:** recording gains and mutes are independent of visual reactivity. Enable an extra microphone to record voice alongside music. Speaker monitoring for that microphone defaults off; use headphones. Isolated WAV files are captured before output gain/mute, so they remain usable for remixing.
 - **Library:** recordings stay in this browser/device, using OPFS chunks with an IndexedDB fallback. Play, rename, choose a library thumbnail, download, delete, trim, remix available companion sources, and export new files without overwriting originals. Device file sharing falls back to download/manual upload.

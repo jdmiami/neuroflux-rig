@@ -53,7 +53,14 @@ def main():
             }''')
             assert page.evaluate('window.NFXStudio.testOutputs()'), page.locator('#nfxStudioMessage').inner_text()
             print('PASS performance admission for deterministic 24fps dual output')
-            page.evaluate('window.NFXStudio.start()')
+            # A legacy saved/assigned zero cannot bypass the countdown.
+            page.evaluate('()=>{window.NFXStudio.settings.countdown=0;window.capturePromise=window.NFXStudio.start();}')
+            page.wait_for_function('!document.querySelector("#nfxStudioCountdown").hidden')
+            for digit in ['3','2','1']:
+                page.wait_for_function('(digit)=>document.querySelector("#nfxCountdownNumber").textContent===digit',arg=digit)
+                assert page.evaluate('window.NFXStudio.session.status')=='preparing'
+                assert page.evaluate('window.NFXStudio.session.recorders.every(r=>!r.asset.bytes)')
+            page.evaluate('window.capturePromise')
             assert page.evaluate('window.NFXStudio.session.status') == 'recording'
             page.wait_for_timeout(1200)
             page.evaluate('window.NFXStudio.session.pause()');page.wait_for_timeout(400)
@@ -77,6 +84,16 @@ def main():
                         samples=struct.unpack('<'+'h'*(len(payload)//2),payload)
                         assert sum(v*v for v in samples)/len(samples)>10000,'Isolated source unexpectedly silent'
             print('PASS dual recordings, pause/resume, markers, WAV companions, encoded dimensions and A/V sync')
+            # Cancellation is immediate and removes the prepared empty take.
+            count=len(assets)
+            page.evaluate('()=>{window.capturePromise=window.NFXStudio.start().catch(e=>window.captureCancel=e.name);}')
+            page.wait_for_function('!document.querySelector("#nfxStudioCountdown").hidden')
+            page.locator('[data-action=cancelCountdown]').click()
+            page.evaluate('window.capturePromise')
+            assert page.evaluate('window.captureCancel')=='AbortError'
+            assert page.evaluate('window.NFXStudio.store.list().then(a=>a.length)')==count
+            assert page.locator('#nfxStudioCountdown').is_hidden()
+            print('PASS mandatory 3–2–1, zero audio/video before start, and countdown cancellation without empty files')
             # Preview only guides and operator menu state do not alter clean pixels.
             page.evaluate('window.NFXStudio.open(true)')
             first=page.evaluate('window.NFXStudio.outputs[0].canvas.toDataURL()')
