@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#04050b">
+<title>Update Neuroflux</title>
+<style>
+  :root{color-scheme:dark;font-family:ui-monospace,monospace;background:#04050b;color:#dcecff}
+  *{box-sizing:border-box}body{margin:0;min-height:100svh;display:grid;place-items:center;padding:24px}
+  main{width:min(100%,440px);padding:28px;background:#0a1322;border:1px solid #30485c;clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+  small{color:#45f0ff;letter-spacing:.18em}h1{font-size:24px;line-height:1.3;margin:18px 0}
+  p{font-size:13px;line-height:1.7;color:#a9bfd6}button{width:100%;min-height:48px;padding:12px;margin:14px 0;font:inherit;cursor:pointer;color:#45f0ff;background:#123543;border:1px solid #45f0ff}
+  button:disabled{opacity:.6;cursor:wait}button:focus-visible,a:focus-visible{outline:2px solid #45f0ff;outline-offset:4px}a{color:#a9bfd6;font-size:12px}#status{white-space:pre-wrap}
+</style>
+<main>
+  <small>NEUROFLUX · APP UPDATE</small>
+  <h1>Load the latest version</h1>
+  <p>If an update is missing, refresh the app files stored on this device. Your saved recordings and settings stay here.</p>
+  <p>Finish any recording or export in other Neuroflux tabs first.</p>
+  <button id="update">UPDATE AND OPEN NEUROFLUX</button>
+  <p id="status" role="status" aria-live="polite">An internet connection is needed.</p>
+  <a href="/">Back to Neuroflux</a>
+</main>
+<script>
+  const button = document.querySelector('#update'), status = document.querySelector('#status');
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    try {
+      const locks = await navigator.locks?.query?.();
+      if (locks?.held?.some(lock => lock.name === 'neuroflux-capture'))
+        throw new Error('A recording is still active in another tab. Stop and save it, then update.');
+      status.textContent = 'Checking the connection…';
+      // This page is deliberately outside the offline asset list, including in older releases.
+      const response = await fetch('/update.html?check=' + Date.now(), { cache: 'no-store' });
+      if (!response.ok) throw new Error('Could not reach Neuroflux. Check your connection and try again.');
+      status.textContent = 'Refreshing app files. Keeping recordings and settings…';
+      if ('serviceWorker' in navigator) {
+        const scope = new URL('/', location.href).href;
+        for (const registration of await navigator.serviceWorker.getRegistrations())
+          if (registration.scope === scope) await registration.unregister();
+      }
+      if ('caches' in window) for (const key of await caches.keys())
+        if (key.startsWith('neuroflux-local-')) await caches.delete(key);
+      // IndexedDB, OPFS, and localStorage contain user data; leave them intact.
+      location.replace('/?updated=' + Date.now());
+    } catch (error) {
+      status.textContent = error instanceof TypeError ? 'Could not reach Neuroflux. Check your connection and try again.'
+        : error.message || 'Update failed. Check your connection and try again.';
+      button.disabled = false;
+    }
+  });
+</script>
+</html>

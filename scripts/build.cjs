@@ -10,6 +10,7 @@ if (!template.includes('/* NFX_STUDIO_ADAPTER */')) throw new Error('Studio adap
 const source = Buffer.from(template.replace('/* NFX_STUDIO_ADAPTER */', adapter));
 const output = path.join(root, 'public');
 fs.mkdirSync(output, { recursive: true });
+fs.copyFileSync(path.join(root, 'src/update.html'), path.join(output, 'update.html'));
 esbuild.buildSync({ entryPoints: [path.join(root, 'src/studio.js')], bundle: true,
   outfile: path.join(output, 'studio.js'), format: 'iife', target: 'es2022', minify: true });
 esbuild.buildSync({ entryPoints: [path.join(root, 'src/studio/export.worker.js')], bundle: true,

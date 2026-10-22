@@ -1,6 +1,16 @@
 // Inserted inside the rig closure by the build. Never exposes keys or AI state.
 const studioTargets = new Map();
 let studioPerformanceTab = 'quick';
+// Keep recovery in the native system menu, accessible without a floating toolbar.
+const appUpdateCard = Ut(Dt.sys, '<span>APP UPDATES</span>',
+  '<p class="mstat">Get the latest Neuroflux while keeping saved recordings and settings.</p><button class="sbtn act" id="btnAppUpdate">LOAD LATEST VERSION</button>');
+appUpdateCard.querySelector('button').addEventListener('click', () => {
+  const studio = window.NFXStudio;
+  if (studio && (studio.active || studio.starting || studio.exporting || studio.busy)) {
+    st('APP UPDATE', 'FINISH CURRENT TASK'); return;
+  }
+  location.assign('/update.html');
+});
 window.NFXRig = {
   ready: () => T && !!v,
   audio() {

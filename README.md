@@ -6,6 +6,8 @@ Production: https://neuroflux-rig.vercel.app/
 
 Repository: https://github.com/jdmiami/neuroflux-rig
 
+If a device keeps showing an older version after refreshing, open https://neuroflux-rig.vercel.app/update.html and choose **UPDATE AND OPEN NEUROFLUX**. This removes only Neuroflux's offline app cache and service worker; saved recordings (IndexedDB/OPFS) and settings (localStorage) remain. The same link is available under **Menu → SYSTEM → APP UPDATES**. Finish recordings and exports first.
+
 ## Development
 
 - Edit `src/app.html` for the browser application (HTML, CSS, shaders, and JavaScript).
