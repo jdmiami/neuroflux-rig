@@ -15,6 +15,10 @@ Repository: https://github.com/jdmiami/neuroflux-rig
 - `public/index.html` loads and decompresses those chunks. The build injects the renderer adapter, bundles Studio/export JavaScript, copies the local single-thread FFmpeg core and license notices, and generates a versioned offline service worker.
 - For a static preview, run `python -m http.server 8000 --directory public`. AI endpoints require Vercel's function runtime; use `npx vercel dev` for the full local app.
 
+## Camera mix
+
+With the camera enabled, **CAM MIX** runs from **0% visuals**, through the selected camera/visual **BLEND at 50%**, to **100% camera only**. Above 50%, the complete visual composition, including trails, edge glow, and post effects, fades toward the camera feed. Camera crop and front-camera mirroring are preserved. The same renderer supplies the live view and recording outputs. Run `python -u tests/browser_camera_mix.py` for the WebGL pixel regression across all six blend modes and both camera-trail settings.
+
 ## Recording Studio
 
 Tap **REC** in the existing bottom dock to record with your last settings. Open the app menu and choose **RECORD** for recording settings, framing, audio, and saved takes. The recording tools use the app's native menu sheet; there is no floating Studio toolbar. Everything is local: no streaming, cloud media storage, account connections, or direct publishing.
