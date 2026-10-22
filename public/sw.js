@@ -1,0 +1,29 @@
+const CACHE = 'neuroflux-local-50b92a2665c15c23';
+const ASSETS = ["/","/index.html","/studio.js","/studio.css","/export.worker.js","/pcm.worklet.js","/c0.bin","/c1.bin","/c2.bin","/c3.bin","/c4.bin","/THIRD-PARTY-NOTICES.txt","/vendor-licenses/FFmpeg-core-GPL-2.0.txt","/vendor-licenses/FFmpeg-wasm-MIT.txt","/vendor-licenses/Mediabunny-MPL-2.0.txt","/vendor/ffmpeg/classes.js","/vendor/ffmpeg/const.js","/vendor/ffmpeg/errors.js","/vendor/ffmpeg/index.js","/vendor/ffmpeg/types.js","/vendor/ffmpeg/utils.js","/vendor/ffmpeg/worker.js","/vendor/ffmpeg-core/ffmpeg-core.js","/vendor/ffmpeg-core/ffmpeg-core.wasm"];
+self.addEventListener('install', event => {
+  // Do not activate halfway through a take; the next normal navigation gets the update.
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    await Promise.all(ASSETS.map(async path => {
+      const response = await fetch(new Request(path, { cache: 'reload' }));
+      if (!response.ok) throw new Error(`Offline asset failed: ${path}`);
+      await cache.put(path, response);
+    }));
+  })());
+});
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    await self.clients.claim();
+    for (const key of await caches.keys()) if (key.startsWith('neuroflux-local-') && key !== CACHE) await caches.delete(key);
+    for (const client of await self.clients.matchAll()) client.postMessage({ type: 'OFFLINE_READY' });
+  })());
+});
+self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin || event.request.method !== 'GET' || url.pathname.startsWith('/api/')) return;
+  if (!ASSETS.includes(url.pathname)) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    return await cache.match(url.pathname) || fetch(event.request);
+  })());
+});

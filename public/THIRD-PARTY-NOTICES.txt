@@ -1,0 +1,19 @@
+Neuroflux Recording Studio uses these open-source packages:
+
+Mediabunny 1.62.0 — Mozilla Public License 2.0
+Source and license: https://github.com/Vanilagy/mediabunny
+
+@ffmpeg/ffmpeg 0.12.15 — MIT License
+Source and license: https://github.com/ffmpegwasm/ffmpeg.wasm
+
+@ffmpeg/core 0.12.10 — FFmpeg WebAssembly build (GPL components included)
+Core source/build scripts: https://github.com/ffmpegwasm/ffmpeg.wasm/tree/main/packages/core
+FFmpeg source and licensing: https://ffmpeg.org/legal.html
+The bundled single-thread core includes libraries such as x264 under their respective
+licenses. Its corresponding source/build configuration is distributed by the upstream
+project. No media is uploaded for processing; these binaries run on the user's device.
+
+esbuild 0.25.12 — MIT License (build tool only)
+Source and license: https://github.com/evanw/esbuild
+
+License texts for the distributed media libraries are included in vendor-licenses/.

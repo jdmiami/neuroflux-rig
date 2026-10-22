@@ -1,0 +1,31 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio capture fixture</title><link rel="stylesheet" href="/studio.css">
+<style>body{background:#04050b;color:#fff;margin:0;font-family:monospace}#gl{position:fixed;inset:0;width:100%;height:100%}</style>
+<canvas id="gl"></canvas>
+<script>
+// Deterministic GPU-independent visual/audio fixture. Actual rig smoke is separate.
+const context = new AudioContext(), music = context.createGain(), microphone = context.createGain(), silent = context.createGain();
+silent.gain.value = 0; music.gain.value = .12; microphone.gain.value = .08;
+music.connect(silent); microphone.connect(silent); silent.connect(context.destination);
+for (const [node, frequency] of [[music,440],[microphone,660]]) {
+  const oscillator = context.createOscillator(); oscillator.frequency.value = frequency; oscillator.connect(node); oscillator.start();
+}
+const frames = new Map(); window.fixtureMenu = false;
+window.NFXRig = {
+  ready: () => true,
+  audio: () => ({ context, music, live: microphone, kind: 'mic' }),
+  monitor() {}, selectSource() {}, release(id) { frames.delete(id); },
+  render(id,width,height) {
+    if (!frames.has(id)) frames.set(id, document.createElement('canvas'));
+    const canvas = frames.get(id); if (canvas.width !== width || canvas.height !== height) {canvas.width=width;canvas.height=height;}
+    const ctx = canvas.getContext('2d');ctx.fillStyle='#002040';ctx.fillRect(0,0,width,height);
+    ctx.fillStyle='#45f0ff';ctx.fillRect(width*.1,height*.1,width*.3,height*.6);
+    ctx.fillStyle='#ff3dd8';ctx.fillRect(width*.6,height*.2,width*.2,height*.5);
+    return canvas;
+  },
+  state: () => ({scene:'TEST SCENE',palette:'SPECTRA',bpm:120,bass:.3,mid:.4,high:.2,level:.3,
+    tab:'form',menuOpen:fixtureMenu,source:'mic',hands:[],lyrics:'test lyrics',
+    controls:[{id:'warp',label:'WARP',text:'0.5',value:.5,min:0,max:1}],tabs:[{id:'form',label:'FORM'}]})
+};
+function frame(time) { window.NFXStudio?.frame(time); requestAnimationFrame(frame); } requestAnimationFrame(frame);
+</script><script src="/studio.js" defer></script></html>
