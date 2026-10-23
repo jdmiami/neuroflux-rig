@@ -953,23 +953,27 @@ The names below are the labels used in the app. Use this index, the contents lin
 
 ## 27. Camera FX: build a look for the camera itself
 
-Open **CAMERA → CAMERA FX**. This is the place for effects that only change the camera. **VIS FX** styles the synthesizer separately. At 0% CAM MIX you see the visual synthesizer; at 50% you see the selected blend; at 100% you see the camera **with its Camera FX**. Uncheck **CAMERA FX ENABLED** for the untreated camera.
+Open **CAMERA → CAMERA FX**. This is the place for effects that only change the camera. **VIS FX** styles the synthesizer separately. At 0% CAM MIX you see the visual synthesizer; at 50% you see the selected blend; at 100% you see the camera **with its Camera FX**. Tap the **CAMERA FX ON/OFF** power switch for the untreated camera.
 
-Add an effect from the search/category browser. A stack holds up to eight effects. Open its card to change Amount, Count and Wet/dry. **Wet/dry at 0% is the universal neutral setting**. Drag cards, or use UP/DOWN, to change processing order. DUPLICATE makes another editable instance; REMOVE deletes only that effect. UNDO/REDO restores stack edits. CLEAR STACK removes the camera stack, not your recordings or visual settings.
+Tap **+ ADD**, choose a picture tile, and turn the knobs. **QUICK PICKS** gets you started; the family pads and selector open the full collection of 129 effects. The magnifying glass opens search when you need it. A stack holds eight effects, with one expanded at a time. Each effect shows three main knobs chosen for that mode: for example, Kaleidoscope has **SPLITS / ROTATE / MIX**, while Swirl has **BEND / ROTATE / MIX**. **MIX at 0% is the universal neutral setting**. Tap the power icon on an effect to bypass it. The arrows below its name audition related modes while keeping your adjustments.
+
+Drag a knob up or right to increase it; down or left decreases it. Double-click to reset that knob. With keyboard focus, arrow keys change one step, Shift changes ten steps, and Home/End reach the limits. Holding Shift while dragging makes fine adjustments. A complete drag is one undo action, so you can experiment without undoing every tiny movement.
+
+Tap **•••** for move-up/down arrows, Duplicate, Shuffle, Restore, Reset and Remove. Reordering stays within the source-stage rules below. UNDO/REDO restores stack edits. CLEAR removes the camera stack, not your recordings or visual settings. Tap **LOOKS** for picture cards that build a ready-made stack in one tap; then adjust its knobs.
 
 **Face/body deformation is a source stage:** it stays before cloning and tiling so detected face/body positions match the original image. Other effects can be reordered freely. Masks follow geometric transforms, allowing later person/background/face/body targeting.
 
 ### Splits, clones and square puzzles
 
-Camera **Kaleidoscope → Count** means **1–16 image divisions**. One is the original undivided image. Horizontal, vertical, diagonal and quadrant mirrors are separate modes. Choose six divisions, add Swirl around 0.2, then bring in Ripple gently. Turn on Optional autoplay only when you want animation.
+Camera **Kaleidoscope → SPLITS** means **1–16 image divisions**. One is the original undivided image. Horizontal, vertical, diagonal and quadrant mirrors are separate modes. Choose six divisions, add Swirl around 0.2, then bring in Ripple gently. Choose Rotating kaleidoscope with the mode arrows and tap **ANIMATE** when you want rotation.
 
-**Clones repeat the entire picture. Puzzle tiles move different pieces of one picture.** Puzzle modes use square-style cells adapted to the camera aspect ratio. SHUFFLE changes the seed/arrangement. RESTORE puts image fragments back and stops autoplay for that node. FREEZE an arrangement by switching Optional autoplay off; Silence Stop can also hold its motion. Sliding and empty-cell modes are animated visual effects, not a playable puzzle game. Try count 3–6 before making very small tiles.
+**Clones repeat the entire picture. Puzzle tiles move different pieces of one picture.** Puzzle modes use square-style cells adapted to the camera aspect ratio. SHUFFLE changes the seed/arrangement. RESTORE puts image fragments back and stops autoplay for that node. FREEZE an arrangement by switching **ANIMATE** off; Silence Stop can also hold its motion. Sliding and empty-cell modes are animated visual effects, not a playable puzzle game. Try count 3–6 before making very small tiles.
 
-Golden spiral, Fibonacci tiles, golden frames and golden-angle/phyllotaxis copies change the actual picture. **Preview golden-ratio composition guides** displays operator-only guide lines; they do not appear in recordings.
+Golden spiral, Fibonacci tiles, golden frames and golden-angle/phyllotaxis copies change the actual picture. **GUIDES** displays operator-only golden-ratio guide lines; they do not appear in recordings.
 
 ### Position, animation and targeting
 
-Open **Position, animation & targeting** for Center X/Y, Scale, Angle, optional Autoplay, Speed, Audio response, Beat division, History delay, Seed, Tint, Edges and Affect. A setting is useful only in modes that use it; for example, History delay matters for temporal effects. Negative autoplay speeds reverse direction. Audio response adds motion based on the selected source. Beat division ranges from ⅛ to eight beats.
+Tap **TWEAK** to reveal the center pad, extra knobs and compact selectors. Drag the pad to place the effect; CENTER X/Y also let you position it precisely with the keyboard. SIZE and ROTATE frame the picture. Motion-capable modes offer **ANIMATE** and a RATE knob; negative rates reverse direction. REACT adds audio response, and BEAT ranges from ⅛ to eight beats. Temporal modes also show DELAY. VARIATION changes the seed; TINT, EDGES and AFFECT are available below the knobs. The panel keeps irrelevant main controls out of your way. When ANIMATE shows **WAITING**, play real audio or explicitly play SIM: Silence Stop is holding automatic motion.
 
 Edges can clamp, mirror, repeat or turn transparent. Transparent camera areas become black at the camera-only endpoint; mixed modes can reveal the visual behind them. Affect can select All, Person, Background, Face or Body. Selecting a tracked region loads its corresponding local model when the camera is active.
 
@@ -977,7 +981,7 @@ Edges can clamp, mirror, repeat or turn transparent. Transparent camera areas be
 
 Person/background effects download a local segmentation model. Face and body tools use local landmark models. First use needs internet; successful model downloads are cached. The camera frames stay on your device. The model status appears in the camera workspace. Lost tracking does not invent a person or face; the affected tool waits for detection. Use RETRY MODELS after a failed download or initialization.
 
-For Background image, choose a picture in the effect card. The image is local and must be reselected after reload/import. For depth tools, press **ENABLE LOCAL DEPTH ANALYSIS** in the effect card. This starts the existing depth engine with point-cloud display disabled; model loading can take longer than a normal shader effect. Other effects remain usable while it loads.
+For Background image, choose a picture in the effect card. The image is local and must be reselected after reload/import. For depth tools, press **ENABLE DEPTH** in the effect card. This starts the existing depth engine with point-cloud display disabled; model loading can take longer than a normal shader effect. Other effects remain usable while it loads.
 
 Detail adapts on phones by changing internal processing resolution and model update rate. Recording width, height and requested FPS do not silently change. Check the displayed quality and run a short recording test. Temporal effects keep a bounded recent history in memory; removing them or disabling the camera releases that history. They are not a saved video timeline.
 

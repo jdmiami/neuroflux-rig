@@ -19,7 +19,7 @@ If a device keeps showing an older version after refreshing, open https://neurof
 
 ## Independent camera and visual effects
 
-**CAMERA → CAMERA FX** offers 129 camera-only modes in an eight-slot stack: 1–16 kaleidoscope divisions, mirrors, lenses/warps, clones, tunnels, square puzzles, golden-ratio layouts, time/feedback, grading/textures and local person/face/body/depth effects. Cards support per-effect bypass, wet/dry, reordering, undo/redo, optional autoplay and beat response. **VIS FX** treats the synthesizer independently.
+**CAMERA → CAMERA FX** offers 129 camera-only modes in an eight-slot stack: 1–16 kaleidoscope divisions, mirrors, lenses/warps, clones, tunnels, square puzzles, golden-ratio layouts, time/feedback, grading/textures and local person/face/body/depth effects. The visual rack uses picture tiles, family selectors, three native rotary knobs per effect, mode-audition arrows, an XY center pad and a compact Tweak drawer. Knob edits update live and save one undo action per drag. Cards support per-effect bypass, wet/dry, reordering, undo/redo, optional autoplay and beat response. **VIS FX** treats the synthesizer independently.
 
 CAM MIX is **0% visual synthesizer**, **50% selected blend**, **100% camera with Camera FX**. Master Camera FX bypass gives the untreated feed. Live and recorded outputs A/B share camera processing and phase, with independent framing. Camera trails have their own history. Legacy CAM WARP and CAM TRAILS are shortcuts to camera stack nodes.
 
@@ -75,6 +75,7 @@ python -u tests/browser_guide.py
 python -u tests/browser_fx.py
 python -u tests/browser_camera_mix.py
 python -u tests/browser_camera_fx.py
+python -u tests/browser_camera_controls.py
 ```
 
 Browser tests require Python Playwright, Chromium at `/usr/bin/chromium`, and `ffprobe`. The capture test uses deterministic synthetic visual/audio inputs with real MediaRecorder, AudioWorklet, OPFS, worker conversion, and offline caching; encoded files are inspected with ffprobe. It covers dual shapes, pause/resume, companion WAVs, synchronization, trimming/remixing, and actual FFmpeg fallback. A separate software-WebGL smoke test exercises all nine existing shader modes, the Studio, picture rotation, and a mobile viewport. Physical Android/iPhone thermal behavior, hardware microphones/cameras, installed share-sheet destinations, 4K/60 fps, and sustained 30-minute synchronization require device testing before claiming device certification.

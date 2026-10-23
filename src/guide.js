@@ -120,8 +120,8 @@ class WalkthroughGuide {
       const fx=window.NFXCameraFX,action=this.step.action;fx?.selectTab('effects');let selector='#nfxCameraWorkspace [data-tab=effects]';
       if(action.type==='camera_add'&&fx){fx.category=this.cameraEffects.find(e=>e.id===action.key)?.family||'all';fx.filter='';fx.catalogOpen=true;fx.renderStack();selector=`#nfxCameraEffects [data-add="${action.key}"]`;}
       else if(action.type==='camera_enabled')selector='#nfxCameraEffects .nfx-perf-switch';
-      else if(action.type==='camera_set'&&fx){const [index,key]=action.key.split('.'),node=fx.state.nodes[+index];if(node){fx.openId=node.id;fx.renderStack();selector=`#nfxCameraEffects [data-node="${node.id}"] [data-param="${key}"]`;let parent=$(selector)?.closest('details');while(parent){parent.open=true;parent=parent.parentElement?.closest('details');}}}
-      else if(['camera_remove','camera_move'].includes(action.type)&&fx){const node=fx.state.nodes[+action.key];if(node)selector=`#nfxCameraEffects [data-node="${node.id}"]>summary`;}
+      else if(action.type==='camera_set'&&fx){const [index,key]=action.key.split('.'),node=fx.state.nodes[+index];if(node){fx.openId=node.id;fx.catalogOpen=false;fx.renderStack();selector=`#nfxCameraEffects [data-node="${node.id}"] [data-param="${key}"]`;let parent=$(selector)?.closest('details');while(parent){parent.open=true;parent=parent.parentElement?.closest('details');}}}
+      else if(['camera_remove','camera_move'].includes(action.type)&&fx){const node=fx.state.nodes[+action.key];if(node){fx.catalogOpen=false;fx.openId=node.id;fx.renderStack();}if(node)selector=`#nfxCameraEffects [data-node="${node.id}"]>summary`;}
       return {page:'cam',selector};
     }
     if(parts[0]==='motion'){const id={silenceStop:'nfxSilenceStop',threshold:'nfxSilenceThreshold',hold:'nfxSilenceHold'}[this.step.action.key];return {page:'react',selector:id?'#'+id:'#nfxMotionPanel .c-hd'};}
