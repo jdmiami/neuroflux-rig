@@ -17,3 +17,9 @@ esbuild 0.25.12 — MIT License (build tool only)
 Source and license: https://github.com/evanw/esbuild
 
 License texts for the distributed media libraries are included in vendor-licenses/.
+
+@mediapipe/tasks-vision 0.10.32 — Apache License 2.0
+Source: https://github.com/google-ai-edge/mediapipe
+Local vision worker and WASM runtime. Segmentation/face/pose model files are
+fetched on first use from Google's MediaPipe model distribution and cached
+on the user's device. Camera frames are processed locally.

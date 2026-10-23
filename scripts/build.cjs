@@ -11,6 +11,10 @@ const source = Buffer.from(template.replace('/* NFX_STUDIO_ADAPTER */', adapter)
 const output = path.join(root, 'public');
 fs.mkdirSync(output, { recursive: true });
 fs.copyFileSync(path.join(root, 'src/update.html'), path.join(output, 'update.html'));
+esbuild.buildSync({entryPoints:[path.join(root,'src/performance.js')],bundle:true,outfile:path.join(output,'performance.js'),format:'iife',target:'es2022',minify:true});
+esbuild.buildSync({entryPoints:[path.join(root,'src/camera/vision.worker.js')],bundle:true,outfile:path.join(output,'vision.worker.js'),format:'iife',target:'es2022',minify:true});
+fs.copyFileSync(path.join(root,'src/performance/performance.css'),path.join(output,'performance.css'));
+fs.cpSync(path.join(root,'node_modules/@mediapipe/tasks-vision/wasm'),path.join(output,'vendor/vision/wasm'),{recursive:true});
 esbuild.buildSync({ entryPoints: [path.join(root, 'src/studio.js')], bundle: true,
   outfile: path.join(output, 'studio.js'), format: 'iife', target: 'es2022', minify: true });
 esbuild.buildSync({ entryPoints: [path.join(root, 'src/guide.js')], bundle: true,
@@ -38,7 +42,7 @@ if (!unchanged) {
 const decoded = zlib.gunzipSync(Buffer.concat(chunks.map(p => fs.readFileSync(p))));
 if (!decoded.equals(source)) throw new Error('Browser payload does not match src/app.html');
 console.log(`Built Neuroflux: ${source.length} bytes; ${unchanged ? 'original payload preserved' : 'payload regenerated'}.`);
-const assets = ['/','/index.html','/studio.js','/studio.css','/guide.js','/guide.css','/guide-index.json','/manual.html','/export.worker.js','/pcm.worklet.js',
+const assets = ['/','/index.html','/studio.js','/studio.css','/performance.js','/performance.css','/vision.worker.js','/guide.js','/guide.css','/guide-index.json','/manual.html','/export.worker.js','/pcm.worklet.js',
   ...chunks.map(p => '/' + path.basename(p)), '/THIRD-PARTY-NOTICES.txt'];
 assets.push(...fs.readdirSync(path.join(output, 'vendor-licenses')).map(name => '/vendor-licenses/' + name));
 assets.push(...fs.readdirSync(path.join(output, 'manual-assets')).map(name => '/manual-assets/' + name));

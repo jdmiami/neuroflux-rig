@@ -199,7 +199,7 @@ class RecordingStudio {
   }
   audioView() {
     const s = this.mixer.settings;
-    this.body.innerHTML = `<p>Music and live input still drive the visuals when the recording is muted. Use headphones to prevent microphone feedback.</p>
+    this.body.innerHTML = `<p>Recording mutes do not mute the selected reactive source. Silence Stop follows source playback, input trim and music headphone level. Use headphones to prevent microphone feedback.</p>
       <div class="nfx-row"><button data-action="audioInit">ENABLE AUDIO</button><button data-action="demo">PLAY DEMO</button></div>
       <h3>MUSIC / SYSTEM INPUT</h3><div class="nfx-meter" data-meter="music" aria-label="Music peak meter"><i></i></div>
       ${range('Music recording gain', 'audio.music', s.music)}${check('Mute music in outputs', 'audio.musicMuted', s.musicMuted)}
@@ -313,6 +313,7 @@ class RecordingStudio {
   selectedOutputs() { return this.settings.dual ? this.outputs : [this.outputs[0]]; }
   testKey(outputs = this.selectedOutputs()) { return JSON.stringify(outputs.map(o => { const p = o.profile; return [p.width,p.height,p.fps,p.fit,p.rotation]; })); }
   async testOutputs() {
+    if(window.NFXCameraFX?.error)throw new Error('Resolve Camera FX before recording: '+window.NFXCameraFX.error);
     if (this.active || this.busy) return false;
     if (this.exporting) throw new Error('Finish or cancel the export before testing recording quality.');
     const outputs = this.selectedOutputs(); outputs.forEach(o => validateProfile(o.profile));
@@ -354,6 +355,7 @@ class RecordingStudio {
     if (this.active || this.busy) return;
     if (this.exporting) throw new Error('Finish or cancel the export before recording.');
     if (!this.storageReady) throw new Error('Recording storage is not ready.');
+    if(this.settings.kind!=='audio'){const issue=window.NFXCameraFX?.captureReady();if(issue)throw new Error(issue);}
     // Resume audio inside this user gesture before countdown or capability awaits.
     await this.mixer.init();
     if (this.settings.kind !== 'audio' && !await this.testOutputs()) { this.tab = 'output'; this.open(true); return; }

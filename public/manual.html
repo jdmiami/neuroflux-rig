@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Neuroflux manual</title><style>body{margin:0;background:#080d19;color:#dcecff;font:16px/1.65 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:24px}a{color:#45f0ff}h2{border-top:1px solid #30485c;margin-top:48px;padding-top:24px}h1,h2,h3{line-height:1.3}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:12px;border:1px solid #30485c;text-align:left;vertical-align:top}th{background:#123543}td{overflow-wrap:anywhere}figure{display:flex;gap:10px;margin:20px 0}figure div{flex:1;min-width:0}img{width:100%}figcaption{font-size:12px}a[id]{scroll-margin-top:24px}button{padding:10px;background:#123543;color:#45f0ff;border:1px solid #45f0ff;font:inherit}@media(max-width:600px){main{padding:16px}figure{display:block}table{font-size:12px}td,th{padding:7px}}@media print{body{color:#152438;background:white}a{color:#087680}tr{break-inside:avoid}}</style><main><a href="/">← Back to Neuroflux</a><p>Find a control with your browser's Find command. The AI guide links directly to the sections it used.</p><h1 id="neuroflux-the-complete-user-guide">Neuroflux: the complete user guide</h1><p><strong>Make the visuals move. Mix the camera in. Capture a take worth keeping.</strong></p>
 <p>A practical, plain-English manual for the current Neuroflux Visual Rig. Covers the live rig, all 110 core controls, camera mixing, sensors, 3D, AI tools, recording, audio routing, editing, exports and sharing.</p>
-<p><strong>Edition:</strong> 22 October 2026. Based on app revision <code>1f700c0</code>, including the 0–50–100 camera crossfade and the offline-cache update recovery page. The default values in this guide mean a clean first-run setup; your saved settings or a loaded preset can be different.</p>
+<p><strong>Edition:</strong> 23 October 2026. Includes independent Camera FX, Silence Stop, portable whole-app setups, guided walkthroughs and the offline-cache update recovery page. The default values in this guide mean a clean first-run setup; your saved settings or a loaded preset can be different.</p>
 <p><strong>Open the app:</strong> <a href="https://neuroflux-rig.vercel.app/">neuroflux-rig.vercel.app</a>. If a phone acts as though an update never happened, use <a href="https://neuroflux-rig.vercel.app/update.html">Load the latest version</a>, then tap <strong>UPDATE AND OPEN NEUROFLUX</strong>. It refreshes app files while keeping saved recordings and settings. Finish active recordings and exports first.</p>
 <h2 id="1-what-this-app-is-doing">1. What this app is doing</h2><p>Neuroflux is a visual instrument. Pick a source of sound, choose a visual world, then shape how that world reacts. You can play it gently like a moving backdrop or push it like a live VJ performance.</p>
 <p>Think in four layers:</p>
@@ -13,7 +13,7 @@
 <p>That fourth layer matters. What you see while operating the app and what you put in a saved video do not have to be identical. You can keep a menu open while tweaking and still record a clean picture.</p>
 <p>The current app records, exports and hands files to your device&#39;s share sheet. It does <strong>not</strong> broadcast your visuals to RTMP/stream URLs or publish directly to social accounts. Platform presets are framing shortcuts. The word STREAM in the lyrics tool means live speech transcription, not a YouTube/Twitch broadcast.</p>
 <h2 id="2-your-first-good-looking-minute">2. Your first good-looking minute</h2><ol>
-<li>Open Neuroflux in a normal browser tab. If the app asks how to start, choose <strong>DEMO</strong> for real built-in sound or <strong>SILENT</strong> for simulated motion without sound. You can also choose <strong>FILE</strong> or <strong>MIC / BT</strong>.</li>
+<li>Open Neuroflux in a normal browser tab. If the app asks how to start, choose <strong>DEMO</strong> for real built-in sound or <strong>SILENT</strong> to start with motion paused; press Play when you want silent simulated motion. You can also choose <strong>FILE</strong> or <strong>MIC / BT</strong>.</li>
 <li>Open the bottom-right <strong>Menu</strong> button. On a phone the controls rise in a sheet; on a wide screen they sit to the side. The tab strip scrolls sideways, so swipe it to find more pages.</li>
 <li>Open <strong>SCENES</strong> and load a factory scene such as <strong>OUTRUN</strong>, <strong>LIQUID SUN</strong> or <strong>DMT GATE</strong>. This gives you a coordinated starting look.</li>
 <li>Open <strong>FX</strong>. Keep FEEDBACK roughly 60–80% and BLOOM around 30–60% while you get a feel for the image. These are starting suggestions, not hard rules.</li>
@@ -40,7 +40,7 @@
 </tr>
 <tr>
 <td>Large Play/Pause button</td>
-<td>Controls the current source. For a live mic/system source, pausing releases that input. In silent SIM mode, Play starts the demo. It does not pause a recording.</td>
+<td>Controls the current source. For a live mic/system source, pausing releases that input. In silent SIM mode, Play/Pause explicitly runs or pauses the silent simulation. It starts paused. It does not pause a recording.</td>
 </tr>
 <tr>
 <td>Sparkle / AI button</td>
@@ -441,7 +441,7 @@
 <tr>
 <td><a id="control-bright"></a><strong>EXPOSURE</strong></td>
 <td>0–2×; default 1.05×</td>
-<td>Scales the final picture&#39;s brightness/exposure. <strong>Try this:</strong> Start near 1×. If the image looks like a white blob, lower this and BLOOM first. It can affect blended camera footage, but 100% CAM MIX resolves to the ungraded camera feed.</td>
+<td>Scales the final picture&#39;s brightness/exposure. <strong>Try this:</strong> Start near 1×. If the image looks like a white blob, lower this and BLOOM first. This control grades the visual synthesizer track. Use Camera FX → Exposure for the camera itself.</td>
 </tr>
 <tr>
 <td><a id="control-sat"></a><strong>SATURATION</strong></td>
@@ -526,12 +526,12 @@
 <tr>
 <td><a id="control-swirl"></a><strong>SWIRL</strong></td>
 <td>−1 to +1; default 0</td>
-<td>Twists the whole picture around the center, strongest near the middle. Negative and positive turn the twist in opposite directions. <strong>Try this:</strong> Start at ±0.15–0.3 with a 6-SPLIT or 8-SPLIT mirror. 0 is neutral. It can reshape the camera/visual blend, but 100% CAM MIX still resolves to the clear camera feed.</td>
+<td>Twists the whole picture around the center, strongest near the middle. Negative and positive turn the twist in opposite directions. <strong>Try this:</strong> Start at ±0.15–0.3 with a 6-SPLIT or 8-SPLIT mirror. 0 is neutral. This Visual FX control reshapes the synthesizer only. Use CAMERA → CAMERA FX → Swirl for camera-only treatment.</td>
 </tr>
 <tr>
 <td><a id="control-ripple"></a><strong>RIPPLE</strong></td>
 <td>0–100%; default 0%</td>
-<td>Adds moving circular waves to the entire picture, like ripples spreading through a lens. <strong>Try this:</strong> Start at 10–25% with modest feedback. It uses the live post-effect clock, so it can still ripple when procedural time is frozen. It is separate from SENSE → TOUCH MODE → RIPPLE.</td>
+<td>Adds moving circular waves to the entire picture, like ripples spreading through a lens. <strong>Try this:</strong> Start at 10–25% with modest feedback. Silence Stop holds its animation when the selected input becomes quiet. It is separate from SENSE → TOUCH MODE → RIPPLE.</td>
 </tr>
 <tr>
 <td><a id="control-wave"></a><strong>WAVE</strong></td>
@@ -559,8 +559,8 @@
 <td>Darkens the edges so the center feels more prominent. <strong>Try this:</strong> Start low when important content sits near the corners. High values make a strong tunnel/spotlight feel and can hide edge details.</td>
 </tr>
 </tbody></table>
-<p><strong>Try a new kaleidoscope mix:</strong> Choose MIRROR → 6-SPLIT or 8-SPLIT, set SWIRL around 0.2, RIPPLE around 15%, and keep WAVE at 0 until the first two feel right. Then introduce WAVE slowly. Every radial split from 5 through 16 is available; higher counts produce finer repeated wedges. These are whole-picture post effects, and a 100% camera crossfade still bypasses the visual treatment.</p>
-<p><strong>A clean reset for an overloaded look:</strong> lower FEEDBACK to 0 for a moment, set GLITCH and POSTERIZE to 0, set EXPOSURE near 1×, reduce BLOOM, and switch off rhythmic inversion/strobe. Bring only the useful bits back. Camera color/effects can be bypassed at 100% CAM MIX, but that is not a way to reset the procedural controls for when you crossfade back.</p>
+<p><strong>Try a new kaleidoscope mix:</strong> Choose MIRROR → 6-SPLIT or 8-SPLIT, set SWIRL around 0.2, RIPPLE around 15%, and keep WAVE at 0 until the first two feel right. Then introduce WAVE slowly. Every radial split from 5 through 16 is available; higher counts produce finer repeated wedges. These controls now belong to the independent visual synthesizer track. To repeat or warp only the camera, use CAMERA → CAMERA FX. The dedicated camera kaleidoscope has every division from 1 through 16.</p>
+<p><strong>A clean reset for an overloaded look:</strong> lower FEEDBACK to 0 for a moment, set GLITCH and POSTERIZE to 0, set EXPOSURE near 1×, reduce BLOOM, and switch off rhythmic inversion/strobe. Bring only the useful bits back. 100% CAM MIX keeps Camera FX. To see the untreated camera, bypass Camera FX; this does not reset the visual synthesizer.</p>
 <h2 id="11-react-make-it-dance-with-the-right-part-of-the-music">11. REACT: make it dance with the right part of the music</h2><p>The visual analyzer groups sound into bass, mids and highs. You choose which visual behavior each group pushes. Start with a good input level, then set a response you can feel at a comfortable scale. A short test with a clear beat is easier to tune than a noisy room full of competing sounds.</p>
 <table>
 <thead>
@@ -659,7 +659,7 @@
 </tr>
 <tr>
 <td>100%</td>
-<td>Camera-only picture with the usual aspect crop/front-camera mirroring. Visual history, edge glow, 3D additions and grading fade out of that final picture.</td>
+<td>Processed camera-only picture with its dedicated Camera FX and usual crop/front-camera mirroring. Visual-synth effects and history fade out. Bypass Camera FX for the untreated feed.</td>
 </tr>
 </tbody></table>
 <p>The camera-only endpoint does not hide your operating menus on the screen. For an uncluttered <strong>saved</strong> picture, choose <strong>RECORD → OUTPUT → Menu visibility → Clean</strong> and switch off any optional recorded title, branding, lyrics or skeletons you do not want. Those separately selected output overlays can still be drawn over a camera-only base.</p>
@@ -729,7 +729,7 @@
 <tr>
 <td><a id="control-camMix"></a><strong>CAM MIX</strong></td>
 <td>0–100%; default 70%</td>
-<td>The main camera/visual crossfader: 0% is visuals, 50% is the full selected blend, and 100% is camera only. Above 50%, the complete visual/effect picture fades toward the camera. <strong>Try this:</strong> Use 25–40% to introduce the camera, 50% for the strongest selected blend, and 70–90% to bring the person or room forward. At 100%, visual trails, glow and grading fade away; operator menus can still be visible on your screen.</td>
+<td>The main camera/visual crossfader: 0% is visuals, 50% is the full selected blend, and 100% is camera only. Above 50%, the complete visual/effect picture fades toward the camera. <strong>Try this:</strong> Use 25–40% to introduce the camera, 50% for the strongest selected blend, and 70–90% to bring the person or room forward. At 100%, Camera FX stay visible while visual-synth trails and grading fade away; operator menus can still be visible on your screen.</td>
 </tr>
 <tr>
 <td><a id="control-camBlend"></a><strong>BLEND</strong></td>
@@ -748,8 +748,8 @@
 </tr>
 <tr>
 <td><a id="control-camWarp"></a><strong>CAM WARP</strong></td>
-<td>0–100%; default 25%</td>
-<td>Lets changes in camera brightness distort the procedural visual. <strong>Try this:</strong> Point the camera at a textured object and move slightly to see it. Keep low for recognizable faces; increase for melting/warping the visual. The camera-only endpoint stays clear.</td>
+<td>0–100%; default 0%</td>
+<td>A shortcut to the camera-only Local lens effect. Raising it adds/enables that effect in the camera stack; zero bypasses it. It uses one stack slot and stays visible at 100% CAM MIX.</td>
 </tr>
 <tr>
 <td><a id="control-camMotion"></a><strong>MOTION › PULSE</strong></td>
@@ -759,7 +759,7 @@
 <tr>
 <td><a id="control-camTrails"></a><strong>CAM TRAILS</strong></td>
 <td>OFF / ON; default OFF</td>
-<td>Puts the camera into the feedback path so its earlier frames can trail with the visuals. <strong>Try this:</strong> OFF is cleaner for faces. ON can create ghosted silhouettes when FEEDBACK is high. At 100% CAM MIX, the final picture still resolves to camera only.</td>
+<td>Adds/enables Camera trails in the camera-only stack. Turning it off bypasses that node. It uses one stack slot; the visual synthesizer keeps its own separate feedback history.</td>
 </tr>
 </tbody></table>
 <h3 id="a-practical-face-and-visual-mix">A practical face-and-visual mix</h3><p>Use SCREEN, start at 30% CAM MIX, keep EDGE GLOW around 10–20%, and keep CAM WARP low. Move to 50% to see the full artistic blend. If the face is lost in the effects, move toward 75–90% instead of only pushing exposure. Move all the way to 100% for a clean camera reveal; crossfade back to bring the visual world in again.</p>
@@ -1897,4 +1897,638 @@
 <p><strong>SYSTEM:</strong> <a href="#control-hudOp">HUD OPACITY</a> · <a href="#control-uiSnd">UI SOUND</a> · <a href="#control-res">RESOLUTION</a> · <a href="#control-glass">GLASS BLUR</a> · <a href="#control-stats">TELEMETRY</a> · <a href="#control-wake">KEEP AWAKE</a></p>
 <p><strong>Recording finder:</strong> Start/Pause/Stop/Markers/Snapshots → chapter 16. A/B, orientation, rotation, clean/minimal/full and safe guides → chapter 17. Gain, mute, monitoring, sync and companions → chapter 18. Playback, rename, cover, deletion and recovery → chapter 19. Trim, MP4/WebM/WAV, remix, fit/fill and sharing → chapter 20.</p>
 <p><strong>About this edition.</strong> Written against the current application&#39;s actual control catalog and recording/export implementation. Practical numeric recipes are suggestions. Browser permissions, codecs, hardware routes, AI/model availability and social-app requirements can differ; the app&#39;s status messages and your short device test are the final check. No physical Android/iPhone performance certification is implied by this guide.</p>
+<h2 id="27-camera-fx-build-a-look-for-the-camera-itself">27. Camera FX: build a look for the camera itself</h2><p>Open <strong>CAMERA → CAMERA FX</strong>. This is the place for effects that only change the camera. <strong>VIS FX</strong> styles the synthesizer separately. At 0% CAM MIX you see the visual synthesizer; at 50% you see the selected blend; at 100% you see the camera <strong>with its Camera FX</strong>. Uncheck <strong>CAMERA FX ENABLED</strong> for the untreated camera.</p>
+<p>Add an effect from the search/category browser. A stack holds up to eight effects. Open its card to change Amount, Count and Wet/dry. <strong>Wet/dry at 0% is the universal neutral setting</strong>. Drag cards, or use UP/DOWN, to change processing order. DUPLICATE makes another editable instance; REMOVE deletes only that effect. UNDO/REDO restores stack edits. CLEAR STACK removes the camera stack, not your recordings or visual settings.</p>
+<p><strong>Face/body deformation is a source stage:</strong> it stays before cloning and tiling so detected face/body positions match the original image. Other effects can be reordered freely. Masks follow geometric transforms, allowing later person/background/face/body targeting.</p>
+<h3 id="splits-clones-and-square-puzzles">Splits, clones and square puzzles</h3><p>Camera <strong>Kaleidoscope → Count</strong> means <strong>1–16 image divisions</strong>. One is the original undivided image. Horizontal, vertical, diagonal and quadrant mirrors are separate modes. Choose six divisions, add Swirl around 0.2, then bring in Ripple gently. Turn on Optional autoplay only when you want animation.</p>
+<p><strong>Clones repeat the entire picture. Puzzle tiles move different pieces of one picture.</strong> Puzzle modes use square-style cells adapted to the camera aspect ratio. SHUFFLE changes the seed/arrangement. RESTORE puts image fragments back and stops autoplay for that node. FREEZE an arrangement by switching Optional autoplay off; Silence Stop can also hold its motion. Sliding and empty-cell modes are animated visual effects, not a playable puzzle game. Try count 3–6 before making very small tiles.</p>
+<p>Golden spiral, Fibonacci tiles, golden frames and golden-angle/phyllotaxis copies change the actual picture. <strong>Preview golden-ratio composition guides</strong> displays operator-only guide lines; they do not appear in recordings.</p>
+<h3 id="position-animation-and-targeting">Position, animation and targeting</h3><p>Open <strong>Position, animation &amp; targeting</strong> for Center X/Y, Scale, Angle, optional Autoplay, Speed, Audio response, Beat division, History delay, Seed, Tint, Edges and Affect. A setting is useful only in modes that use it; for example, History delay matters for temporal effects. Negative autoplay speeds reverse direction. Audio response adds motion based on the selected source. Beat division ranges from ⅛ to eight beats.</p>
+<p>Edges can clamp, mirror, repeat or turn transparent. Transparent camera areas become black at the camera-only endpoint; mixed modes can reveal the visual behind them. Affect can select All, Person, Background, Face or Body. Selecting a tracked region loads its corresponding local model when the camera is active.</p>
+<h3 id="people-backgrounds-and-depth">People, backgrounds and depth</h3><p>Person/background effects download a local segmentation model. Face and body tools use local landmark models. First use needs internet; successful model downloads are cached. The camera frames stay on your device. The model status appears in the camera workspace. Lost tracking does not invent a person or face; the affected tool waits for detection. Use RETRY MODELS after a failed download or initialization.</p>
+<p>For Background image, choose a picture in the effect card. The image is local and must be reselected after reload/import. For depth tools, press <strong>ENABLE LOCAL DEPTH ANALYSIS</strong> in the effect card. This starts the existing depth engine with point-cloud display disabled; model loading can take longer than a normal shader effect. Other effects remain usable while it loads.</p>
+<p>Detail adapts on phones by changing internal processing resolution and model update rate. Recording width, height and requested FPS do not silently change. Check the displayed quality and run a short recording test. Temporal effects keep a bounded recent history in memory; removing them or disabling the camera releases that history. They are not a saved video timeline.</p>
+<p><strong>LOOKS</strong> contains factory stacks. Choosing a look replaces Camera FX but does not activate the camera or start a recording. The live view and recordings A/B share the stack and animation phase; their framing/orientation can differ.</p>
+<h3 id="complete-camera-fx-catalog">Complete Camera FX catalog</h3><p>Each entry below is a camera-only mode, separate from its similarly named Visual FX control.</p>
+<h3 id="mirrors-amp-kaleidoscopes">Mirrors &amp; kaleidoscopes</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-kaleidoscope"></a><strong>Kaleidoscope</strong></td>
+<td>Camera-only kaleidoscope. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-horizontal-mirror"></a><strong>Horizontal mirror</strong></td>
+<td>Camera-only horizontal mirror. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-vertical-mirror"></a><strong>Vertical mirror</strong></td>
+<td>Camera-only vertical mirror. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-diagonal-mirror"></a><strong>Diagonal mirror</strong></td>
+<td>Camera-only diagonal mirror. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-quadrant-mirror"></a><strong>Quadrant mirror</strong></td>
+<td>Camera-only quadrant mirror. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-alternating-wedges"></a><strong>Alternating wedges</strong></td>
+<td>Camera-only alternating wedges. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-rotating-kaleidoscope"></a><strong>Rotating kaleidoscope</strong></td>
+<td>Camera-only rotating kaleidoscope. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-offset-kaleidoscope"></a><strong>Offset kaleidoscope</strong></td>
+<td>Camera-only offset kaleidoscope. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-radial-repeats"></a><strong>Radial repeats</strong></td>
+<td>Camera-only radial repeats. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+</tbody></table>
+<h3 id="warp-amp-lenses">Warp &amp; lenses</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-swirl"></a><strong>Swirl</strong></td>
+<td>Camera-only swirl. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-twist"></a><strong>Twist</strong></td>
+<td>Camera-only twist. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-fisheye"></a><strong>Fisheye</strong></td>
+<td>Camera-only fisheye. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-barrel"></a><strong>Barrel</strong></td>
+<td>Camera-only barrel. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-pincushion"></a><strong>Pincushion</strong></td>
+<td>Camera-only pincushion. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-bulge"></a><strong>Bulge</strong></td>
+<td>Camera-only bulge. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-pinch"></a><strong>Pinch</strong></td>
+<td>Camera-only pinch. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-stretch"></a><strong>Stretch</strong></td>
+<td>Camera-only stretch. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-perspective"></a><strong>Perspective</strong></td>
+<td>Camera-only perspective. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-waves"></a><strong>Waves</strong></td>
+<td>Camera-only waves. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-ripple"></a><strong>Ripple</strong></td>
+<td>Camera-only ripple. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-liquid"></a><strong>Liquid</strong></td>
+<td>Camera-only liquid. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-wobble"></a><strong>Wobble</strong></td>
+<td>Camera-only wobble. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-local-lens"></a><strong>Local lens</strong></td>
+<td>Camera-only local lens. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+</tbody></table>
+<h3 id="clones-amp-repetition">Clones &amp; repetition</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-square-clones"></a><strong>Square clones</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-brick-clones"></a><strong>Brick clones</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-honeycomb-clones"></a><strong>Honeycomb clones</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-triangle-clones"></a><strong>Triangle clones</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-radial-clones"></a><strong>Radial clones</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-spiral-clones"></a><strong>Spiral clones</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-ghost-copies"></a><strong>Ghost copies</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-zoom-copies"></a><strong>Zoom copies</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-alternating-clones"></a><strong>Alternating clones</strong></td>
+<td>Repeats the complete camera picture. Count controls the number or grid density.</td>
+</tr>
+</tbody></table>
+<h3 id="tunnels">Tunnels</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-circle-tunnel"></a><strong>Circle tunnel</strong></td>
+<td>Camera-only circle tunnel. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-square-tunnel"></a><strong>Square tunnel</strong></td>
+<td>Camera-only square tunnel. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-triangle-tunnel"></a><strong>Triangle tunnel</strong></td>
+<td>Camera-only triangle tunnel. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-polygon-tunnel"></a><strong>Polygon tunnel</strong></td>
+<td>Camera-only polygon tunnel. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-spiral-tunnel"></a><strong>Spiral tunnel</strong></td>
+<td>Camera-only spiral tunnel. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-recursive-zoom"></a><strong>Recursive zoom</strong></td>
+<td>Camera-only recursive zoom. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-mirrored-tunnel"></a><strong>Mirrored tunnel</strong></td>
+<td>Camera-only mirrored tunnel. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-feedback-tunnel"></a><strong>Feedback tunnel</strong></td>
+<td>Camera-only feedback tunnel. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-multiple-tunnels"></a><strong>Multiple tunnels</strong></td>
+<td>Camera-only multiple tunnels. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-tiled-tunnels"></a><strong>Tiled tunnels</strong></td>
+<td>Camera-only tiled tunnels. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+</tbody></table>
+<h3 id="square-puzzles">Square puzzles</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-scramble-tiles"></a><strong>Scramble tiles</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-sliding-tiles"></a><strong>Sliding tiles</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-empty-cell-slide"></a><strong>Empty-cell slide</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-row-shifts"></a><strong>Row shifts</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-column-shifts"></a><strong>Column shifts</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-rotating-tiles"></a><strong>Rotating tiles</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-flipping-tiles"></a><strong>Flipping tiles</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-checker-displacement"></a><strong>Checker displacement</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-staggered-tiles"></a><strong>Staggered tiles</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-tile-rings"></a><strong>Tile rings</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-reassembly"></a><strong>Reassembly</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-square-arrangements"></a><strong>Square arrangements</strong></td>
+<td>Moves separate square pieces of the camera picture; Shuffle changes the arrangement and Restore puts it back.</td>
+</tr>
+</tbody></table>
+<h3 id="golden-ratio-amp-geometry">Golden ratio &amp; geometry</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-golden-spiral"></a><strong>Golden spiral</strong></td>
+<td>Camera-only golden spiral. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-fibonacci-tiles"></a><strong>Fibonacci tiles</strong></td>
+<td>Camera-only fibonacci tiles. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-golden-frames"></a><strong>Golden frames</strong></td>
+<td>Camera-only golden frames. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-golden-angle-clones"></a><strong>Golden-angle clones</strong></td>
+<td>Camera-only golden-angle clones. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-phyllotaxis"></a><strong>Phyllotaxis</strong></td>
+<td>Camera-only phyllotaxis. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-polar-wrap"></a><strong>Polar wrap</strong></td>
+<td>Camera-only polar wrap. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-concentric-rings"></a><strong>Concentric rings</strong></td>
+<td>Camera-only concentric rings. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-triangle-mosaic"></a><strong>Triangle mosaic</strong></td>
+<td>Camera-only triangle mosaic. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-hexagon-mosaic"></a><strong>Hexagon mosaic</strong></td>
+<td>Camera-only hexagon mosaic. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-diamond-tiles"></a><strong>Diamond tiles</strong></td>
+<td>Camera-only diamond tiles. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+</tbody></table>
+<h3 id="time-amp-feedback">Time &amp; feedback</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-camera-trails"></a><strong>Camera trails</strong></td>
+<td>Camera-only camera trails. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-delayed-echoes"></a><strong>Delayed echoes</strong></td>
+<td>Camera-only delayed echoes. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-frame-hold"></a><strong>Frame hold</strong></td>
+<td>Camera-only frame hold. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-stutter"></a><strong>Stutter</strong></td>
+<td>Camera-only stutter. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-frame-stepping"></a><strong>Frame stepping</strong></td>
+<td>Camera-only frame stepping. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-slit-scan"></a><strong>Slit-scan</strong></td>
+<td>Camera-only slit-scan. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-time-tiles"></a><strong>Time tiles</strong></td>
+<td>Camera-only time tiles. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-temporal-bands"></a><strong>Temporal bands</strong></td>
+<td>Camera-only temporal bands. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-reverse-loop"></a><strong>Reverse loop</strong></td>
+<td>Camera-only reverse loop. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-boomerang"></a><strong>Boomerang</strong></td>
+<td>Camera-only boomerang. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+</tbody></table>
+<h3 id="color-amp-light">Color &amp; light</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-exposure"></a><strong>Exposure</strong></td>
+<td>Camera-only exposure. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-contrast"></a><strong>Contrast</strong></td>
+<td>Camera-only contrast. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-saturation"></a><strong>Saturation</strong></td>
+<td>Camera-only saturation. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-hue"></a><strong>Hue</strong></td>
+<td>Camera-only hue. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-temperature-tint"></a><strong>Temperature &amp; tint</strong></td>
+<td>Camera-only temperature &amp; tint. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-monochrome"></a><strong>Monochrome</strong></td>
+<td>Camera-only monochrome. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-duotone"></a><strong>Duotone</strong></td>
+<td>Camera-only duotone. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-gradient-map"></a><strong>Gradient map</strong></td>
+<td>Camera-only gradient map. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-thermal-color"></a><strong>Thermal color</strong></td>
+<td>Camera-only thermal color. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-invert"></a><strong>Invert</strong></td>
+<td>Camera-only invert. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-solarize"></a><strong>Solarize</strong></td>
+<td>Camera-only solarize. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-posterize"></a><strong>Posterize</strong></td>
+<td>Camera-only posterize. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-threshold"></a><strong>Threshold</strong></td>
+<td>Camera-only threshold. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-channel-isolate"></a><strong>Channel isolate</strong></td>
+<td>Camera-only channel isolate. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-rgb-separation"></a><strong>RGB separation</strong></td>
+<td>Camera-only rgb separation. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-bloom"></a><strong>Bloom</strong></td>
+<td>Camera-only bloom. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-vignette"></a><strong>Vignette</strong></td>
+<td>Camera-only vignette. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+</tbody></table>
+<h3 id="texture-amp-stylization">Texture &amp; stylization</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-pixelate"></a><strong>Pixelate</strong></td>
+<td>Camera-only pixelate. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-mosaic"></a><strong>Mosaic</strong></td>
+<td>Camera-only mosaic. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-dither"></a><strong>Dither</strong></td>
+<td>Camera-only dither. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-halftone"></a><strong>Halftone</strong></td>
+<td>Camera-only halftone. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-edge-outlines"></a><strong>Edge outlines</strong></td>
+<td>Camera-only edge outlines. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-neon-edges"></a><strong>Neon edges</strong></td>
+<td>Camera-only neon edges. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-cartoon"></a><strong>Cartoon</strong></td>
+<td>Camera-only cartoon. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-scanlines"></a><strong>Scanlines</strong></td>
+<td>Camera-only scanlines. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-grain"></a><strong>Grain</strong></td>
+<td>Camera-only grain. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-horizontal-tear"></a><strong>Horizontal tear</strong></td>
+<td>Camera-only horizontal tear. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-block-displacement"></a><strong>Block displacement</strong></td>
+<td>Camera-only block displacement. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-channel-jitter"></a><strong>Channel jitter</strong></td>
+<td>Camera-only channel jitter. Amount controls strength; autoplay and beat response are optional.</td>
+</tr>
+</tbody></table>
+<h3 id="person-amp-background">Person &amp; background</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-person-cutout"></a><strong>Person cutout</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-background-blur"></a><strong>Background blur</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-background-color"></a><strong>Background color</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-background-image"></a><strong>Background image</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-background-fx"></a><strong>Background FX</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-person-fx"></a><strong>Person FX</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-silhouette"></a><strong>Silhouette</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-person-glow"></a><strong>Person glow</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-subject-echoes"></a><strong>Subject echoes</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-subject-trails"></a><strong>Subject trails</strong></td>
+<td>Uses a local person mask to separate the subject from the background.</td>
+</tr>
+</tbody></table>
+<h3 id="face-amp-body">Face &amp; body</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-face-lens"></a><strong>Face lens</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-face-bulge"></a><strong>Face bulge</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-face-pinch"></a><strong>Face pinch</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-face-pixelate"></a><strong>Face pixelate</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-face-color"></a><strong>Face color</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-face-echoes"></a><strong>Face echoes</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-body-silhouette"></a><strong>Body silhouette</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-pose-outlines"></a><strong>Pose outlines</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-body-distortion"></a><strong>Body distortion</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-body-trails"></a><strong>Body trails</strong></td>
+<td>Follows a locally detected face or body. Tracking remains live during silence.</td>
+</tr>
+</tbody></table>
+<h3 id="depth">Depth</h3><table>
+<thead>
+<tr>
+<th>Camera effect</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a id="camera-effect-depth-color"></a><strong>Depth color</strong></td>
+<td>Uses locally estimated camera depth; first use needs a model download.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-depth-contours"></a><strong>Depth contours</strong></td>
+<td>Uses locally estimated camera depth; first use needs a model download.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-depth-blur"></a><strong>Depth blur</strong></td>
+<td>Uses locally estimated camera depth; first use needs a model download.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-depth-slices"></a><strong>Depth slices</strong></td>
+<td>Uses locally estimated camera depth; first use needs a model download.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-depth-displacement"></a><strong>Depth displacement</strong></td>
+<td>Uses locally estimated camera depth; first use needs a model download.</td>
+</tr>
+<tr>
+<td><a id="camera-effect-depth-parallax"></a><strong>Depth parallax</strong></td>
+<td>Uses locally estimated camera depth; first use needs a model download.</td>
+</tr>
+</tbody></table>
+<h2 id="28-silence-stop-no-sound-no-automatic-motion">28. Silence Stop: no sound, no automatic motion</h2><p>Open <strong>REACT → SILENCE &amp; MOTION</strong>. <strong>SILENCE STOP starts ON</strong>, and silent simulation starts paused. Paused music or a quiet selected microphone no longer brings in a fake beat automatically.</p>
+<p>When the selected source becomes quiet, Silence Stop holds procedural movement, Visual FX animation, feedback advancement, autopilot/director changes and Camera FX animation. <strong>Your camera stays live.</strong> Face/body tracking continues following real people so camera effects remain aligned. Recording audio, video timing, countdowns, menus and manual changes keep working. Sound resumes motion from its held position instead of jumping through the silence.</p>
+<p>Use Silence threshold to decide how quiet is quiet. The default closing threshold is −48 dBFS, with a 6 dB margin for reopening; Quiet hold defaults to 300 ms. Increase the hold if short musical gaps make motion stop too often. Lower the threshold if quiet passages stop unexpectedly. Raise it if room hiss keeps the microphone reacting. Explicit playback pause and a zero music headphone level stop motion promptly. Recording-only gains and output mutes remain independent of the selected reactive source.</p>
+<p><strong>PLAY SILENT SIMULATION</strong> deliberately runs the synthetic 120 BPM signal without audible music. PAUSE SILENT SIMULATION stops it. The dock&#39;s Play/Pause does the same when SIM is selected. Turning Silence Stop off allows autonomous motion with quiet real inputs; it does not secretly restart paused SIM. A new app session returns to Silence Stop ON and SIM paused.</p>
+<h2 id="29-whole-app-setups-save-download-and-import">29. Whole-app setups: save, download and import</h2><p>Open <strong>SCENES → WHOLE-APP SETUPS</strong>. Enter a name and press SAVE AS. This stores the rig controls, camera stack, automation, motion preferences, scene memory slots, pinned controls, recording outputs A/B and mixer settings together. Existing scene memory banks still store smaller visual looks.</p>
+<p>Choose a saved setup to LOAD, RENAME, DUPLICATE, DELETE or DOWNLOAD. Enter a new unused name for Rename/Duplicate. Download without selecting a saved setup captures the current settings. Files end in <strong>.neuroflux.json</strong> and contain settings, not source media or recordings.</p>
+<p>IMPORT opens your file picker. Review the summary and press <strong>APPLY THIS SETUP</strong>. Supported files are at most 1 MiB. Invalid files and unsupported versions are rejected before they change settings. Finish recording/export before loading, since a setup may change locked recording formats. You can still save/download settings during a take.</p>
+<p>Reselect audio, background pictures and 3D source files separately. Files do not include camera frames, recordings, passwords, API keys, transcripts, device permissions or active walkthrough sessions. Import does not start recording, enable the camera/microphone, request AI guidance or turn walkthrough mode on. Microphone speaker monitoring stays off until you explicitly enable it. If application fails, the previous settings are restored.</p>
+<p>Local setups live in this browser/device. Download important configurations so you can move them elsewhere. Deleting a saved setup never deletes recordings.</p>
 </main></html>

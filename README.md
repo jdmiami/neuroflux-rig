@@ -17,13 +17,21 @@ If a device keeps showing an older version after refreshing, open https://neurof
 - `public/index.html` loads and decompresses those chunks. The build injects the renderer adapter, bundles Studio/export JavaScript, copies the local single-thread FFmpeg core and license notices, and generates a versioned offline service worker.
 - For a static preview, run `python -m http.server 8000 --directory public`. AI endpoints require Vercel's function runtime; use `npx vercel dev` for the full local app.
 
-## Camera mix
+## Independent camera and visual effects
 
-With the camera enabled, **CAM MIX** runs from **0% visuals**, through the selected camera/visual **BLEND at 50%**, to **100% camera only**. Above 50%, the complete visual composition, including trails, edge glow, and post effects, fades toward the camera feed. Camera crop and front-camera mirroring are preserved. The same renderer supplies the live view and recording outputs. Run `python -u tests/browser_camera_mix.py` for the WebGL pixel regression across all six blend modes and both camera-trail settings.
+**CAMERA → CAMERA FX** offers 129 camera-only modes in an eight-slot stack: 1–16 kaleidoscope divisions, mirrors, lenses/warps, clones, tunnels, square puzzles, golden-ratio layouts, time/feedback, grading/textures and local person/face/body/depth effects. Cards support per-effect bypass, wet/dry, reordering, undo/redo, optional autoplay and beat response. **VIS FX** treats the synthesizer independently.
 
-## Mirror and warp effects
+CAM MIX is **0% visual synthesizer**, **50% selected blend**, **100% camera with Camera FX**. Master Camera FX bypass gives the untreated feed. Live and recorded outputs A/B share camera processing and phase, with independent framing. Camera trails have their own history. Legacy CAM WARP and CAM TRAILS are shortcuts to camera stack nodes.
 
-**Menu → FX → MIRROR** keeps OFF, X, XY and QUAD, then adds every radial kaleidoscope split from **5-SPLIT through 16-SPLIT**. **SWIRL** bends the picture clockwise or counterclockwise; **RIPPLE** adds moving circular ripples; **WAVE** adds flowing horizontal/vertical distortion. Zero leaves that warp off. These controls work with live visuals, presets, AI looks and both recording outputs. Camera mix at 100% still shows the raw camera feed.
+Segmentation, face and pose analysis run in a local classic worker using MediaPipe 0.10.32; depth reuses the existing depth service. Models download on use and cache separately. Depth needs explicit activation from the effect card; background pictures require a local file. Camera frames never go to Gemini. Adaptive internal detail/model cadence never changes recording dimensions/FPS or silently removes a selected effect. Physical-device speed and tracking depend on hardware and scene.
+
+## Silence Stop
+
+**REACT → SILENCE & MOTION** starts with Silence Stop ON and silent simulation paused. Quiet/paused input no longer falls back to a simulated beat. It holds procedural clocks, animation and feedback while the camera/tracking stay live. Defaults: −48 dBFS threshold, 6 dB hysteresis, 300 ms hold. Playback pause and music headphone level zero stop motion promptly; recording-only output gains/mutes remain independent. SIM Play/Pause is explicit. Capture timers/audio/UI continue while motion is held.
+
+## Portable whole-app setups
+
+**SCENES → WHOLE-APP SETUPS** saves controls, Camera FX, motion preferences, scene slots/pins, audio and both output layouts in named IndexedDB setups. Download/import uses validated version-1 `.neuroflux.json` files (maximum 1 MiB), with preview and explicit application. Source media must be reselected. Imports do not start capture, activate hardware, make AI requests or enable the walkthrough. Microphone monitoring requires explicit activation. Loading is blocked during capture/export; a failed apply rolls settings back. Existing recordings and scene slots are preserved.
 
 ## Guided walkthroughs
 
@@ -66,6 +74,7 @@ python -u tests/browser_rig_smoke.py
 python -u tests/browser_guide.py
 python -u tests/browser_fx.py
 python -u tests/browser_camera_mix.py
+python -u tests/browser_camera_fx.py
 ```
 
 Browser tests require Python Playwright, Chromium at `/usr/bin/chromium`, and `ffprobe`. The capture test uses deterministic synthetic visual/audio inputs with real MediaRecorder, AudioWorklet, OPFS, worker conversion, and offline caching; encoded files are inspected with ffprobe. It covers dual shapes, pause/resume, companion WAVs, synchronization, trimming/remixing, and actual FFmpeg fallback. A separate software-WebGL smoke test exercises all nine existing shader modes, the Studio, picture rotation, and a mobile viewport. Physical Android/iPhone thermal behavior, hardware microphones/cameras, installed share-sheet destinations, 4K/60 fps, and sustained 30-minute synchronization require device testing before claiming device certification.

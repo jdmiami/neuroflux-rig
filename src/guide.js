@@ -6,7 +6,7 @@ const same=(a,b)=>typeof a==='number'&&typeof b==='number'?Math.abs(a-b)<.005:a=
 
 class WalkthroughGuide {
   constructor(rig,knowledge){
-    this.rig=rig;this.controls=knowledge.controls;this.knowledgeVersion=knowledge.version;
+    this.rig=rig;this.controls=knowledge.controls;this.cameraEffects=knowledge.cameraEffects||[];this.knowledgeVersion=knowledge.version;
     this.enabled=false;this.requestId=0;
     try{this.enabled=localStorage.getItem('nfx.guide.enabled')==='true';}catch{}
     this.index=0;this.done=[];this.mount();
@@ -101,6 +101,7 @@ class WalkthroughGuide {
   begin(){if(!this.enabled||!this.step)return;this.active=true;this.banner.hidden=false;this.banner.classList.remove('nfx-guide-collapsed');this.draw();this.reveal();}
   draw(){
     const step=this.step;if(!step)return;
+    this.initialFx=this.rig.guideState().cameraFx?.nodes?.map(n=>n.id)||[];
     this.undo=null;this.manualApplied=false;this.applied=false;this.testPassed=false;this.observed=false;this.statusText='';
     $('#nfxGuideTitle').textContent=step.title;$('#nfxGuideInstruction').textContent=step.instruction;
     $('#nfxGuideExpected').textContent='Look for: '+step.expected;
@@ -115,6 +116,16 @@ class WalkthroughGuide {
   applyLabel(action){return {source:'CHOOSE SOURCE',enable_mic:'ENABLE MICROPHONE',test_output:'TEST OUTPUT',start_recording:'START TAKE · 3–2–1',stop_recording:'STOP & SAVE'}[action.type]||'APPLY THIS SETTING';}
   route(target){
     const parts=target.split('.');
+    if(parts[0]==='camera'){
+      const fx=window.NFXCameraFX,action=this.step.action;fx?.selectTab('effects');let selector='#nfxCameraWorkspace [data-tab=effects]';
+      if(action.type==='camera_add'&&fx){fx.category=this.cameraEffects.find(e=>e.id===action.key)?.family||'all';fx.filter='';fx.catalogOpen=true;fx.renderStack();selector=`#nfxCameraEffects [data-add="${action.key}"]`;}
+      else if(action.type==='camera_enabled')selector='#nfxCameraEffects .nfx-perf-switch';
+      else if(action.type==='camera_set'&&fx){const [index,key]=action.key.split('.'),node=fx.state.nodes[+index];if(node){fx.openId=node.id;fx.renderStack();selector=`#nfxCameraEffects [data-node="${node.id}"] [data-param="${key}"]`;let parent=$(selector)?.closest('details');while(parent){parent.open=true;parent=parent.parentElement?.closest('details');}}}
+      else if(['camera_remove','camera_move'].includes(action.type)&&fx){const node=fx.state.nodes[+action.key];if(node)selector=`#nfxCameraEffects [data-node="${node.id}"]>summary`;}
+      return {page:'cam',selector};
+    }
+    if(parts[0]==='motion'){const id={silenceStop:'nfxSilenceStop',threshold:'nfxSilenceThreshold',hold:'nfxSilenceHold'}[this.step.action.key];return {page:'react',selector:id?'#'+id:'#nfxMotionPanel .c-hd'};}
+    if(parts[0]==='setups')return {page:'scenes',selector:'#nfxSetupPanel .c-hd'};
     if(parts[0]==='control'){const control=this.controls.find(c=>c.id===parts[1]);return {page:control.page,selector:`#pages [data-id="${control.id}"]`};}
     if(parts[0]==='menu')return {page:parts[1],selector:`#tabs [data-p="${parts[1]}"]`};
     if(parts[0]==='source')return {page:'input',selector:parts[1]==='sim'?'#btnSrc':`#pages .srcb[data-s="${parts[1]}"]`};
@@ -145,6 +156,13 @@ class WalkthroughGuide {
   }
   fulfilled(action,state){
     if(action.type==='show')return false;
+    const nodes=state.cameraFx?.nodes||[];
+    if(action.type==='camera_enabled')return state.cameraFx?.enabled===action.value;
+    if(action.type==='camera_add')return nodes.some(n=>n.effect===action.key&&!this.initialFx.includes(n.id));
+    if(action.type==='camera_set'){const [i,key]=action.key.split('.'),n=nodes[+i];return !!n&&same(['wet','bypass'].includes(key)?n[key]:n.params[key],action.value);}
+    if(action.type==='camera_remove')return !nodes.some(n=>n.id===this.initialFx[+action.key]);
+    if(action.type==='camera_move')return !!nodes[action.value]&&nodes[action.value].id===this.initialFx[+action.key];
+    if(action.type==='set_motion')return same(state.motionSettings?.[action.key],action.value);
     if(action.type==='set_control'&&['cam','hands','depth','motion','lyrics'].includes(action.key)&&action.value===1){
       const key={cam:'camera',hands:'hands',depth:'depth',motion:'motion',lyrics:'lyrics'}[action.key];if(key&&!state.services[key])return false;
     }
@@ -158,7 +176,17 @@ class WalkthroughGuide {
   }
   async perform(action){
     const studio=window.NFXStudio,state=this.rig.guideState();
-    if(action.type==='set_control'){
+    if(action.type.startsWith('camera_')){
+      const fx=window.NFXCameraFX;if(!fx)throw new Error('Camera tools are loading.');const previous=structuredClone(fx.state);
+      if(action.type==='camera_add')fx.add(action.key);
+      else if(action.type==='camera_enabled')fx.commit({...structuredClone(fx.state),enabled:action.value});
+      else if(action.type==='camera_set'){const [i,key]=action.key.split('.'),n=fx.state.nodes[+i];if(!n)throw new Error('That stack slot is empty. Rebuild this guide for your current stack.');fx.change(n.id,key,action.value);}
+      else if(action.type==='camera_remove'){const n=fx.state.nodes[+action.key];if(!n)throw new Error('That stack slot is empty.');fx.command('remove',n.id);}
+      else if(action.type==='camera_move'){const next=structuredClone(fx.state);const [n]=next.nodes.splice(+action.key,1);if(!n||action.value>=next.nodes.length+1)throw new Error('That stack position is unavailable.');next.nodes.splice(action.value,0,n);fx.commit(next);}
+      this.undo=()=>fx.commit(previous);
+    }else if(action.type==='set_motion'){
+      const previous=window.NFXMotion.settings[action.key];window.NFXMotion.configure({[action.key]:action.value});this.undo=()=>window.NFXMotion.configure({[action.key]:previous});
+    }else if(action.type==='set_control'){
       const previous=state.controls[action.key];this.rig.setParam(action.key,action.value,'user');
       if(!['cam','hands','depth','motion','lyrics'].includes(action.key))this.undo=()=>this.rig.setParam(action.key,previous,'user');
     }else if(['set_output','set_audio','set_recording'].includes(action.type)){

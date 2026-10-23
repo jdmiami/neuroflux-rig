@@ -37,11 +37,14 @@ module.exports = async function buildGuide() {
     block.push(line);
   }
   push();
-  const version=crypto.createHash('sha256').update(manual).update(JSON.stringify(controls)).digest('hex').slice(0,16);
-  const index={version,controls,chunks};
+  const camera=require('../lib/camera-fx.cjs');
+  for(const effect of camera.effects)chunks.push({id:'camera-effect-'+effect.id,title:'Camera FX: '+effect.name,anchor:'camera-effect-'+effect.id,text:effect.description+' Camera-only mode '+effect.name+'. '+(effect.family==='mirror'?'Count means 1–16 image divisions; one is undivided. ':'')+'Shared parameters: amount, count, centerX, centerY, scale, angle, wet/dry, speed, autoplay, beat, division, border and target. '+(effect.requirements.length?'Requires local '+effect.requirements.join(', ')+' analysis. ':''),cameraEffect:effect.id});
+  const cameraEffects=camera.effects.map(({id,name,family,requirements,pinned})=>({id,name,family,requirements,pinned}));
+  const version=crypto.createHash('sha256').update(manual).update(JSON.stringify(controls)).update(JSON.stringify(cameraEffects)).digest('hex').slice(0,16);
+  const index={version,controls,chunks,cameraEffects};
   fs.writeFileSync(path.join(root,'lib/guide-index.json'),JSON.stringify(index));
   fs.mkdirSync(path.join(root,'public'),{recursive:true});
-  fs.writeFileSync(path.join(root,'public/guide-index.json'),JSON.stringify({version,controls}));
+  fs.writeFileSync(path.join(root,'public/guide-index.json'),JSON.stringify({version,controls,cameraEffects}));
   const { marked }=await import('marked');
   const renderer=new marked.Renderer();
   renderer.heading=function({tokens,depth}){const text=this.parser.parseInline(tokens);const id=slug(text.replace(/<[^>]*>/g,''));return `<h${depth} id="${id}">${text}</h${depth}>`;};

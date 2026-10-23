@@ -76,7 +76,11 @@ def main():
                     streams = {s['codec_type']:s for s in info['streams']}
                     assert streams['video']['width']==asset['width'] and streams['video']['height']==asset['height']
                     assert 'audio' in streams
-                    assert abs(float(streams['video']['duration'])-float(streams['audio']['duration'])) < .1, streams
+                    # Opus duration excludes its declared encoder pre-skip. Allow that
+                    # codec delay plus one video frame when comparing container lengths.
+                    audio=streams['audio'];padding=int(audio.get('initial_padding',0))/int(audio.get('sample_rate',48000))
+                    sync_budget=max(.1,padding+1/asset['fps'])
+                    assert abs(float(streams['video']['duration'])-float(audio['duration'])) < sync_budget, streams
                 else:
                     assert info['streams'][0]['codec_name']=='pcm_s16le'
                     if asset.get('source') in ('music','mic'):

@@ -13,6 +13,8 @@ def plan(goal):
  steps=[step('Make six mirror splits',action('set_control','mirror',5)),step('Add a swirl',action('set_control','swirl',.2)),
         step('Choose a minimal recorded interface',action('set_output','mode','minimal','a')),
         step('Review your library',action('show','recording.library'))]
+ if 'camera fx' in goal.lower():
+  steps=[step('Add camera kaleidoscope',action('camera_add','kaleidoscope')),step('Choose six divisions',action('camera_set','0.count',6)),step('Change motion preference',action('set_motion','silenceStop',False)),step('Review camera effects',action('show','camera.effects'))]
  if 'audio' in goal.lower():
   steps=[step('Choose audio-only capture',action('set_recording','kind','audio')),step('Start a take',action('start_recording')),
          step('Stop and save',action('stop_recording')),step('Review the saved take',action('show','recording.library'))]
@@ -78,6 +80,16 @@ def main():
    assert 'cannot verify' in page.locator('#nfxGuideObserved').inner_text()
    page.locator('[data-guide=next]').click();assert page.locator('#nfxGuideStep').is_hidden()
    print('PASS guide: manual-grounded plan, labeled fallback, no automatic mutations, native navigation, spotlight, apply/verify, undo, manual edits, recording fields, responsive layout and honest review steps',flush=True)
+   page.locator('#tabs [data-p=ai]').click();page.locator('#nfxGuideGoal').fill('Help me use camera fx')
+   page.locator('#nfxGuideBuild').click();page.locator('[data-guide=begin]').wait_for();page.locator('[data-guide=begin]').click()
+   page.wait_for_function('!document.querySelector("#nfxGuideSpotlight").hidden')
+   page.locator('[data-guide=apply]').click();page.wait_for_function('NFXCameraFX.state.nodes.length===1')
+   page.locator('[data-guide=next]').click();page.locator('[data-guide=apply]').click()
+   page.wait_for_function('NFXCameraFX.state.nodes[0].params.count===6');page.locator('[data-guide=next]').click()
+   page.locator('[data-guide=apply]').click();page.wait_for_function('NFXMotion.settings.silenceStop===false')
+   page.locator('[data-guide=next]').click();page.locator('[data-guide=next]').click()
+   assert not page.evaluate('NFXRig.guideState().controls.cam'),'Guide stack tools activated the camera'
+   print('PASS Camera FX guide tools: native Add highlight, explicit stack add/parameter editing, motion settings, verification and no camera activation',flush=True)
    # Off cancels an in-flight request and cannot accept a late response.
    page.locator('#tabs [data-p=ai]').click();page.locator('#nfxGuideGoal').fill('Delayed walkthrough request')
    page.locator('#nfxGuideBuild').click()
