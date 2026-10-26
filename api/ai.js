@@ -149,6 +149,15 @@ module.exports = async (req, res) => {
   const ctx = clip(JSON.stringify(body.ctx || {}), 1500);
 
   try {
+    if (action === 'library') {
+      if(typeof body.query!=='string'||!body.query.trim()||body.query.length>600)return send(res,400,{ok:false,message:'Describe a look in 600 characters or less.'});
+      const fx=require('../lib/camera-fx.cjs'), knowledge=require('../lib/guide-index.json');
+      const entries=[...fx.effects.map(e=>({id:'camera:'+e.id,name:e.name,description:e.description})),...knowledge.controls.map(c=>({id:c.id,name:c.label,page:c.page}))];
+      const r=await gemini(GUIDE_MODELS,'library','Find existing Neuroflux tools for the user. Return JSON {ids: string[] (1 to 8 exact catalog IDs), explanation: string (brief plain language)}. Never invent IDs. Camera effects affect only the camera. Catalog: '+JSON.stringify(entries),[{text:body.query}],{timeout:18000});
+      if(r.error)return send(res,502,{ok:false,message:'AI search unavailable. Use name search.'});
+      const ids=[...new Set(Array.isArray(r.out.ids)?r.out.ids:[])].filter(id=>entries.some(e=>e.id===id)).slice(0,8);
+      return send(res,200,{ok:true,ids,explanation:clip(r.out.explanation,600),model:r.model,fallback:r.model!==GUIDE_MODELS[0]});
+    }
     if (action === 'guide') {
       if (typeof body.goal !== 'string' || !body.goal.trim() || body.goal.length > 1200 || Buffer.byteLength(JSON.stringify(body)) > 40000)
         return send(res, 400, { ok: false, error: 'bad_request', message: 'Describe your Neuroflux goal in 1–1200 characters.' });

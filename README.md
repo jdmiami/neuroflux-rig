@@ -94,3 +94,8 @@ Set `GEMINI_API_KEY` in Vercel environment settings. Optional overrides: `GEMINI
 ## Recovery provenance
 
 Initial source recovered from Vercel deployment `dpl_DJsYwxL2McS7WVMAtYZ3D1AtY7JE` on 2026-10-22. All seven original deployment source files matched their Vercel SHA-1 identifiers. This starts a new Git history; previous development history was not available.
+
+### Build Your Own Studio
+Open **MENU → QUICK → BUILD YOUR OWN STUDIO**. **FOCUS ON MY MENU** hides the other Quick cards; **SHOW FULL QUICK MENU** brings them back. Add only the tools you want from the library: browse camera families or synth controls, search names offline, or describe a look with **ASK AI**. Gemini recommends registered tools and labels a Flash fallback when used. Nothing is added until you tap **ADD**. Camera effects need an explicitly enabled camera via **CAMERA SOURCE / MIX**.
+
+Expand **WHAT IT DOES** for documentation. Custom synth cards collapse, move up/down, and remove; camera cards use their existing knobs, Tweak panel, and effect ordering. **SAVE SETUP** and the dock SAVE include the custom menu, camera stack and whole-app settings. **START FRESH** saves a backup first, then empties your menu and camera stack; the underlying synth scene remains your canvas. Settings are stored on this device. No game unlocks are required.
