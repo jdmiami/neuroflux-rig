@@ -46,6 +46,7 @@ window.NFXRig = {
   cameraTab(tab) {for(const child of Dt.cam.children)if(child.id!=='nfxCameraWorkspace')child.hidden=tab!=='source';},
   compositionGuide(enabled) {let guide=document.getElementById('nfxGoldenGuide');if(!guide){guide=document.createElement('div');guide.id='nfxGoldenGuide';guide.setAttribute('aria-hidden','true');document.body.appendChild(guide);}guide.hidden=!enabled;},
   refreshTransport: yn,
+  notify: (title,detail) => st(title,detail),
   cameraSource() {return {video:Qn.on&&Be.cam?Qn.video:null,bpm:U.bpm,level:U.level,depthKey:Be.camBlend===5,depth:oa.on?{data:oa.data,w:oa.w,h:oa.h}:null};},
   controlCatalog() {return De.map(p=>({id:p.id,min:p.type==='switch'?0:p.min,max:p.type==='switch'?1:p.max,step:p.step||(p.type==='switch'?1:0)}));},
   setupState() {return {rig:{...Be},source:G,pins:[...ze],slots:Ve.map((slot,i)=>slot?{n:'ABCD'[i],v:{...slot}}:null)};},

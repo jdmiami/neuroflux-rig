@@ -4,7 +4,7 @@
 
 A practical, plain-English manual for the current Neuroflux Visual Rig. Covers the live rig, all 110 core controls, camera mixing, sensors, 3D, AI tools, recording, audio routing, editing, exports and sharing.
 
-**Edition:** 23 October 2026. Includes independent Camera FX, Silence Stop, portable whole-app setups, guided walkthroughs and the offline-cache update recovery page. The default values in this guide mean a clean first-run setup; your saved settings or a loaded preset can be different.
+**Edition:** 26 October 2026. Includes independent Camera FX, Silence Stop, portable whole-app setups, guided walkthroughs and the offline-cache update recovery page. The default values in this guide mean a clean first-run setup; your saved settings or a loaded preset can be different.
 
 **Open the app:** [neuroflux-rig.vercel.app](https://neuroflux-rig.vercel.app/). If a phone acts as though an update never happened, use [Load the latest version](https://neuroflux-rig.vercel.app/update.html), then tap **UPDATE AND OPEN NEUROFLUX**. It refreshes app files while keeping saved recordings and settings. Finish active recordings and exports first.
 
@@ -1192,6 +1192,11 @@ Use Silence threshold to decide how quiet is quiet. The default closing threshol
 **PLAY SILENT SIMULATION** deliberately runs the synthetic 120 BPM signal without audible music. PAUSE SILENT SIMULATION stops it. The dock's Play/Pause does the same when SIM is selected. Turning Silence Stop off allows autonomous motion with quiet real inputs; it does not secretly restart paused SIM. A new app session returns to Silence Stop ON and SIM paused.
 
 ## 29. Whole-app setups: save, download and import
+
+
+**Save this moment with one tap:** press the disk-shaped **SAVE** button beside REC in the bottom dock. It captures the current setup immediately, gives it a timestamped name and stores a separate copy on this device. **SAVED** and a confirmation tell you the write succeeded. No naming dialog interrupts you, and earlier quick saves are not overwritten. You can keep adjusting the app or recording while you save.
+
+SAVE stays available when the interface is hidden, beside the eye button that brings the interface back. On a keyboard, **Ctrl+S** or **Cmd+S** saves the setup from any panel, including while typing in a field. Open **SCENES → WHOLE-APP SETUPS** later to load, rename, download or delete that quick save. Restore a setup after finishing the current recording/export; saving itself does not pause a take.
 
 Open **SCENES → WHOLE-APP SETUPS**. Enter a name and press SAVE AS. This stores the rig controls, camera stack, automation, motion preferences, scene memory slots, pinned controls, recording outputs A/B and mixer settings together. Existing scene memory banks still store smaller visual looks.
 

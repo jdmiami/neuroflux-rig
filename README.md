@@ -31,7 +31,7 @@ Segmentation, face and pose analysis run in a local classic worker using MediaPi
 
 ## Portable whole-app setups
 
-**SCENES → WHOLE-APP SETUPS** saves controls, Camera FX, motion preferences, scene slots/pins, audio and both output layouts in named IndexedDB setups. Download/import uses validated version-1 `.neuroflux.json` files (maximum 1 MiB), with preview and explicit application. Source media must be reselected. Imports do not start capture, activate hardware, make AI requests or enable the walkthrough. Microphone monitoring requires explicit activation. Loading is blocked during capture/export; a failed apply rolls settings back. Existing recordings and scene slots are preserved.
+**SAVE** beside REC creates a separate timestamped setup in one tap, including during recording. The button remains available beside Reveal in clean mode; Ctrl/Cmd+S works from every panel. Durable storage errors show Retry rather than a false success. **SCENES → WHOLE-APP SETUPS** saves controls, Camera FX, motion preferences, scene slots/pins, audio and both output layouts in named IndexedDB setups. Download/import uses validated version-1 `.neuroflux.json` files (maximum 1 MiB), with preview and explicit application. Source media must be reselected. Imports do not start capture, activate hardware, make AI requests or enable the walkthrough. Microphone monitoring requires explicit activation. Loading is blocked during capture/export; a failed apply rolls settings back. Existing recordings and scene slots are preserved.
 
 ## Guided walkthroughs
 
@@ -76,6 +76,7 @@ python -u tests/browser_fx.py
 python -u tests/browser_camera_mix.py
 python -u tests/browser_camera_fx.py
 python -u tests/browser_camera_controls.py
+python -u tests/browser_quick_save.py
 ```
 
 Browser tests require Python Playwright, Chromium at `/usr/bin/chromium`, and `ffprobe`. The capture test uses deterministic synthetic visual/audio inputs with real MediaRecorder, AudioWorklet, OPFS, worker conversion, and offline caching; encoded files are inspected with ffprobe. It covers dual shapes, pause/resume, companion WAVs, synchronization, trimming/remixing, and actual FFmpeg fallback. A separate software-WebGL smoke test exercises all nine existing shader modes, the Studio, picture rotation, and a mobile viewport. Physical Android/iPhone thermal behavior, hardware microphones/cameras, installed share-sheet destinations, 4K/60 fps, and sustained 30-minute synchronization require device testing before claiming device certification.

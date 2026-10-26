@@ -5,13 +5,14 @@ import {SetupStore} from './performance/setup-store.js';
 import {CameraRenderer} from './camera/renderer.js';
 import {validateProfile} from './studio/profiles.js';
 import {CameraFXControls} from './performance/camera-ui.js';
+import {QuickSaveControl} from './performance/quick-save.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const copy=o=>structuredClone(o);
 const motion=window.NFXMotion=new MotionController();
 class PerformanceWorkspace {
  constructor(rig){this.rig=rig;this.state=catalog.empty();this.undo=[];this.redo=[];this.store=new SetupStore();this.tab='source';this.filter='';this.category='featured';this.openId='';this.cameraFrame=null;this.status='';this.pending=null;
   try{this.state=catalog.validate(JSON.parse(localStorage.getItem('nfx.camera-fx.v1')));}catch{}
-  this.catalogOpen=!this.state.nodes.length;this.ui=new CameraFXControls(this);this.syncLegacy();this.mount();this.renderStack();this.refreshSetups();this.timer=setInterval(()=>this.updateStatus(),500);
+  this.catalogOpen=!this.state.nodes.length;this.ui=new CameraFXControls(this);this.syncLegacy();this.mount();this.quickSaveControl=new QuickSaveControl(this);this.renderStack();this.refreshSetups();this.timer=setInterval(()=>{this.quickSaveControl.sync();this.updateStatus();},500);
  }
  persist(){try{localStorage.setItem('nfx.camera-fx.v1',JSON.stringify(this.state));}catch{this.message('Settings could not be saved on this device. Download a setup file.');}}
  message(text){this.status=text;this.statusAt=Date.now();for(const e of document.querySelectorAll('.nfx-performance-status'))e.textContent=text;}
@@ -57,6 +58,22 @@ class PerformanceWorkspace {
  renderStack(){this.ui.render();}
  updateStatus(){this.panel.querySelectorAll('[data-animation-label]').forEach(el=>{const n=this.state.nodes.find(n=>n.id===el.closest('[data-node]').dataset.node),held=n?.params.autoplay&&motion.held;el.textContent=held?'WAITING':'ANIMATE';el.parentElement.title=held?'Animation waits for sound. Play audio or explicitly play SIM.':'Animate this effect';});if(this.status&&Date.now()-this.statusAt>8000)this.status='';document.querySelector('#nfxMotionStatus').textContent=motion.status;document.querySelector('#nfxSilenceStop').checked=motion.settings.silenceStop;document.querySelector('#nfxSilenceThresholdValue').textContent=motion.settings.threshold;document.querySelector('#nfxSilenceHoldValue').textContent=motion.settings.hold;document.querySelector('#nfxSimulation').textContent=motion.simPlaying?'PAUSE SILENT SIMULATION':'PLAY SILENT SIMULATION';if(!this.status)this.panel.querySelector('.nfx-performance-status').textContent=!this.rig.cameraSource().video?'CAMERA OFF · ENABLE IN SOURCE / MIX':!this.state.enabled||!this.state.nodes.some(n=>!n.bypass&&n.wet>0)?'RAW CAMERA · FX BYPASSED':this.renderer?.status||'CAMERA LIVE · CAMERA FX ONLY';}
  snapshot(name){const base=this.rig.setupState(),studio=window.NFXStudio;if(!studio)throw Error('Recording settings are still loading.');return setups.validate({format:'neuroflux-setup',version:1,appVersion:'camera-fx-1',name,rig:base.rig,slots:base.slots,pins:base.pins,preferences:{source:base.source},camera:copy(this.state),motion:copy(motion.settings),studio:{profiles:copy(studio.profiles),settings:copy(studio.settings),audio:copy(studio.mixer.settings)}},this.rig.controlCatalog());}
+ async quickSave(){
+  if(this.savingSetup)return this.savingSetup;
+  const stamp=new Date(),pad=(value,width=2)=>String(value).padStart(width,'0');
+  const name=`Quick save ${stamp.getFullYear()}-${pad(stamp.getMonth()+1)}-${pad(stamp.getDate())} ${pad(stamp.getHours())}:${pad(stamp.getMinutes())}:${pad(stamp.getSeconds())}.${pad(stamp.getMilliseconds(),3)}`;
+  // Capture synchronously at the tap, before waiting for storage or refreshing the library.
+  const setup=this.snapshot(name);
+  this.savingSetup=(async()=>{
+   for(let attempt=0;attempt<3;attempt++){
+    try{await this.store.create(setup);break;}
+    catch(error){if(error?.name!=='ConstraintError'||attempt===2)throw error;setup.name=name+' · '+crypto.randomUUID().slice(0,8);}
+   }
+   await this.refreshSetups();this.setupPanel.querySelector('#nfxSetupList').value=setup.name;
+   return setup;
+  })();
+  try{return await this.savingSetup;}finally{this.savingSetup=null;}
+ }
  async refreshSetups(){try{this.saved=await this.store.list();const select=this.setupPanel.querySelector('#nfxSetupList'),value=select.value;select.innerHTML='<option value="">Choose a setup</option>'+this.saved.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}</option>`).join('');select.value=value;}catch(e){this.message('Local setup storage unavailable. Download/import files still work.');}}
  preview(setup){this.pending=setup;const preview=this.setupPanel.querySelector('#nfxSetupPreview');preview.hidden=false;preview.innerHTML=`<h3>${esc(setup.name)}</h3><p>${Object.keys(setup.rig).length} rig settings · ${setup.camera.nodes.length} Camera FX · two output layouts · Silence Stop ${setup.motion.silenceStop?'on':'off'}.</p><p>Reselect source audio, background pictures and 3D media. Camera/mic permissions, speaker mic monitoring and walkthrough activation are not restored.</p><button data-setup="apply">APPLY THIS SETUP</button><button data-setup="cancel">CANCEL</button>`;}
  async apply(setup){const studio=window.NFXStudio;if(studio.active||studio.busy||studio.starting||studio.exporting)throw Error('Finish recording/export before loading a whole-app setup.');const valid=setups.validate(setup,this.rig.controlCatalog());valid.studio.profiles.forEach(validateProfile);const before=this.snapshot('Rollback');try{this.rig.applySetup(valid);this.commit(valid.camera);motion.configure(valid.motion);valid.studio.profiles.forEach((p,i)=>Object.assign(studio.profiles[i],p));studio.outputs.forEach((output,i)=>output.profile=studio.profiles[i]);studio.settings=copy(valid.studio.settings);Object.assign(studio.mixer.settings,valid.studio.audio);studio.mixer.apply();studio.persist();studio.render();this.updateStatus();this.pending=null;this.setupPanel.querySelector('#nfxSetupPreview').hidden=true;this.message('Setup loaded. Activate camera/audio inputs and reselect media when needed.');}catch(error){this.rig.applySetup(before);this.commit(before.camera);motion.configure(before.motion);before.studio.profiles.forEach((p,i)=>Object.assign(studio.profiles[i],p));studio.outputs.forEach((output,i)=>output.profile=studio.profiles[i]);studio.settings=before.studio.settings;Object.assign(studio.mixer.settings,before.studio.audio);studio.mixer.apply();studio.persist();studio.render();throw error;}}
