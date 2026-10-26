@@ -34,7 +34,8 @@ class RecordingStudio {
     this.render();
     try {
       if ('serviceWorker' in navigator) {
-        await navigator.serviceWorker.register('/sw.js');
+        const registration = await navigator.serviceWorker.register('/sw.js', {updateViaCache:'none'});
+        registration.update().catch(()=>{});
         navigator.serviceWorker.addEventListener('message', ({ data }) => {
           if (data?.type === 'OFFLINE_READY') this.message('App and local export tools are available offline. Online AI and first-time model downloads still need internet.');
         });

@@ -1,7 +1,8 @@
 const CACHE = 'neuroflux-local-__NFX_CACHE_VERSION__';
 const ASSETS = __NFX_ASSETS__;
 self.addEventListener('install', event => {
-  // Do not activate halfway through a take; the next normal navigation gets the update.
+  // Install the complete asset set before activation. Existing pages are never reloaded;
+  // their running recording/audio code stays intact. The next navigation uses this release.
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
     await Promise.all(ASSETS.map(async path => {
@@ -9,6 +10,7 @@ self.addEventListener('install', event => {
       if (!response.ok) throw new Error(`Offline asset failed: ${path}`);
       await cache.put(path, response);
     }));
+    await self.skipWaiting();
   })());
 });
 self.addEventListener('activate', event => {

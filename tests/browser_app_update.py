@@ -22,7 +22,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         path = self.path.split('?')[0]
         data = None
         if path == '/sw.js':
-            data = (ROOT / 'src/studio/sw.js').read_text().replace('__NFX_CACHE_VERSION__', 'test-current' if state['deployed'] else 'test-legacy').replace('__NFX_ASSETS__', json.dumps(ASSETS)).encode()
+            data = (ROOT / 'src/studio/sw.js').read_text().replace('__NFX_CACHE_VERSION__', 'test-current' if state['deployed'] else 'test-legacy').replace('__NFX_ASSETS__', json.dumps(ASSETS))
+            if not state['deployed']: data=data.replace('await self.skipWaiting();','')
+            data=data.encode()
         elif not state['deployed'] and path in legacy_chunks:
             data = legacy_chunks[path]
         if data is None: return super().do_GET()
@@ -55,10 +57,11 @@ def main():
             }''')
             state['deployed'] = True
             page.evaluate('navigator.serviceWorker.getRegistration().then(r=>r.update())')
-            page.wait_for_function('navigator.serviceWorker.getRegistration().then(r=>!!r.waiting)')
+            page.wait_for_function('navigator.serviceWorker.getRegistration().then(r=>!r.waiting&&!r.installing)&&caches.has("neuroflux-local-test-current")')
+            assert page.evaluate('window.cachedUpdateTest') == 'legacy', 'Installing an update must not reload a running app'
             page.reload();page.wait_for_function('window.NFXStudio?.storageReady')
-            assert page.evaluate('window.cachedUpdateTest') == 'legacy'
-            print('PASS reproduction: an ordinary refresh still loads the cached older app while the new worker waits', flush=True)
+            assert page.evaluate('window.cachedUpdateTest') is None
+            print('PASS upgrade: a cached legacy app receives the new worker and ordinary refresh loads the new release', flush=True)
             page.goto(origin+'/update.html')
             # A recording in another tab blocks cache recovery until it has stopped.
             blocker = context.new_page();blocker.goto(origin+'/update.html')
@@ -69,7 +72,7 @@ def main():
             blocker.evaluate('window.releaseCapture()');blocker.close()
             context.set_offline(True)
             page.locator('#update').click();page.wait_for_function('!document.querySelector("#update").disabled')
-            assert page.evaluate('caches.has("neuroflux-local-test-legacy")')
+            assert page.evaluate('caches.has("neuroflux-local-test-current")')
             assert page.evaluate('navigator.serviceWorker.getRegistration().then(Boolean)')
             context.set_offline(False)
             page.locator('#update').click();page.wait_for_url('**/?updated=*');page.wait_for_function('window.NFXStudio?.storageReady')

@@ -14,6 +14,8 @@ col=mix(clamp(col,0.,1.),cam,clamp(uMix*2.-1.,0.,1.));o=vec4(clamp(col,0.,1.),1)
 function releaseRigVisual(scene){const target=rigVisualBuffers.get(scene);if(target){P(target.post);rigVisualBuffers.delete(scene);}}
 function renderRig(e){
  if(!T)return;
+ const byosSource=window.NFXPerformance?.byos?.source;
+ if(byosSource==='blank'||byosSource==='camera'&&!Qn.on){h.bindFramebuffer(h.FRAMEBUFFER,null);h.clearColor(0,0,0,1);h.clear(h.COLOR_BUFFER_BIT);return;}
  if(e.camFrame){h.activeTexture(h.TEXTURE2);h.bindTexture(h.TEXTURE_2D,u.camTex);try{h.texImage2D(h.TEXTURE_2D,0,h.RGBA,h.RGBA,h.UNSIGNED_BYTE,e.camFrame);}catch{}e.camFrame=null;}
  if(e.depthFrame){const d=e.depthFrame;h.activeTexture(h.TEXTURE3);h.bindTexture(h.TEXTURE_2D,u.depthTex);h.texImage2D(h.TEXTURE_2D,0,h.R8,d.w,d.h,0,h.RED,h.UNSIGNED_BYTE,d.data);e.depthFrame=null;}
  h.bindVertexArray(y);

@@ -9,21 +9,33 @@ with sync_playwright() as p:
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(f'http://127.0.0.1:{server.server_port}/',wait_until='domcontentloaded')
  page.wait_for_function('window.NFXPerformance?.byos&&window.NFXStudio?.storageReady')
- page.locator('#start [data-go=sim]').click()
+ page.locator('#startBYOS').click()
+ page.wait_for_function('!document.getElementById("start")')
+ assert page.evaluate('NFXPerformance.byos.source')=='blank'
+ assert page.evaluate('NFXPerformance.state.nodes.length')==0
+ assert page.evaluate('NFXPerformance.byos.layout')==[]
+ page.screenshot(path='/workspace/Neuroflux-BYOS-Blank.png')
+ # Sources are explicit; adding a filter alone leaves the canvas blank.
+
  page.evaluate("NFXRig.guideOpen('quick')")
  page.locator('[data-byos=library]').click()
  page.locator('#nfxBYOSLibrary input').fill('kaleidoscope')
  page.locator('[data-add-tool="camera:kaleidoscope"]').click()
  assert page.evaluate('NFXPerformance.state.nodes[0].effect')=='kaleidoscope'
+ assert page.evaluate('NFXPerformance.byos.source')=='blank'
+ page.evaluate("NFXPerformance.byos.add('source:synth')")
+ assert page.evaluate('NFXPerformance.byos.source')=='synth'
+ page.evaluate('NFXPerformance.byos.restore([])')
+
  page.locator('[data-byos=library]').click()
  page.locator('#nfxBYOSLibrary input').fill('hue')
  page.locator('[data-add-tool=hue]').click()
  assert page.locator('.byos-native .hc[data-id=hue]').count()==1
  page.locator('[data-byos=save]').click()
- page.wait_for_function('NFXPerformance.saved.length>0')
- assert page.evaluate('NFXPerformance.saved[0].preferences.byos')==['hue']
+ page.wait_for_function('NFXPerformance.saved.length>1')
+ assert page.evaluate('NFXPerformance.saved.at(-1).preferences.byos')==['hue']
  page.evaluate('NFXPerformance.byos.restore([])')
- page.evaluate('NFXPerformance.apply(NFXPerformance.saved[0])')
+ page.evaluate('NFXPerformance.apply(NFXPerformance.saved.at(-1))')
  assert page.locator('.byos-native .hc[data-id=hue]').count()==1
  page.locator('[data-byos=library]').click()
  page.route('**/api/ai',lambda r:r.fulfill(json={'ok':True,'ids':['camera:swirl','hue'],'explanation':'Swirl bends the image.','model':'test-flash','fallback':True}))
