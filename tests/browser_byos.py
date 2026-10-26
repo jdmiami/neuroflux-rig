@@ -31,7 +31,7 @@ with sync_playwright() as p:
  page.locator('#nfxBYOSLibrary input').fill('hue')
  page.locator('[data-add-tool=hue]').click()
  assert page.locator('.byos-native .hc[data-id=hue]').count()==1
- page.locator('[data-byos=save]').click()
+ page.locator('#btnQuickSave').click()
  page.wait_for_function('NFXPerformance.saved.length>1')
  assert page.evaluate('NFXPerformance.saved.at(-1).preferences.byos')==['hue']
  page.evaluate('NFXPerformance.byos.restore([])')

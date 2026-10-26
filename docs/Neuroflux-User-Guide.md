@@ -1207,3 +1207,17 @@ IMPORT opens your file picker. Review the summary and press **APPLY THIS SETUP**
 Reselect audio, background pictures and 3D source files separately. Files do not include camera frames, recordings, passwords, API keys, transcripts, device permissions or active walkthrough sessions. Import does not start recording, enable the camera/microphone, request AI guidance or turn walkthrough mode on. Microphone speaker monitoring stays off until you explicitly enable it. If application fails, the previous settings are restored.
 
 Local setups live in this browser/device. Download important configurations so you can move them elsewhere. Deleting a saved setup never deletes recordings.
+
+## 30. Build Your Own Studio: start small
+
+Choose **BUILD YOUR OWN STUDIO** on the opening screen. Your previous setup is saved first. You enter a blank black canvas with no source or effects, and just one tab: **Starter**. The full app's tabs stay hidden in this mode.
+
+Tap **ADD TO MY MENU** to open the library. **TOOLS & EFFECTS** contains camera and visual sources, individual synth controls, and camera filters. Search by name, browse a family, or describe your look with **ASK AI**. AI suggests existing tools; you decide what gets added. Expand **WHAT IT DOES** for documentation. AI search identifies the model used and labels a Flash fallback. Ordinary name search works without AI.
+
+Start by adding **Camera source** for an unfiltered camera feed, or **Visual synth source** for generated visuals. Adding a filter alone does not activate a camera or fill the blank canvas.
+
+To organize your workspace, choose **ADD A CATEGORY TAB** inside the library. Add Color, Motion, Camera or another category. It starts empty unless you already picked matching tools. Add individual tools to fill it; the library never loads every control just because you added a category. Tools with no matching category tab stay in Starter. The Recording category explicitly opens the complete recording workspace.
+
+Switch tabs using your custom tab bar. **REMOVE THIS TAB**, or **REMOVE TAB** in the category library, removes the category and moves its selected tools back to Starter. Removing a tab does not disable its effects. Individual effect controls let you bypass or remove an effect separately.
+
+Use the dock **SAVE** button to save your controls, effects, category tabs and BYOS mode together. **FULL STUDIO** restores the standard app navigation when you want it.

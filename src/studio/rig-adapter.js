@@ -40,6 +40,7 @@ window.NFXRig = {
       tabs: Le.filter(p => p.id !== 'recording').map(p => ({ id: p.id, label: p.n })),
     };
   },
+  createBYOSControl(id) {return Ue[id]?wt(Ue[id],'quick'):null;},
   mountBYOS(panel) {Dt.quick.insertBefore(panel,Dt.quick.firstChild);},
   mountPerformance(camera,motion,setups) {
     Dt.cam.insertBefore(camera,Dt.cam.firstChild);Dt.react.insertBefore(motion,Dt.react.firstChild);Dt.scenes.insertBefore(setups,Dt.scenes.firstChild);
