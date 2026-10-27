@@ -9,6 +9,7 @@ const template = fs.readFileSync(path.join(root, 'src/app.html'), 'utf8');
 if (!template.includes('/* NFX_STUDIO_ADAPTER */')) throw new Error('Studio adapter insertion point missing.');
 const source = Buffer.from(template.replace('/* NFX_STUDIO_ADAPTER */', adapter));
 const output = path.join(root, 'public');
+esbuild.buildSync({entryPoints:[path.join(root,'src/showcase/app.js')],bundle:true,outfile:path.join(output,'showcase/app.js'),format:'iife',target:'es2022',minify:true});
 fs.mkdirSync(output, { recursive: true });
 fs.copyFileSync(path.join(root, 'src/update.html'), path.join(output, 'update.html'));
 esbuild.buildSync({entryPoints:[path.join(root,'src/performance.js')],bundle:true,outfile:path.join(output,'performance.js'),format:'iife',target:'es2022',minify:true});

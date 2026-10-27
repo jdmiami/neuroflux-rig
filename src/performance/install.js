@@ -1,4 +1,6 @@
 export function installPWA(){
+ const startMenu=document.querySelector('#stMenu');
+ if(startMenu){const link=document.createElement('a');link.className='st-b';link.id='nfxFuzzyCamera';link.href='/showcase/';link.innerHTML='<i>＋</i><span>FUZZY CAMERA<small>Open camera showcase</small></span>';startMenu.prepend(link);}
  if(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone)return;
  const menu=document.querySelector('#stMenu');if(!menu)return;
  const button=document.createElement('button');button.className='st-b';button.id='nfxInstallApp';button.innerHTML='<i>＋</i><span>INSTALL APP<small>Add Neuroflux to your home screen</small></span>';menu.append(button);
