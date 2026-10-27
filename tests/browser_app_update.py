@@ -25,11 +25,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             data = (ROOT / 'src/studio/sw.js').read_text().replace('__NFX_CACHE_VERSION__', 'test-current' if state['deployed'] else 'test-legacy').replace('__NFX_ASSETS__', json.dumps(ASSETS))
             if not state['deployed']: data=data.replace('await self.skipWaiting();','')
             data=data.encode()
+        elif not state['deployed'] and path in ['/', '/index.html']:
+            data=(ROOT/'tests/fixtures/legacy-index.html').read_bytes()
         elif not state['deployed'] and path in legacy_chunks:
             data = legacy_chunks[path]
         if data is None: return super().do_GET()
         self.send_response(200)
-        self.send_header('Content-Type', 'text/javascript' if path == '/sw.js' else 'application/octet-stream')
+        self.send_header('Content-Type', 'text/javascript' if path == '/sw.js' else 'text/html' if path in ['/', '/index.html'] else 'application/octet-stream')
         self.send_header('Cache-Control', 'no-cache')
         self.end_headers(); self.wfile.write(data)
     def log_message(self, *_): pass
@@ -59,7 +61,7 @@ def main():
             page.evaluate('navigator.serviceWorker.getRegistration().then(r=>r.update())')
             page.wait_for_function('navigator.serviceWorker.getRegistration().then(r=>!r.waiting&&!r.installing)&&caches.has("neuroflux-local-test-current")')
             assert page.evaluate('window.cachedUpdateTest') == 'legacy', 'Installing an update must not reload a running app'
-            page.reload();page.wait_for_function('window.NFXStudio?.storageReady')
+            page.reload(wait_until='domcontentloaded');page.wait_for_function('window.NFXStudio?.storageReady')
             assert page.evaluate('window.cachedUpdateTest') is None
             print('PASS upgrade: a cached legacy app receives the new worker and ordinary refresh loads the new release', flush=True)
             page.goto(origin+'/update.html')
@@ -75,7 +77,7 @@ def main():
             assert page.evaluate('caches.has("neuroflux-local-test-current")')
             assert page.evaluate('navigator.serviceWorker.getRegistration().then(Boolean)')
             context.set_offline(False)
-            page.locator('#update').click();page.wait_for_url('**/?updated=*');page.wait_for_function('window.NFXStudio?.storageReady')
+            page.locator('#update').click();page.wait_for_url('**/launch.html?updated=*');page.wait_for_function('window.NFXStudio?.storageReady')
             assert page.evaluate('window.cachedUpdateTest') is None
             assert page.evaluate('localStorage.getItem("nfx-update-keep")') == 'settings kept'
             assert not page.evaluate('NFXStudio.settings.stems')

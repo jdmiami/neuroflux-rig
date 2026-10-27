@@ -42,7 +42,7 @@
       if ('caches' in window) for (const key of await caches.keys())
         if (key.startsWith('neuroflux-local-')) await caches.delete(key);
       // IndexedDB, OPFS, and localStorage contain user data; leave them intact.
-      location.replace('/?updated=' + Date.now());
+      location.replace('/launch.html?updated=' + Date.now());
     } catch (error) {
       status.textContent = error instanceof TypeError ? 'Could not reach Neuroflux. Check your connection and try again.'
         : error.message || 'Update failed. Check your connection and try again.';

@@ -37,7 +37,7 @@ class RecordingStudio {
         const registration = await navigator.serviceWorker.register('/sw.js', {updateViaCache:'none'});
         registration.update().catch(()=>{});
         navigator.serviceWorker.addEventListener('message', ({ data }) => {
-          if (data?.type === 'OFFLINE_READY') this.message('App and local export tools are available offline. Online AI and first-time model downloads still need internet.');
+          if (data?.type === 'OFFLINE_READY') this.message('Core app is available offline. Export components and camera models download when first used; AI needs internet.');
         });
       }
     } catch { /* Recording still works without offline installation. */ }

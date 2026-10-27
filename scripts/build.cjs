@@ -42,21 +42,19 @@ if (!unchanged) {
 const decoded = zlib.gunzipSync(Buffer.concat(chunks.map(p => fs.readFileSync(p))));
 if (!decoded.equals(source)) throw new Error('Browser payload does not match src/app.html');
 console.log(`Built Neuroflux: ${source.length} bytes; ${unchanged ? 'original payload preserved' : 'payload regenerated'}.`);
-const assets = ['/','/index.html','/studio.js','/studio.css','/performance.js','/performance.css','/vision.worker.js','/guide.js','/guide.css','/guide-index.json','/manual.html','/export.worker.js','/pcm.worklet.js',
-  ...chunks.map(p => '/' + path.basename(p)), '/THIRD-PARTY-NOTICES.txt'];
-assets.push(...fs.readdirSync(path.join(output, 'vendor-licenses')).map(name => '/vendor-licenses/' + name));
-assets.push(...fs.readdirSync(path.join(output, 'manual-assets')).map(name => '/manual-assets/' + name));
-function walk(dir) {
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const name = path.join(dir, entry.name);
-    if (entry.isDirectory()) walk(name);
-    else if (/\.(js|wasm)$/.test(name)) assets.push('/' + path.relative(output, name).split(path.sep).join('/'));
-  }
-}
-walk(path.join(output, 'vendor'));
-const hash = crypto.createHash('sha256');
-for (const asset of assets.filter(a => a !== '/')) hash.update(fs.readFileSync(path.join(output, asset)));
-const worker = fs.readFileSync(path.join(root, 'src/studio/sw.js'), 'utf8')
-  .replace('__NFX_CACHE_VERSION__', hash.digest('hex').slice(0,16))
-  .replace('__NFX_ASSETS__', JSON.stringify(assets));
-fs.writeFileSync(path.join(output, 'sw.js'), worker);
+// The boot shell discovers one immutable release. Old workers do not recognize
+// these paths, so /launch.html can recover even a device stuck on a legacy shell.
+const files=['studio.js','studio.css','performance.js','performance.css','vision.worker.js','guide.js','guide.css','guide-index.json','export.worker.js','pcm.worklet.js'];
+const hash=crypto.createHash('sha256').update(fs.readFileSync(__filename)).update(source).update(fs.readFileSync(path.join(root,'src/boot.html'))).update(fs.readFileSync(path.join(root,'src/studio/sw.js')));
+for(const file of files)hash.update(fs.readFileSync(path.join(output,file)));
+const version=hash.digest('hex').slice(0,16),prefix='/releases/'+version+'/';
+fs.mkdirSync(path.join(output,prefix),{recursive:true});
+function versionLinks(text){for(const file of files)text=text.split('/'+file).join(prefix+file);return text;}
+for(const file of files)fs.writeFileSync(path.join(output,prefix,file),versionLinks(fs.readFileSync(path.join(output,file),'utf8')));
+fs.writeFileSync(path.join(output,prefix,'app.html'),versionLinks(source.toString()).replace('<head>','<head><meta name="neuroflux-release" content="'+version+'">'));
+for(const name of ['index.html','launch.html'])fs.copyFileSync(path.join(root,'src/boot.html'),path.join(output,name));
+fs.writeFileSync(path.join(output,'release.json'),JSON.stringify({version,app:prefix+'app.html'}));
+const assets=['/','/index.html','/launch.html','/release.json',prefix+'app.html',...files.map(f=>prefix+f)];
+const worker=fs.readFileSync(path.join(root,'src/studio/sw.js'),'utf8').replace('__NFX_CACHE_VERSION__',version).replace('__NFX_ASSETS__',JSON.stringify(assets));
+fs.writeFileSync(path.join(output,'sw.js'),worker);
+console.log('Immutable release '+version+'; optional WASM downloads are cached on demand.');

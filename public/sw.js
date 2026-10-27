@@ -1,13 +1,12 @@
-const CACHE = 'neuroflux-local-e76321688ce20ee9';
-const ASSETS = ["/","/index.html","/studio.js","/studio.css","/performance.js","/performance.css","/vision.worker.js","/guide.js","/guide.css","/guide-index.json","/manual.html","/export.worker.js","/pcm.worklet.js","/c0.bin","/c1.bin","/c2.bin","/c3.bin","/c4.bin","/THIRD-PARTY-NOTICES.txt","/vendor-licenses/FFmpeg-core-GPL-2.0.txt","/vendor-licenses/FFmpeg-wasm-MIT.txt","/vendor-licenses/MediaPipe-Apache-2.0.txt","/vendor-licenses/Mediabunny-MPL-2.0.txt","/manual-assets/camera-000.png","/manual-assets/camera-050.png","/manual-assets/camera-100.png","/vendor/ffmpeg/classes.js","/vendor/ffmpeg/const.js","/vendor/ffmpeg/errors.js","/vendor/ffmpeg/index.js","/vendor/ffmpeg/types.js","/vendor/ffmpeg/utils.js","/vendor/ffmpeg/worker.js","/vendor/ffmpeg-core/ffmpeg-core.js","/vendor/ffmpeg-core/ffmpeg-core.wasm","/vendor/vision/wasm/vision_wasm_internal.js","/vendor/vision/wasm/vision_wasm_internal.wasm","/vendor/vision/wasm/vision_wasm_nosimd_internal.js","/vendor/vision/wasm/vision_wasm_nosimd_internal.wasm"];
+const CACHE = 'neuroflux-local-318c92757123e853';
+const ASSETS = ["/","/index.html","/launch.html","/release.json","/releases/318c92757123e853/app.html","/releases/318c92757123e853/studio.js","/releases/318c92757123e853/studio.css","/releases/318c92757123e853/performance.js","/releases/318c92757123e853/performance.css","/releases/318c92757123e853/vision.worker.js","/releases/318c92757123e853/guide.js","/releases/318c92757123e853/guide.css","/releases/318c92757123e853/guide-index.json","/releases/318c92757123e853/export.worker.js","/releases/318c92757123e853/pcm.worklet.js"];
 self.addEventListener('install', event => {
-  // Install the complete asset set before activation. Existing pages are never reloaded;
-  // their running recording/audio code stays intact. The next navigation uses this release.
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
+    // Only core app files gate activation. Large models/export runtimes load on demand.
     await Promise.all(ASSETS.map(async path => {
       const response = await fetch(new Request(path, { cache: 'reload' }));
-      if (!response.ok) throw new Error(`Offline asset failed: ${path}`);
+      if (!response.ok) throw new Error(`App asset failed: ${path}`);
       await cache.put(path, response);
     }));
     await self.skipWaiting();
@@ -16,16 +15,27 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     await self.clients.claim();
-    for (const key of await caches.keys()) if (key.startsWith('neuroflux-local-') && key !== CACHE) await caches.delete(key);
+    // Keep earlier release caches while an old tab might still use them.
+    // Explicit update recovery removes app caches without touching user data.
     for (const client of await self.clients.matchAll()) client.postMessage({ type: 'OFFLINE_READY' });
   })());
 });
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin || event.request.method !== 'GET' || url.pathname.startsWith('/api/')) return;
-  if (!ASSETS.includes(url.pathname)) return;
+  const fresh=event.request.mode==='navigate'||url.pathname==='/release.json';
+  const asset=ASSETS.includes(url.pathname)||url.pathname.startsWith('/releases/')||url.pathname.startsWith('/vendor/');
+  if(!fresh&&!asset)return;
+  // Recovery stays network-only, even when offline.
+  if(url.pathname==='/update.html')return;
   event.respondWith((async () => {
-    const cache = await caches.open(CACHE);
-    return await cache.match(url.pathname) || fetch(event.request);
+    const cache=await caches.open(CACHE);
+    if(fresh){
+      try{const response=await fetch(event.request,{cache:'no-store'});if(response.ok){try{await cache.put(url.pathname,response.clone());}catch{}return response;}throw Error('Network response failed');}
+      catch(error){const saved=await cache.match(url.pathname)||await caches.match(url.pathname);if(saved)return saved;throw error;}
+    }
+    const saved=await cache.match(url.pathname)||await caches.match(url.pathname);if(saved)return saved;
+    const response=await fetch(event.request);if(response.ok)try{await cache.put(url.pathname,response.clone());}catch{}
+    return response;
   })());
 });
