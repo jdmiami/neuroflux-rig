@@ -47,6 +47,7 @@ window.NFXRig = {
   },
   cameraTab(tab) {for(const child of Dt.cam.children)if(child.id!=='nfxCameraWorkspace')child.hidden=tab!=='source';},
   compositionGuide(enabled) {let guide=document.getElementById('nfxGoldenGuide');if(!guide){guide=document.createElement('div');guide.id='nfxGoldenGuide';guide.setAttribute('aria-hidden','true');document.body.appendChild(guide);}guide.hidden=!enabled;},
+  feedback: kind => Ke(kind),
   refreshTransport: yn,
   notify: (title,detail) => st(title,detail),
   cameraSource() {return {video:Qn.on&&Be.cam?Qn.video:null,bpm:U.bpm,level:U.level,depthKey:Be.camBlend===5,depth:oa.on?{data:oa.data,w:oa.w,h:oa.h}:null};},

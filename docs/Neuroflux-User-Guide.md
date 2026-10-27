@@ -80,12 +80,12 @@ BPM is estimated, not a metronome setting. Silent simulation uses a synthetic 12
 
 ### Dragging, resetting and pinning
 
-- **Knobs:** drag up or right to increase; down or left to decrease. Think “slide the value,” not “trace a perfect circle.” A diagonal drag combines the two directions.
+- **Sliders:** tap a point on the track or drag the handle left or right. The value appears above the track.
 - **Faders:** drag to change the level. Their value is still just a control amount; a fader is not automatically an audio volume control.
-- **Double-tap a knob/fader:** returns that control to its built-in default. This can differ from the value in the preset you just loaded.
+- **Double-click a slider with a mouse:** returns it to its built-in default. This can differ from the value in the preset you just loaded.
 - **Choice rows:** use their left/right arrows, tap the value area to cycle, or drag sideways. Examples are BLEND, PALETTE and SYMMETRY. Do not assume every choice row uses the knob double-tap behavior.
 - **Switch rows:** tap to toggle. Keyboard Enter/Space also works when the switch has focus.
-- **Hold ordinary knobs/choice/switch rows:** pins or unpins that control in QUICK, roughly a half-second hold. Primary power cards use their own switch behavior rather than every one supporting pinning.
+- **Pin a slider:** tap its small diamond button to add or remove it from QUICK. Choice and switch rows can still be pinned with a long press.
 - **ORIGIN XY pad:** drag within the pad to set both axes. Double-tap to center it.
 - **Scrolling:** scroll the menu body between groups; swipe the tab strip sideways for hidden tabs. On a phone, the sheet handle lets you change its open position. On a wide screen the sheet uses a side layout.
 
@@ -955,9 +955,9 @@ The names below are the labels used in the app. Use this index, the contents lin
 
 Open **CAMERA → CAMERA FX**. This is the place for effects that only change the camera. **VIS FX** styles the synthesizer separately. At 0% CAM MIX you see the visual synthesizer; at 50% you see the selected blend; at 100% you see the camera **with its Camera FX**. Tap the **CAMERA FX ON/OFF** power switch for the untreated camera.
 
-Tap **+ ADD**, choose a picture tile, and turn the knobs. **QUICK PICKS** gets you started; the family pads and selector open the full collection of 129 effects. The magnifying glass opens search when you need it. A stack holds eight effects, with one expanded at a time. Each effect shows three main knobs chosen for that mode: for example, Kaleidoscope has **SPLITS / ROTATE / MIX**, while Swirl has **BEND / ROTATE / MIX**. **MIX at 0% is the universal neutral setting**. Tap the power icon on an effect to bypass it. The arrows below its name audition related modes while keeping your adjustments.
+Tap **+ ADD**, choose a picture tile, and adjust the sliders. **QUICK PICKS** gets you started; the family pads and selector open the full collection of 129 effects. The magnifying glass opens search when you need it. A stack holds eight effects, with one expanded at a time. Each effect shows three main sliders chosen for that mode: for example, Kaleidoscope has **SPLITS / ROTATE / MIX**, while Swirl has **BEND / ROTATE / MIX**. **MIX at 0% is the universal neutral setting**. Tap the power icon on an effect to bypass it. The arrows below its name audition related modes while keeping your adjustments.
 
-Drag a knob up or right to increase it; down or left decreases it. Double-click to reset that knob. With keyboard focus, arrow keys change one step, Shift changes ten steps, and Home/End reach the limits. Holding Shift while dragging makes fine adjustments. A complete drag is one undo action, so you can experiment without undoing every tiny movement.
+Tap or drag the slider handle left or right. Double-click with a mouse to reset that slider. With keyboard focus, arrow keys change one step, Shift changes ten steps, and Home/End reach the limits. Holding Shift while dragging makes fine adjustments. A complete drag is one undo action, so you can experiment without undoing every tiny movement.
 
 Tap **•••** for move-up/down arrows, Duplicate, Shuffle, Restore, Reset and Remove. Reordering stays within the source-stage rules below. UNDO/REDO restores stack edits. CLEAR removes the camera stack, not your recordings or visual settings. Tap **LOOKS** for picture cards that build a ready-made stack in one tap; then adjust its knobs.
 
@@ -973,7 +973,7 @@ Golden spiral, Fibonacci tiles, golden frames and golden-angle/phyllotaxis copie
 
 ### Position, animation and targeting
 
-Tap **TWEAK** to reveal the center pad, extra knobs and compact selectors. Drag the pad to place the effect; CENTER X/Y also let you position it precisely with the keyboard. SIZE and ROTATE frame the picture. Motion-capable modes offer **ANIMATE** and a RATE knob; negative rates reverse direction. REACT adds audio response, and BEAT ranges from ⅛ to eight beats. Temporal modes also show DELAY. VARIATION changes the seed; TINT, EDGES and AFFECT are available below the knobs. The panel keeps irrelevant main controls out of your way. When ANIMATE shows **WAITING**, play real audio or explicitly play SIM: Silence Stop is holding automatic motion.
+Tap **TWEAK** to reveal the center pad, extra sliders and compact selectors. Drag the pad to place the effect; CENTER X/Y also let you position it precisely with the keyboard. SIZE and ROTATE frame the picture. Motion-capable modes offer **ANIMATE** and a RATE slider; negative rates reverse direction. REACT adds audio response, and BEAT ranges from ⅛ to eight beats. Temporal modes also show DELAY. VARIATION changes the seed; TINT, EDGES and AFFECT are available below the knobs. The panel keeps irrelevant main controls out of your way. When ANIMATE shows **WAITING**, play real audio or explicitly play SIM: Silence Stop is holding automatic motion.
 
 Edges can clamp, mirror, repeat or turn transparent. Transparent camera areas become black at the camera-only endpoint; mixed modes can reveal the visual behind them. Affect can select All, Person, Background, Face or Body. Selecting a tracked region loads its corresponding local model when the camera is active.
 
