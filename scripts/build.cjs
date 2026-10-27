@@ -54,7 +54,7 @@ for(const file of files)fs.writeFileSync(path.join(output,prefix,file),versionLi
 fs.writeFileSync(path.join(output,prefix,'app.html'),versionLinks(source.toString()).replace('<head>','<head><meta name="neuroflux-release" content="'+version+'">'));
 for(const name of ['index.html','launch.html'])fs.copyFileSync(path.join(root,'src/boot.html'),path.join(output,name));
 fs.writeFileSync(path.join(output,'release.json'),JSON.stringify({version,app:prefix+'app.html'}));
-const assets=['/','/index.html','/launch.html','/release.json',prefix+'app.html',...files.map(f=>prefix+f)];
+const assets=['/','/index.html','/launch.html','/release.json','/manifest.webmanifest','/icons/icon-192.png','/icons/icon-512.png',prefix+'app.html',...files.map(f=>prefix+f)];
 const worker=fs.readFileSync(path.join(root,'src/studio/sw.js'),'utf8').replace('__NFX_CACHE_VERSION__',version).replace('__NFX_ASSETS__',JSON.stringify(assets));
 fs.writeFileSync(path.join(output,'sw.js'),worker);
 console.log('Immutable release '+version+'; optional WASM downloads are cached on demand.');
