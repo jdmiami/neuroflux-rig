@@ -80,7 +80,7 @@ BPM is estimated, not a metronome setting. Silent simulation uses a synthetic 12
 
 ### Dragging, resetting and pinning
 
-- **Touch sliders:** scroll freely over the dimmed controls. Hold still on a slider for about half a second; a five-step progress indicator fills and the track highlights. Slide left/right after it says ADJUST. Lift your finger to lock it again. Moving before activation cancels the hold. Mouse dragging and keyboard controls stay immediate.
+- **Touch sliders:** scroll freely over the dimmed controls. Hold still on a slider for about half a second; a five-step progress indicator fills and the track highlights. Slide left/right once the track highlights. Lift your finger to lock it again. Moving before activation cancels the hold. Mouse dragging and keyboard controls stay immediate.
 - **Faders:** drag to change the level. Their value is still just a control amount; a fader is not automatically an audio volume control.
 - **Double-click a slider with a mouse:** returns it to its built-in default. This can differ from the value in the preset you just loaded.
 - **Choice rows:** use their left/right arrows, tap the value area to cycle, or drag sideways. Examples are BLEND, PALETTE and SYMMETRY. Do not assume every choice row uses the knob double-tap behavior.
