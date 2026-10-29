@@ -12,7 +12,7 @@ with sync_playwright() as p:
  hue=page.locator('.hc[data-id=hue] input[type=range]').first;hue.wait_for(state='visible')
  before=page.evaluate('NFXRig.guideState().controls.hue');hue.focus();hue.press('End');assert page.evaluate('NFXRig.guideState().controls.hue')!=before
  assert hue.get_attribute('aria-valuetext')
- hue.tap(position={'x':15,'y':22});assert int(hue.input_value())<500
+ page.locator('.hc[data-id=hue] .nfx-range-shield').first.tap();assert int(hue.input_value())==1000
 
  page.evaluate("NFXPerformance.add('kaleidoscope');NFXRig.guideOpen('cam');NFXPerformance.selectTab('effects')")
  slider=page.locator('#nfxCameraEffects [data-param=count][type=range]').first;slider.wait_for(state='visible');slider.focus();slider.press('End')

@@ -1,3 +1,4 @@
+import {holdSliders} from './performance/hold-slider.js';
 import {installPWA} from './performance/install.js';
 import {BuildStudio} from './performance/byos.js';
 import catalog from '../lib/camera-fx.cjs';
@@ -10,7 +11,7 @@ import {CameraFXControls} from './performance/camera-ui.js';
 import {QuickSaveControl} from './performance/quick-save.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const copy=o=>structuredClone(o);
-installPWA();
+installPWA();holdSliders();
 const motion=window.NFXMotion=new MotionController();
 class PerformanceWorkspace {
  constructor(rig){this.rig=rig;this.state=catalog.empty();this.undo=[];this.redo=[];this.store=new SetupStore();this.tab='source';this.filter='';this.category='featured';this.openId='';this.cameraFrame=null;this.status='';this.pending=null;
