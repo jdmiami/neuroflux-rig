@@ -1,0 +1,20 @@
+const categories=[['cam','Camera'],['color','Color'],['motion','Motion'],['fx','Effects'],['recording','Recording']];
+export class LandscapeTake {
+ constructor(workspace){this.workspace=workspace;this.rig=workspace.rig;this.enabled=false;this.hidden=false;this.category='cam';this.hand='right';try{this.hand=localStorage.getItem('nfx.take.hand')==='left'?'left':'right';}catch{}
+  const entry=document.createElement('button');entry.id='startLandscapeTake';entry.className='st-b';entry.innerHTML='<i>↔</i><span>THE LANDSCAPE TAKE<small>One thumb · Preview + console</small></span>';document.querySelector('#stMenu')?.prepend(entry);entry.onclick=()=>{document.querySelector('#start [data-go=sim]')?.click();this.enter();};
+  this.bar=document.createElement('div');this.bar.id='nfxTakeBar';this.bar.hidden=true;this.bar.innerHTML='<button data-take="hand" aria-label="Switch control side"></button><button data-take="view">FULL PREVIEW</button><button data-take="exit">EXIT TAKE</button>';document.body.append(this.bar);this.bar.onclick=e=>{const a=e.target.closest('[data-take]')?.dataset.take;if(a==='hand'){this.hand=this.hand==='right'?'left':'right';try{localStorage.setItem('nfx.take.hand',this.hand);}catch{}this.layout();}if(a==='view')this.toggle();if(a==='exit')this.exit();};
+  this.nav=document.createElement('nav');this.nav.id='nfxTakeCategories';this.nav.hidden=true;this.nav.setAttribute('aria-label','Landscape categories');this.nav.innerHTML=categories.map(([id,label])=>`<button data-take-page="${id}">${label}</button>`).join('');document.body.append(this.nav);this.nav.onclick=e=>{const id=e.target.closest('[data-take-page]')?.dataset.takePage;if(id)this.select(id);};
+  this.feedback=document.createElement('div');this.feedback.id='nfxTakeFeedback';this.feedback.hidden=true;this.feedback.setAttribute('role','status');this.feedback.innerHTML='<span></span><button aria-label="Dismiss message">×</button>';this.feedback.querySelector('button').onclick=()=>this.feedback.hidden=true;document.body.append(this.feedback);
+  this.restore=document.createElement('button');this.restore.id='nfxTakeRestore';this.restore.textContent='CONTROLS';this.restore.hidden=true;this.restore.onclick=()=>this.toggle(false);document.body.append(this.restore);
+  new MutationObserver(()=>{if(this.enabled&&!this.hidden&&document.querySelector('#sheet').getAttribute('aria-hidden')==='true')this.select(this.category);}).observe(document.querySelector('#sheet'),{attributes:true,attributeFilter:['aria-hidden']});
+  new MutationObserver(()=>{if(this.enabled&&document.body.classList.contains('clean')){document.body.classList.remove('clean');this.toggle();}}).observe(document.body,{attributes:true,attributeFilter:['class']});
+  this.rig.onTakePage=id=>{if(this.enabled){if(categories.some(([key])=>key===id))this.category=id;this.paint();}};
+ }
+ message(text,error=false){if(!this.enabled)return;clearTimeout(this.messageTimer);this.feedback.querySelector('span').textContent=text;this.feedback.hidden=false;if(!error)this.messageTimer=setTimeout(()=>this.feedback.hidden=true,3500);}
+ enter(){this.workspace.byos.setMode(false);this.enabled=true;this.hidden=false;this.layout();this.select(this.category);}
+ exit(){this.enabled=false;this.hidden=false;this.feedback.hidden=true;this.layout();this.rig.guideOpen('quick');}
+ select(id){this.category=id;this.rig.guideOpen(id);this.paint();}
+ paint(){this.nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-current',b.dataset.takePage===this.category?'page':'false'));}
+ toggle(value=!this.hidden){this.hidden=value;this.layout();if(!value)this.select(this.category);}
+ layout(){document.body.classList.toggle('nfx-landscape-take',this.enabled);document.body.classList.toggle('nfx-take-left',this.enabled&&this.hand==='left');document.body.classList.toggle('nfx-take-hidden',this.enabled&&this.hidden);this.bar.hidden=this.nav.hidden=!this.enabled||this.hidden;this.restore.hidden=!this.enabled||!this.hidden;this.bar.querySelector('[data-take=hand]').textContent=this.hand==='right'?'LEFT HAND':'RIGHT HAND';this.rig.takeLayout?.();}
+}

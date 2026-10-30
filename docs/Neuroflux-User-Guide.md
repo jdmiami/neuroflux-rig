@@ -1221,3 +1221,13 @@ To organize your workspace, choose **ADD A CATEGORY TAB** inside the library. Ad
 Switch tabs using your custom tab bar. **REMOVE THIS TAB**, or **REMOVE TAB** in the category library, removes the category and moves its selected tools back to Starter. Removing a tab does not disable its effects. Individual effect controls let you bypass or remove an effect separately.
 
 Use the dock **SAVE** button to save your controls, effects, category tabs and BYOS mode together. **FULL STUDIO** restores the standard app navigation when you want it.
+
+## 31. The Landscape Take: one-thumb studio
+
+Choose **THE LANDSCAPE TAKE** on the opening screen. In landscape, half the screen shows the final camera/visual mix and half contains the console. **LEFT HAND / RIGHT HAND** moves the console to that side and remembers your preference. Existing camera permissions, effects and settings continue to work; entering this mode does not turn on the camera.
+
+Choose **Camera, Color, Motion, Effects, or Recording** along the lower edge of the console. Ready-made controls appear above. Numeric sliders use compact full-width rows, with room for four on typical landscape phone screens; scroll for additional controls. On short screens controls keep their touch area and remain scrollable. Touch sliders still require the brief hold before adjustment, with visual progress and highlighting, without instruction labels.
+
+The bottom dock retains source selection, Play, SAVE and REC. REC prepares the output and runs the cancelable three-second countdown. Pause/Resume appears while recording. You can keep changing categories and editing during a take. Stop saves to the local recording library and leaves the studio ready for another take. The console shows a saved confirmation only when recording data has been finalized; errors stay visible until dismissed. Open **Recording → Library** to review, download or share a take.
+
+**FULL PREVIEW** expands the image. Tap **CONTROLS** at the selected hand's corner to restore the console. The existing preview double-tap also hides/restores it. **EXIT TAKE** returns to the regular Studio. Rotating to portrait puts the preview above the console. Recording output dimensions, rotation, and clean/minimal/full overlay settings remain independent of the operator layout.

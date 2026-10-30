@@ -407,8 +407,9 @@ class RecordingStudio {
     this.busy = true; this.updateButtons(); this.message('Saving recording data to this device…');
     try {
       const assets = await session.stop();
+      window.NFXPerformance?.take?.message(assets.length?`${assets.length} file${assets.length===1?'':'s'} saved on this device.${session.error?' Take interrupted.':' Ready for the next take.'}`:'No recording data was saved.',!!session.error||!assets.length);
       this.message(`${assets.length} file${assets.length === 1 ? '' : 's'} saved.${session.error ? ` Interrupted: ${session.error.message}` : ''} Open Library to play, finish, or share.`);
-    } catch (error) { this.message(`Could not finalize every file: ${error.message}. Check Library for saved chunks.`); }
+    } catch (error) { window.NFXPerformance?.take?.message(`Could not save every file: ${error.message}. Check Recording → Library.`,true);this.message(`Could not finalize every file: ${error.message}. Check Library for saved chunks.`); }
     finally {
       this.session = null; this.busy = false; this.releaseRecordingLock?.(); this.releaseRecordingLock = null;
       await this.releaseWake(); await this.updateStorage(); if (this.opened) this.render(); this.updateButtons();

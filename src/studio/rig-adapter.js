@@ -12,6 +12,7 @@ appUpdateCard.querySelector('button').addEventListener('click', () => {
   location.assign('/update.html');
 });
 window.NFXRig = {
+  takeLayout() {qn.tx=qn.ty=qn.x=qn.y=0;O(mn[Be.res]);},
   ready: () => T && !!v,
   audio() {
     V();
