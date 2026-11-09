@@ -1,3 +1,4 @@
+import {initOwnerChat} from './owner/chat.js';
 import {LandscapeTake} from './performance/landscape.js';
 import {holdSliders} from './performance/hold-slider.js';
 import {installPWA} from './performance/install.js';
@@ -95,3 +96,5 @@ class PerformanceWorkspace {
  }
 }
 if(window.NFXRig?.mountPerformance){window.NFXCameraFX=window.NFXPerformance=new PerformanceWorkspace(window.NFXRig);}
+
+initOwnerChat();

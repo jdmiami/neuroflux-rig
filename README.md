@@ -106,3 +106,6 @@ BYOS now has a separate tab bar: only **Starter** appears when launching a blank
 
 ### Install Neuroflux
 Neuroflux is an installable PWA. On Android Chrome use **INSTALL APP** on the opening screen or Chrome's menu → Install app / Add to Home screen. On iPhone, use Share → Add to Home Screen (open in Safari if your browser does not offer it). Installed Neuroflux opens in its own window. After the first online load, the core app can start offline. AI needs a connection; export components and camera-analysis models need a connection the first time they are downloaded. Saved setups and recordings remain on the device.
+
+### Private owner assistant
+The floating owner chat is protected by GitHub sign-in and is hidden for everyone else. It can propose live adjustments with explicit Apply/Undo and save app-improvement requests to GitHub. A separately triggered developer workflow prepares tested draft PRs; it never merges or deploys them automatically. Follow [Owner Assistant Setup](docs/Owner-Assistant-Setup.md) for the required OAuth and Actions configuration.

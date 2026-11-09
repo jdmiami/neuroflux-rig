@@ -6,6 +6,9 @@
   "functions": {
     "api/ai.js": {
       "maxDuration": 60
+    },
+    "api/owner.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
@@ -72,5 +75,16 @@
         }
       ]
     }
-  ]
+  ],
+  "rewrites": [
+    {
+      "source": "/api/auth/:path*",
+      "destination": "/api/owner-auth?authPath=:path*"
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "owner/**": false
+    }
+  }
 }

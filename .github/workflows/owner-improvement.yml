@@ -1,0 +1,54 @@
+name: Owner improvement
+run-name: 'Owner request #${{ inputs.issue }}'
+on:
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Owner chat issue number
+        required: true
+        type: string
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+concurrency:
+  group: owner-improvement
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.actor == 'jdmiami'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Read authenticated owner request
+        run: node scripts/owner-agent.cjs request
+        env:
+          INPUT_ISSUE: ${{ inputs.issue }}
+          GH_TOKEN: ${{ github.token }}
+      - name: Prepare isolated verification runtime
+        run: docker pull node:24-bookworm
+      - name: Generate scoped source edits
+        run: node scripts/owner-agent.cjs generate
+        env:
+          INPUT_ISSUE: ${{ inputs.issue }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Verify generated app without provider or GitHub credentials
+        run: |
+          mkdir -p "$RUNNER_TEMP/nfx-verify"
+          tar --exclude=.git --exclude=node_modules --exclude=.github --exclude=.owner-request.json --exclude=.owner-plan.json -cf - . | tar -xf - -C "$RUNNER_TEMP/nfx-verify"
+          docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges --pids-limit 256 --memory 4g --cpus 2 --user "$(id -u):$(id -g)" --mount "type=bind,src=$RUNNER_TEMP/nfx-verify,dst=/app" --mount "type=bind,src=$GITHUB_WORKSPACE/node_modules,dst=/app/node_modules,readonly" --workdir /app node:24-bookworm sh -c 'npm --cache /tmp/nfx-npm test && npm --cache /tmp/nfx-npm run build'
+          node scripts/owner-agent.cjs collect "$RUNNER_TEMP/nfx-verify"
+          git diff --check
+      - name: Publish draft for owner review
+        run: node scripts/owner-agent.cjs pr
+        env:
+          INPUT_ISSUE: ${{ inputs.issue }}
+          GH_TOKEN: ${{ github.token }}

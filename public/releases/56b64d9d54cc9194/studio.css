@@ -1,0 +1,72 @@
+/* Recording belongs to the existing transport dock and menu sheet. */
+#nfxRecordControls{display:flex;align-items:center;gap:4px;flex:none}
+#dock .dk-record{width:48px;display:flex;flex-direction:column;justify-content:center;gap:2px;color:var(--cyan,#45f0ff);font:9px var(--mono,monospace);letter-spacing:.04em}
+#dock .dk-record svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.5}
+#dock .dk-record .nfx-rec-stop{display:none}
+#dock .dk-record.nfx-recording{color:var(--red,#ff5a4d);background:rgba(255,90,77,.1);box-shadow:inset 0 0 0 1px rgba(255,90,77,.5)}
+#dock .dk-record.nfx-recording .nfx-rec-circle{display:none}
+#dock .dk-record.nfx-recording .nfx-rec-stop{display:block;fill:currentColor}
+#dock .dk-record.nfx-preparing{color:var(--amber,#ffb547)}
+#dock .dk-record-pause{width:44px;color:var(--text,#dcecff);font:18px var(--mono,monospace)}
+#dock .dk-record-pause svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none}
+#dock .dk-record-pause .nfx-resume-icon,#dock .dk-record-pause.nfx-paused .nfx-pause-icon{display:none}
+#dock .dk-record-pause.nfx-paused .nfx-resume-icon{display:block}
+#dock .dk-record:disabled{opacity:.45;cursor:wait}
+#nfxStudioTime{font-size:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
+#nfxRecordControls [hidden]{display:none!important}
+#nfxStudioPanel{font:12px var(--mono,monospace);color:var(--text,#dcecff);letter-spacing:normal;box-sizing:border-box;position:static;width:auto;max-height:none;overflow:visible;background:transparent;border:0;box-shadow:none;user-select:text;-webkit-user-select:text}
+#nfxStudioPanel button{font:11px var(--mono,monospace);letter-spacing:.04em;border:0;background:rgba(255,255,255,.035);color:var(--text,#dcecff);padding:10px 9px;min-height:40px;cursor:pointer;touch-action:manipulation;clip-path:var(--ch6,polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px));box-shadow:inset 0 0 0 1px var(--line2,#30485c)}
+#nfxStudioPanel button:hover{background:rgba(69,240,255,.1)}
+#nfxStudioPanel nav{display:flex;gap:4px;padding:6px 0 10px;position:sticky;top:0;z-index:3;background:rgba(6,9,21,.96);border-bottom:1px solid var(--line,#233548)}
+#nfxStudioPanel nav button{flex:1;font-size:10px;padding:8px 4px}
+#nfxStudioPanel button[aria-selected=true],#nfxStudioPanel .nfx-selected{color:var(--cyan,#45f0ff);background:rgba(69,240,255,.1);box-shadow:inset 0 0 0 1px var(--cyan,#45f0ff)}
+#nfxStudioPanel .nfx-body{padding:4px 0}
+#nfxStudioPanel *{box-sizing:border-box}
+#nfxStudioPanel [hidden], #nfxRecordControls [hidden]{display:none!important}
+#nfxStudioPanel .nfx-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0}
+#nfxStudioPanel .nfx-row>*{flex:1;min-width:0}
+#nfxStudioPanel label{display:flex;flex-direction:column;gap:7px;margin:12px 0;color:#a9bfd6;font-size:11px;line-height:1.5}
+#nfxStudioPanel label.nfx-check{flex-direction:row;align-items:center;gap:9px;margin:9px 0;min-height:32px}
+#nfxStudioPanel input,#nfxStudioPanel select{font:13px var(--mono,monospace);width:100%;min-width:0;color:#e3f4ff;background:#111d2c;border:1px solid #30475b;padding:10px;border-radius:0;user-select:text}
+#nfxStudioPanel input[type=checkbox]{width:19px;height:19px;accent-color:#45f0ff;flex:none}
+#nfxStudioPanel input[type=range]{padding:4px 0;accent-color:#45f0ff;min-height:30px}
+#nfxStudioPanel input[type=color]{height:40px;padding:4px}
+#nfxStudioPanel button:disabled,#nfxStudioPanel input:disabled,#nfxStudioPanel select:disabled{opacity:.45;cursor:not-allowed}
+#nfxStudioPanel :focus-visible,#nfxRecordControls :focus-visible{outline:2px solid #45f0ff;outline-offset:3px}
+#nfxStudioPanel h3{font:600 14px var(--disp,sans-serif);letter-spacing:.08em;margin:22px 0 9px;color:#e8f4ff}
+#nfxStudioPanel p,#nfxStudioPanel .nfx-note{font-size:11px;line-height:1.65;color:#8ea6c2;margin:9px 0}
+#nfxStudioPanel .nfx-alert{border-left:3px solid #ffb547;padding:10px;background:#ffb5470b;color:#ffcc83;white-space:pre-wrap}
+#nfxStudioPanel .nfx-primary{background:#123543;border-color:#45f0ff;color:#9ef7ff}
+#nfxStudioPanel .nfx-danger{border-color:#e27269;color:#ffb0a7}
+#nfxStudioPanel .nfx-status{padding:10px 14px;background:#0c1825;border-block:1px solid #24394b;white-space:pre-wrap;font-size:11px;line-height:1.6}
+#nfxStudioPanel .nfx-preview{position:relative;display:grid;place-items:center;background:#02040a;border:1px solid #294056;border-radius:0;overflow:hidden;max-height:200px;margin:12px 0}
+#nfxStudioPanel .nfx-preview canvas{display:block;max-width:100%;max-height:190px;object-fit:contain}
+#nfxStudioPanel .nfx-guide{position:absolute;border:1px dashed #ffffff9a;pointer-events:none}
+#nfxStudioPanel .nfx-guide span{position:absolute;bottom:4px;left:4px;color:#fff;background:#000a;font-size:9px;padding:3px}
+#nfxStudioPanel .nfx-assets{display:grid;gap:10px}
+#nfxStudioPanel .nfx-asset{display:flex;text-align:left;align-items:center;gap:10px;width:100%;padding:12px}
+#nfxStudioPanel .nfx-asset img{width:64px;height:48px;object-fit:cover;border-radius:5px;background:#000}
+#nfxStudioPanel .nfx-asset span{overflow-wrap:anywhere;line-height:1.6;flex:1;min-width:0}
+#nfxStudioPanel .nfx-asset small{display:block;color:#90a7bf;font-size:10px}
+#nfxStudioPanel video,#nfxStudioPanel audio{width:100%;max-height:260px;background:#000;border-radius:8px;margin:12px 0}
+#nfxStudioPanel .nfx-meter{height:8px;position:relative;background:#1a2c40;border-radius:4px;overflow:hidden;margin:6px 0}
+#nfxStudioPanel .nfx-meter i{display:block;width:0;height:100%;background:#5dffc4;transition:width .08s}
+#nfxStudioPanel .nfx-meter.nfx-clip i{background:#ff5a4d}
+#nfxStudioCountdown{position:fixed;z-index:60;inset:0;display:grid;place-items:center;pointer-events:none;font-family:var(--mono,monospace);color:var(--text,#dcecff)}
+#nfxStudioCountdown[hidden]{display:none}
+.nfx-countdown-card{pointer-events:auto;text-align:center;display:flex;align-items:center;flex-direction:column;gap:14px;padding:28px 32px;background:rgba(5,9,20,.9);backdrop-filter:blur(18px);clip-path:var(--ch,polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px));box-shadow:inset 0 0 0 1px var(--line2,#30485c)}
+.nfx-countdown-card>span{font-size:10px;letter-spacing:.2em;color:var(--dim,#7a90b4)}
+#nfxCountdownNumber{font:600 88px/1 var(--disp,sans-serif);color:var(--cyan,#45f0ff);text-shadow:0 0 26px rgba(69,240,255,.25);min-width:1ch}
+.nfx-countdown-card button{font:11px var(--mono,monospace);letter-spacing:.15em;color:var(--text,#dcecff);background:rgba(255,255,255,.05);border:1px solid var(--line2,#30485c);padding:12px 28px;min-height:44px;clip-path:var(--ch6,none)}
+.nfx-countdown-card small{font-size:9px;color:var(--dim,#7a90b4)}
+.nfx-countdown-card button:focus-visible{outline:2px solid var(--cyan,#45f0ff);outline-offset:4px}
+#nfxStudioPanel progress{width:100%;accent-color:#45f0ff;margin:10px 0}
+@media(max-width:600px),(max-height:540px){
+  #dock.nfx-has-recording{gap:4px;padding-inline:6px}
+  #dock.nfx-has-recording .dk-src{width:44px}
+  #dock.nfx-has-recording .play{width:46px;height:46px}
+  #dock.nfx-has-recording #btnAI{width:36px}
+  #dock.nfx-has-recording #btnMenu{width:40px}
+  #dock.nfx-has-recording .dk-record{width:44px}
+}
+@media(max-width:420px){#dock.nfx-capturing .trk{display:none}#dock.nfx-capturing{justify-content:space-between}}
