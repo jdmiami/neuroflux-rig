@@ -109,3 +109,6 @@ Neuroflux is an installable PWA. On Android Chrome use **INSTALL APP** on the op
 
 ### Private owner assistant
 The floating owner chat is protected by GitHub sign-in and is hidden for everyone else. It can propose live adjustments with explicit Apply/Undo and save app-improvement requests to GitHub. A separately triggered developer workflow prepares tested draft PRs; it never merges or deploys them automatically. Follow [Owner Assistant Setup](docs/Owner-Assistant-Setup.md) for the required OAuth and Actions configuration.
+
+### Simple clean recording
+The dock REC button starts a clean, single-output video with the existing preparation and 3–2–1 countdown. Hold to begin and slide up to LOCK. The operator interface fades away while canvas touch effects remain usable. Releasing or tapping does not stop a running take. Hold the recorder again and slide onto UNLOCK to stop/save. Keyboard alternative: hold Space on the recorder, then Arrow Up. A short tap starts hands-free capture; tap during preparation to cancel. This shortcut temporarily excludes menu overlays, stems, dual capture and a time limit, then restores the prior advanced settings. The RECORD panel's Start button remains available for advanced capture workflows.

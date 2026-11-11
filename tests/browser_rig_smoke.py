@@ -62,13 +62,15 @@ def main():
                 }'''),f'Dock overlap at {width}×{height}'
             page.set_viewport_size({'width':390,'height':844})
             page.evaluate('()=>{const s=window.NFXStudio;s.settings.kind="audio";s.settings.stems=false;s.settings.mixed=false;s.settings.limit=0;}')
-            page.locator('#btnRecord').click()
+            page.evaluate("NFXStudio.tab='record';NFXStudio.open(true);NFXStudio.render()")
+            page.locator('#nfxStudioPanel [data-action=start]').click()
             page.wait_for_function('!document.querySelector("#nfxStudioCountdown").hidden')
             page.screenshot(path=str(pathlib.Path(tempfile.gettempdir())/'neuroflux-native-countdown.png'))
             page.locator('[data-action=cancelCountdown]').click()
             page.wait_for_function('!window.NFXStudio.starting')
             assert page.evaluate('window.NFXStudio.store.list().then(a=>a.length)')==0
-            page.locator('#btnRecord').click()
+            page.evaluate("NFXStudio.tab='record';NFXStudio.open(true);NFXStudio.render()")
+            page.locator('#nfxStudioPanel [data-action=start]').click()
             page.wait_for_function('window.NFXStudio.session?.status==="recording"')
             assert not page.evaluate('window.NFXStudio.opened')
             page.set_viewport_size({'width':320,'height':740});page.wait_for_timeout(300)
@@ -86,7 +88,7 @@ def main():
             assert page.evaluate('window.NFXStudio.store.list().then(a=>a.some(x=>x.status==="complete"&&x.bytes>0))')
             assert not errors,errors
             print('PASS real rig: native recording menu/dock, nine WebGL scenes, rotation, portrait/landscape/desktop layout; no JS errors')
-            print('PASS real dock: tap-to-record, cancelable countdown, compact active controls at 320px, pause/resume, stop/save')
+            print('PASS advanced recorder: explicit start, cancelable countdown, compact active controls at 320px, pause/resume, stop/save')
             browser.close()
     finally:server.shutdown();server.server_close()
 

@@ -19,7 +19,7 @@ with sync_playwright() as p:
  assert page.evaluate('JSON.stringify(NFXStudio.profiles)')==profile
  page.set_viewport_size({'width':844,'height':390});page.wait_for_timeout(300);page.screenshot(path='/workspace/Neuroflux-Landscape-Take.png')
  page.evaluate("Object.assign(NFXStudio.settings,{kind:'audio',stems:false,mixed:false,limit:0})")
- page.locator('#btnRecord').click();page.wait_for_function('NFXStudio.session?.status==="recording"',timeout=30000)
+ page.evaluate('NFXStudio.start()');page.wait_for_function('NFXStudio.session?.status==="recording"',timeout=30000)
  assert page.locator('#sheet').is_visible()
  for width,height in [(640,360),(844,390),(1024,768)]:
   page.set_viewport_size({'width':width,'height':height});page.wait_for_timeout(200)

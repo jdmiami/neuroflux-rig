@@ -33,7 +33,7 @@ The current app records, exports and hands files to your device's share sheet. I
 6. Move just one control at a time. If the image gets lost, lower FEEDBACK, BLOOM and EXPOSURE before changing ten other things.
 7. To keep this look, go to **SCENES → MEMORY BANKS** and hold **A**, **B**, **C** or **D** for about half a second. Holding an occupied slot replaces its saved look.
 
-For a first recording, choose **RECORD → OUTPUT**, start with one 720p/30 output and **Clean**, then tap **REC**. Preparation and the output test happen first; a visible **3–2–1** happens just before the take begins. Tap the red stop control to save. Open **RECORD → LIBRARY** to play and download the take.
+For a first recording, choose **RECORD → OUTPUT**, start with one 720p/30 output and **Clean**, then tap **REC**. Preparation and the output test happen first; a visible **3–2–1** happens just before the take begins. For a take started from the dock, hold the recorder and slide up to UNLOCK to stop and save. Open **RECORD → LIBRARY** to play and download the take.
 
 **Important:** the keyboard shortcut **R means Randomize**, not Record. The REC button is your recording control.
 
@@ -489,6 +489,11 @@ Recording silence does not automatically stop online lyric analysis. If you do n
 | <a id="control-lyrEng"></a>**ENGINE** | STREAM, CLIP; default STREAM | Chooses STREAM or CLIP transcription. **Try this:** STREAM means live transcription, not broadcasting your visual to a platform. CLIP listens in roughly four-second chunks with a few seconds of lag; STREAM can fall back to CLIP if live connection fails. |
 
 ## 16. RECORD: start, pause and save a take
+
+**Simple recording from the dock:** tap REC or hold it briefly to start a clean video using output A. Preparation and the three-second countdown still happen first. When capture starts, the operator interface fades away, leaving only the recorder at your thumb. Slide up to LOCK for hands-free recording. Releasing your thumb or tapping elsewhere does not end the take; canvas touch effects remain usable. To finish, hold the recorder again, slide onto UNLOCK, and release. The take saves and the interface returns. Keyboard users can hold Space on the recorder and press Arrow Up to unlock and save.
+
+This shortcut temporarily uses one clean video output with no companion WAVs or time limit; your existing output-A dimensions, frame rate and audio selection are retained. Your advanced settings and menu-output mode are restored afterward. Tap the recorder during preparation/countdown to cancel. Device/storage/graphics failures can still finalize an interrupted take to protect recorded data. The RECORD settings below remain available for advanced recording started with that panel's Start button.
+
 
 Open **Menu → RECORD**. Its four subtabs are **RECORD, OUTPUT, AUDIO and LIBRARY**. The dock REC shortcut uses your last settings; the menu is where you make intentional changes before the next take.
 

@@ -1,3 +1,4 @@
+import {SimpleRecorder} from './studio/simple-record.js';
 import { PRESETS, profile, dimensions, validateProfile, formatTime, formatBytes } from './studio/profiles.js';
 import { ProgramOutput } from './studio/compositor.js';
 import { OutputMixer } from './studio/audio.js';
@@ -443,9 +444,11 @@ class RecordingStudio {
     button.title = recording ? 'Stop and save recording' : preparing ? 'Cancel recording preparation' : 'Record · 3-second countdown. Settings in the RECORD menu.';
     $('#dock').classList.toggle('nfx-capturing', !!recording);
     if (!this.session?.started) $('#nfxStudioTime').textContent = preparing ? 'READY' : saving ? 'SAVING' : 'REC';
+    this.simple?.paint();
     this.body.querySelectorAll('[data-action=start],[data-action=test]').forEach(el => el.disabled = this.active || this.busy || this.starting || this.exporting || !this.storageReady);
   }
   frame(now) {
+    this.simple?.sync();
     this.mixer.sync();
     const recording = this.session && ['recording','paused','preparing'].includes(this.session.status);
     const needed = new Set();
@@ -470,7 +473,7 @@ class RecordingStudio {
     const session = this.session;
     const bytes = session?.recorders.reduce((n,r) => n + (r.asset?.bytes || 0), 0) || 0;
     $('#nfxStudioTime').textContent = session?.status === 'saving' ? 'SAVE' : session?.started ? formatTime(session.seconds) : this.testing ? 'CHECK' : this.starting ? 'READY' : 'REC';
-    if (session?.started) $('#btnRecord').title = `Stop and save · ${formatTime(session.seconds)} · ${formatBytes(bytes)}`;
+    if (session?.started && !this.simple?.engaged) $('#btnRecord').title = `Stop and save · ${formatTime(session.seconds)} · ${formatBytes(bytes)}`;
     for (const [name, peak] of Object.entries(this.mixer.levels())) {
       const meter = this.body.querySelector(`[data-meter=${name}]`);
       if (meter) { meter.firstChild.style.width = `${Math.min(100, peak * 100)}%`; meter.classList.toggle('nfx-clip', peak >= .98); }
@@ -629,6 +632,7 @@ class RecordingStudio {
 const rig = window.NFXRig;
 if (rig) {
   const studio = new RecordingStudio(rig);
+  studio.simple=new SimpleRecorder(studio);
   window.NFXStudio = studio;
   studio.init();
 }

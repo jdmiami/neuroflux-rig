@@ -52,7 +52,7 @@ def main():
    page.evaluate('()=>{NFXCameraFX.store.create=realCreate;}')
    # Save is independent of the capture lock: it cannot pause or stop a take.
    page.evaluate("Object.assign(NFXStudio.settings,{kind:'audio',stems:false,mixed:false,limit:0});")
-   page.locator('#btnRecord').click();page.wait_for_function('NFXStudio.session?.status==="recording"',timeout=30000)
+   page.evaluate('NFXStudio.start()');page.wait_for_function('NFXStudio.session?.status==="recording"',timeout=30000)
    before=page.evaluate('({group:NFXStudio.session.group,seconds:NFXStudio.session.seconds})')
    page.locator('#btnQuickSave').click();page.wait_for_function('NFXCameraFX.saved.length===6')
    assert 'Could not save' not in page.locator('#nfxSetupPanel .nfx-performance-status').text_content()
