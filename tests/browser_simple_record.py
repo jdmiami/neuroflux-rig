@@ -8,12 +8,13 @@ with sync_playwright() as p:
  page.goto(f'http://127.0.0.1:{server.server_port}/',wait_until='domcontentloaded');page.wait_for_function('window.NFXStudio?.storageReady');page.locator('#start [data-go=sim]').click()
  # Software GPU cannot certify phone frame-rate admission; only that probe is bypassed.
  # Capture, countdown, MediaRecorder, local storage, and UI gestures stay real.
- page.evaluate("Object.assign(NFXStudio.profiles[0],{width:128,height:128,fps:24,mode:'full'});Object.assign(NFXStudio.settings,{kind:'audio',dual:true,stems:true,mixed:true,limit:17});NFXStudio.testOutputs=async()=>true;")
+ page.evaluate("()=>{Object.assign(NFXStudio.profiles[0],{width:128,height:128,fps:24,mode:'full',title:'My advanced title'});Object.assign(NFXStudio.settings,{kind:'audio',dual:true,stems:true,mixed:true,limit:17});NFXStudio.testOutputs=async()=>true;window.recordedTexts=[];const output=NFXStudio.outputs[0],draw=output.text;output.text=function(ctx,text,...args){if(NFXStudio.simple?.engaged)recordedTexts.push(text);return draw.call(this,ctx,text,...args)};}")
  cdp=page.context.new_cdp_session(page)
  def touch(kind,x=0,y=0):cdp.send('Input.dispatchTouchEvent',{'type':kind,'touchPoints':[] if kind=='touchEnd' else [{'x':x,'y':y}]})
  box=page.locator('#btnRecord').bounding_box();touch('touchStart',box['x']+box['width']/2,box['y']+box['height']/2);page.wait_for_function('NFXStudio.session?.status==="recording"',timeout=30000)
  assert page.evaluate('NFXStudio.simple.pointer?.held'), 'Long hold lost its pointer during startup'
  assert page.evaluate('NFXStudio.settings.kind')=='video' and page.evaluate('NFXStudio.profiles[0].mode')=='clean'
+ assert page.evaluate('NFXStudio.profiles[0].title')==''
  target=page.locator('.nfx-simple-target').bounding_box();touch('touchMove',target['x']+target['width']/2,target['y']+target['height']/2);touch('touchEnd');assert page.evaluate('NFXStudio.simple.locked')
  group=page.evaluate('NFXStudio.session.group');page.touchscreen.tap(100,180);page.touchscreen.tap(100,180);page.touchscreen.tap(200,250)
  assert page.evaluate('NFXStudio.session.group')==group
@@ -25,7 +26,10 @@ with sync_playwright() as p:
  box=page.locator('#btnRecord').bounding_box();touch('touchStart',box['x']+32,box['y']+32);page.wait_for_timeout(550);target=page.locator('.nfx-simple-target').bounding_box();touch('touchMove',target['x']+32,target['y']+27);touch('touchEnd');page.wait_for_function('!NFXStudio.session&&!NFXStudio.simple.engaged',timeout=30000)
  assert not page.evaluate('document.body.classList.contains("nfx-simple-record")')
  assert page.evaluate('NFXStudio.settings.kind')=='audio' and page.evaluate('NFXStudio.settings.limit')==17 and page.evaluate('NFXStudio.profiles[0].mode')=='full'
+ assert page.evaluate('NFXStudio.profiles[0].title')=='My advanced title'
+ assert not page.evaluate('recordedTexts.includes("My advanced title")'), 'Simple capture must not draw the advanced title'
  assets=page.evaluate('NFXStudio.store.list()');assert any(a['kind']=='video' and a['bytes']>0 and a.get('profile',{}).get('mode')=='clean' for a in assets),assets
+ assert all(a.get('profile',{}).get('title','')=='' for a in assets)
  # A real finalized clean video is offered without blocking recorder cleanup.
  page.wait_for_function('NFXStudio.phoneSave.entries.length===1')
  assert page.locator('#nfxPhoneSave').is_visible()
@@ -39,10 +43,12 @@ with sync_playwright() as p:
  assert page.locator('#nfxPhoneSave').is_hidden()
  page.locator('#btnRecord').tap();page.wait_for_function('!NFXStudio.starting&&!NFXStudio.simple.engaged',timeout=30000)
  assert page.evaluate('NFXStudio.settings.kind')=='audio'
+ assert page.evaluate('NFXStudio.profiles[0].title')=='My advanced title'
  # Failed admission must not leave hidden controls or altered modes.
  page.evaluate('NFXStudio.testOutputs=async()=>false')
  page.locator('#btnRecord').tap();page.wait_for_function('!NFXStudio.starting&&!NFXStudio.simple.engaged',timeout=30000)
  assert page.evaluate('NFXStudio.profiles[0].mode')=='full'
+ assert page.evaluate('NFXStudio.profiles[0].title')=='My advanced title'
  assert not page.evaluate('document.body.classList.contains("nfx-simple-record")')
  assert not errors,errors
  print('PASS hold/slide lock, real clean video capture, canvas touches and taps do not stop, deliberate unlock saves, prior settings restored');b.close()
