@@ -3,8 +3,23 @@ import assert from 'node:assert/strict';
 import { PRESETS, profile, dimensions, validateProfile, formatTime, formatBytes } from '../src/studio/profiles.js';
 import { wavHeader } from '../src/studio/storage.js';
 import { recordingMime } from '../src/studio/capture.js';
+import { recordingFile } from '../src/studio/phone-save.js';
 
 globalThis.matchMedia = () => ({ matches: false });
+
+test('phone share files use native media types without converting or renaming the payload format', async () => {
+  for (const [mime, type, extension] of [
+    ['video/mp4;codecs=avc1.42001E,mp4a.40.2', 'video/mp4', 'mp4'],
+    ['video/webm;codecs=vp9,opus', 'video/webm', 'webm'],
+    ['audio/wav', 'audio/wav', 'wav']
+  ]) {
+    const blob = new Blob(['original bytes'], { type: mime });
+    const file = recordingFile({ name: 'Take: 1/2', mime }, blob);
+    assert.equal(file.type, type);
+    assert.equal(file.name, `Take- 1-2.${extension}`);
+    assert.equal(await file.text(), await blob.text());
+  }
+});
 
 test('platform presets keep even, valid dimensions and independent profiles', () => {
   for (const key of Object.keys(PRESETS)) validateProfile(profile('a', key));

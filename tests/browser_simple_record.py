@@ -32,7 +32,7 @@ with sync_playwright() as p:
  assert page.evaluate('NFXStudio.phoneSave.entries[0].file.size===NFXStudio.phoneSave.entries[0].asset.bytes')
  page.evaluate('''()=>{window.sharedTake=null;navigator.canShare=({files})=>files[0] instanceof File;navigator.share=async({files})=>{window.sharedTake={bytes:files[0].size,type:files[0].type,active:navigator.userActivation.isActive}};NFXStudio.phoneSave.paint()}''')
  page.locator('[data-phone-save]').tap()
- assert page.evaluate('sharedTake.active&&sharedTake.bytes>0&&sharedTake.type.startsWith("video/")')
+ assert page.evaluate('sharedTake.active&&sharedTake.bytes>0&&["video/mp4","video/webm"].includes(sharedTake.type)')
  assert len(page.evaluate('NFXStudio.store.list()'))==len(assets)
  # A short tap during preparation cancels and restores advanced settings.
  page.locator('#btnRecord').tap();page.wait_for_function('NFXStudio.starting')

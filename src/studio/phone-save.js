@@ -1,7 +1,9 @@
 // Keep file preparation outside the tap handler: mobile sharing needs a fresh
 // user gesture, which can be lost if we read IndexedDB before navigator.share.
 export function recordingFile(asset, blob) {
-  const mime = asset.mime || blob.type;
+  // MediaRecorder may include codecs in its MIME string. Native share targets
+  // need the base media type; the file's bytes and original format stay intact.
+  const mime = (asset.mime || blob.type).split(';')[0].trim().toLowerCase();
   const extension = mime.includes('mp4') ? 'mp4' : mime.includes('wav') ? 'wav' : mime.includes('png') ? 'png' : 'webm';
   return new File([blob], `${asset.name.replace(/[\\/:*?"<>|]/g, '-')}.${extension}`, { type: mime });
 }
