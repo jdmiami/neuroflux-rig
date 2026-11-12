@@ -1,5 +1,5 @@
-const CACHE = 'neuroflux-local-99fd4920f39826e2';
-const ASSETS = ["/","/index.html","/launch.html","/release.json","/manifest.webmanifest","/icons/icon-192.png","/icons/icon-512.png","/releases/99fd4920f39826e2/app.html","/releases/99fd4920f39826e2/studio.js","/releases/99fd4920f39826e2/studio.css","/releases/99fd4920f39826e2/performance.js","/releases/99fd4920f39826e2/performance.css","/releases/99fd4920f39826e2/vision.worker.js","/releases/99fd4920f39826e2/guide.js","/releases/99fd4920f39826e2/guide.css","/releases/99fd4920f39826e2/guide-index.json","/releases/99fd4920f39826e2/export.worker.js","/releases/99fd4920f39826e2/pcm.worklet.js"];
+const CACHE = 'neuroflux-local-dc0bebb09a300713';
+const ASSETS = ["/","/index.html","/launch.html","/release.json","/manifest.webmanifest","/icons/icon-192.png","/icons/icon-512.png","/releases/dc0bebb09a300713/app.html","/releases/dc0bebb09a300713/studio.js","/releases/dc0bebb09a300713/studio.css","/releases/dc0bebb09a300713/performance.js","/releases/dc0bebb09a300713/performance.css","/releases/dc0bebb09a300713/vision.worker.js","/releases/dc0bebb09a300713/guide.js","/releases/dc0bebb09a300713/guide.css","/releases/dc0bebb09a300713/guide-index.json","/releases/dc0bebb09a300713/export.worker.js","/releases/dc0bebb09a300713/pcm.worklet.js"];
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);

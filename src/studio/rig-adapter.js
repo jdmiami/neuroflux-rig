@@ -134,6 +134,11 @@ window.NFXRig = {
       studioTargets.set(id, target);
     }
     const saved = { M, w, S, L, A };
+    // Capture the input to one post operation from the same feedback frame as
+    // its result. Independent preview histories would give misleading deltas.
+    if(options.compare&&rigPostStages.some(p=>p.id===options.stage)){
+      if(!target.before){target.before=document.createElement('canvas');target.before.width=width;target.before.height=height;}
+    }
     const scene = { ...Hn.scene }, post = { ...Hn.post }, aspect = width / height;
     let feedback={...Hn.fb};
     if(options.stage){
@@ -174,9 +179,13 @@ window.NFXRig = {
       // Each target renders into its own viewport; the operator pass fills the buffer.
       const bufferWidth = Math.max(f.width, saved.L, width), bufferHeight = Math.max(f.height, saved.A, height);
       if (f.width !== bufferWidth || f.height !== bufferHeight) { f.width = bufferWidth; f.height = bufferHeight; }
-      renderRig({ scene, post, fb: feedback, pts, previewStage:options.stage, studio: true, layerSolo:options.solo, camFrame: Hn.camFrame, depthFrame: Hn.depthFrame });
+      renderRig({ scene, post, fb: feedback, pts, previewStage:options.stage,
+        compareStage:options.compare?options.stage:undefined,
+        captureBefore:options.compare&&target.before?()=>target.before.getContext('2d').drawImage(f,0,f.height-height,width,height,0,0,width,height):undefined,
+        studio: true, layerSolo:options.solo, camFrame: Hn.camFrame, depthFrame: Hn.depthFrame });
       target.index = S;
       target.context.drawImage(f, 0, f.height - height, width, height, 0, 0, width, height);
+      target.canvas.layerBefore=options.compare?target.before:null;
       return target.canvas;
     } finally {
       M = saved.M; w = saved.w; S = saved.S; L = saved.L; A = saved.A;

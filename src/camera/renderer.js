@@ -34,8 +34,8 @@ export class CameraRenderer {
  async setBackground(file){if(file.size>32*1024*1024)throw Error('Choose an image smaller than 32 MB.');const bitmap=await createImageBitmap(file);this.upload(3,this.background,bitmap);bitmap.close();this.backgroundReady=true;}
  capturePreview(id,target,w,h,requested){
   if(!requested?.has(id))return;
-  const g=this.gl;let canvas=this.previews.get(id);if(!canvas){canvas=document.createElement('canvas');canvas.width=384;canvas.height=Math.max(2,Math.round(384*h/w));this.previews.set(id,canvas);}
-  if(canvas.height!==Math.round(384*h/w))canvas.height=Math.max(2,Math.round(384*h/w));
+  const g=this.gl,pw=Math.max(2,Math.round(384*Math.min(1,w/h))),ph=Math.max(2,Math.round(pw*h/w));let canvas=this.previews.get(id);if(!canvas){canvas=document.createElement('canvas');this.previews.set(id,canvas);}
+  if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph;}
   g.bindFramebuffer(g.READ_FRAMEBUFFER,target.f);g.readBuffer(g.COLOR_ATTACHMENT0);g.bindFramebuffer(g.DRAW_FRAMEBUFFER,null);g.drawBuffers([g.BACK]);g.blitFramebuffer(0,0,w,h,0,0,w,h,g.COLOR_BUFFER_BIT,g.NEAREST);
   const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(this.canvas,0,0,canvas.width,canvas.height);
   g.bindFramebuffer(g.FRAMEBUFFER,target.f);g.drawBuffers([g.COLOR_ATTACHMENT0,g.COLOR_ATTACHMENT1]);g.viewport(0,0,w,h);
@@ -54,6 +54,7 @@ export class CameraRenderer {
   const used=new Set(),activeIds=new Set(active.map(n=>n.id));
   this.capturePreview('camera-raw',this.targets[current],w,h,previewStages);
   for(const node of state.nodes){
+   this.capturePreview('before:'+node.id,this.targets[current],w,h,previewStages);
    if(!activeIds.has(node.id)){this.capturePreview(node.id,this.targets[current],w,h,previewStages);continue;}
    const effect=catalog.byId[node.effect],p=node.params;const needs=[...effect.requirements,...(p.target==='person'||p.target==='background'?['segment']:p.target==='face'?['face']:p.target==='body'?['pose']:[])];const available=needs.every(k=>k==='depth'?!!depth?.data:!!this.vision.results[k]&&!this.vision.failed.has(k)&&performance.now()-this.vision.results[k].at<2000&&(k!=='face'||this.vision.results[k].faces?.length>0)&&(k!=='pose'||this.vision.results[k].poses?.length>0))&& (node.effect!=='background-image'||this.backgroundReady);
    const input=this.targets[current],output=this.targets[1-current];this.bind(0,input.colors[0]);this.bind(1,input.colors[1]);

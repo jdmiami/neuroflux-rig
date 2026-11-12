@@ -23,7 +23,7 @@ function renderRig(e){
  let target=rigVisualBuffers.get(M);if(!target){h.activeTexture(h.TEXTURE0);target={post:D(L,A,false),signature:null};rigVisualBuffers.set(M,target);}
  const layerUI=window.NFXLayers,split=!!layerUI?.state.enabled||e.layerSolo!==undefined||!e.studio&&layerUI?.opened&&!!layerUI.previewSolo;
  if(target.split!==split){target.split=split;target.signature=null;for(const trail of w){h.bindFramebuffer(h.FRAMEBUFFER,trail.f);h.clearColor(0,0,0,1);h.clear(h.COLOR_BUFFER_BIT);}}
- const signature=JSON.stringify([Object.fromEntries(Object.entries(Be).filter(([key])=>!key.startsWith('cam'))),L,A,e.scene.uCenter,split,e.previewStage,sound.signature]);
+ const signature=JSON.stringify([Object.fromEntries(Object.entries(Be).filter(([key])=>!key.startsWith('cam'))),L,A,e.scene.uCenter,split,e.previewStage,e.compareStage,sound.signature]);
  const hold=window.NFXMotion?.held??true;
  if(!hold||target.signature!==signature){
   h.activeTexture(h.TEXTURE0);h.bindTexture(h.TEXTURE_2D,E);h.texSubImage2D(h.TEXTURE_2D,0,0,0,256,1,h.RED,h.UNSIGNED_BYTE,k);
@@ -32,7 +32,10 @@ function renderRig(e){
   if(!split)drawRigPoints(e.pts);
   const next=w[S],prev=w[1-S];h.bindFramebuffer(h.FRAMEBUFFER,next.f);h.useProgram(b.p);h.activeTexture(h.TEXTURE0);h.bindTexture(h.TEXTURE_2D,M.t);N(b,'uScene',0);h.activeTexture(h.TEXTURE1);h.bindTexture(h.TEXTURE_2D,prev.t);N(b,'uPrev',1);C(b,'uAspect',L/A);for(const key in e.fb)C(b,key,e.fb[key]);h.drawArrays(h.TRIANGLES,0,3);
   h.activeTexture(h.TEXTURE1);h.bindTexture(h.TEXTURE_2D,null);h.activeTexture(h.TEXTURE0);h.bindTexture(h.TEXTURE_2D,next.t);h.generateMipmap(h.TEXTURE_2D);
-  h.bindFramebuffer(h.FRAMEBUFFER,target.post.f);h.useProgram(g.p);N(g,'uTex',0);N(g,'uCam',2);N(g,'uDepth',3);C(g,'uRes',[L,A]);for(const key in e.post)C(g,key,e.post[key]);C(g,'uCamOn',0);h.drawArrays(h.TRIANGLES,0,3);S=1-S;target.signature=signature;
+  h.useProgram(g.p);N(g,'uTex',0);N(g,'uCam',2);N(g,'uDepth',3);C(g,'uRes',[L,A]);for(const key in e.post)C(g,key,e.post[key]);C(g,'uCamOn',0);
+  const compared=rigPostStages.find(p=>p.id===e.compareStage);
+  if(compared&&e.captureBefore){h.bindFramebuffer(h.FRAMEBUFFER,null);C(g,compared.uniform,compared.neutral);h.drawArrays(h.TRIANGLES,0,3);e.captureBefore();C(g,compared.uniform,e.post[compared.uniform]);}
+  h.bindFramebuffer(h.FRAMEBUFFER,target.post.f);h.drawArrays(h.TRIANGLES,0,3);S=1-S;target.signature=signature;
  }
  if(split){
   const showSpace=!!e.pts&&(e.layerSolo==='space'||e.layerSolo===undefined&&(layerUI.state.layers.space.visible&&layerUI.state.layers.space.opacity>0||!e.studio&&layerUI.previewSolo==='space')),spaceW=showSpace?L:1,spaceH=showSpace?A:1;

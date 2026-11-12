@@ -56,7 +56,7 @@ with sync_playwright() as p:
  page.evaluate("()=>{while(NFXPerformance.state.nodes.length<16)NFXPerformance.add('swirl');NFXLayers.scope='root';NFXLayers.select(NFXPerformance.state.nodes[8].id)}")
  page.wait_for_timeout(900);assert page.evaluate('NFXPerformance.state.nodes.length')==16
  assert page.evaluate('NFXLayers.items().filter(i=>i.kind==="effect").length')==16
- assert page.evaluate('NFXPerformance.renderer.previews.size')<=7
+ assert page.evaluate('NFXPerformance.renderer.previews.size')<=14
  assert page.evaluate('NFXLayers.previewTargets.size')<=7
  page.screenshot(path='/workspace/Neuroflux-Exploded-Landscape.png')
  print('PASS sixteen effects, per-layer sound routing, bounded live previews',flush=True)
