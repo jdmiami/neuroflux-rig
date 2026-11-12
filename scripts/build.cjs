@@ -4,7 +4,7 @@ const zlib = require('node:zlib');
 const crypto = require('node:crypto');
 const esbuild = require('esbuild');
 const root = path.resolve(__dirname, '..');
-const adapter = ['rig-render.js', 'rig-adapter.js'].map(name => fs.readFileSync(path.join(root, 'src/studio', name), 'utf8')).join('\n');
+const adapter = ['layer-shader.js', 'rig-render.js', 'rig-adapter.js'].map(name => fs.readFileSync(path.join(root, 'src/studio', name), 'utf8')).join('\n');
 const template = fs.readFileSync(path.join(root, 'src/app.html'), 'utf8');
 if (!template.includes('/* NFX_STUDIO_ADAPTER */')) throw new Error('Studio adapter insertion point missing.');
 const source = Buffer.from(template.replace('/* NFX_STUDIO_ADAPTER */', adapter));
@@ -14,7 +14,7 @@ fs.mkdirSync(output, { recursive: true });
 fs.copyFileSync(path.join(root, 'src/update.html'), path.join(output, 'update.html'));
 esbuild.buildSync({entryPoints:[path.join(root,'src/performance.js')],bundle:true,outfile:path.join(output,'performance.js'),format:'iife',target:'es2022',minify:true});
 esbuild.buildSync({entryPoints:[path.join(root,'src/camera/vision.worker.js')],bundle:true,outfile:path.join(output,'vision.worker.js'),format:'iife',target:'es2022',minify:true});
-fs.copyFileSync(path.join(root,'src/performance/performance.css'),path.join(output,'performance.css'));
+fs.writeFileSync(path.join(output,'performance.css'),fs.readFileSync(path.join(root,'src/performance/performance.css'),'utf8')+'\n'+fs.readFileSync(path.join(root,'src/performance/layers.css'),'utf8'));
 fs.cpSync(path.join(root,'node_modules/@mediapipe/tasks-vision/wasm'),path.join(output,'vendor/vision/wasm'),{recursive:true});
 esbuild.buildSync({ entryPoints: [path.join(root, 'src/studio.js')], bundle: true,
   outfile: path.join(output, 'studio.js'), format: 'iife', target: 'es2022', minify: true });

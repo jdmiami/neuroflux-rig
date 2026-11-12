@@ -92,10 +92,10 @@ def main():
    print('PASS image checks: sixteen distinct kaleidoscope divisions; warped depth aligns with camera; bounded shader cache',flush=True)
    page.evaluate("NFXCameraFX.commit({version:1,enabled:true,nodes:[]});NFXCameraFX.add('kaleidoscope');NFXCameraFX.add('swirl')")
    page.locator('#btnMenu').click();page.locator('#tabs [data-p=cam]').click();page.locator('[data-tab=effects]').click()
-   assert page.locator('.nfx-fx-node').count()==2
-   if page.locator('.nfx-fx-node').nth(1).get_attribute('open') is None:page.locator('.nfx-fx-node').nth(1).locator('summary').first.click()
-   page.locator('.nfx-fx-node').nth(1).locator('[data-command=tools]').click()
-   page.locator('.nfx-fx-node').nth(1).locator('[data-command=up]').click()
+   assert page.locator('#nfxCameraEffects .nfx-fx-node').count()==2
+   if page.locator('#nfxCameraEffects .nfx-fx-node').nth(1).get_attribute('open') is None:page.locator('#nfxCameraEffects .nfx-fx-node').nth(1).locator('summary').first.click()
+   page.locator('#nfxCameraEffects .nfx-fx-node').nth(1).locator('[data-command=tools]').click()
+   page.locator('#nfxCameraEffects .nfx-fx-node').nth(1).locator('[data-command=up]').click()
    assert page.evaluate('NFXCameraFX.state.nodes[0].effect')=='swirl'
    for width,height in [(320,740),(390,844),(844,390),(1280,800)]:
     page.set_viewport_size({'width':width,'height':height});page.wait_for_timeout(120)

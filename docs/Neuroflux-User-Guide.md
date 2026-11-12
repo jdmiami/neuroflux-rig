@@ -653,6 +653,24 @@ If the device has already mixed music and voice into one input stream, the app c
 
 For a truly silent deliverable, choose **Silent video** for that output. If you also want no audio companion files, turn off the separate/mixed WAV options. Muting an output does not turn off a lyric service or stop the visual analyzer from listening.
 
+### Layer stack: peel the picture apart
+
+Tap the **three-layer LAYERS button** in the bottom dock. Your composition opens as a tilted stack of cards. Swipe up/down, use the arrows, or use the mouse wheel to browse. Browsing changes your selection; it leaves your mix alone. Tap a card to edit it. Close the workspace to fold back into the live picture.
+
+The first level has **Camera**, **Visuals** and **3D**. The card in front represents the top of the picture. Each source has its own **Opacity**, **Blend**, **Show/Hide**, **Lock**, **Rename** and **Reset** controls. Bring forward / Send backward changes the actual compositing order; you can also drag the selected card's grab handle. Normal covers what is behind it, Screen combines lighter areas, Add light builds brightness, Multiply darkens, Difference compares colors, and Overlay mixes contrast. Camera also supports luma/depth keying with the existing camera key controls. Depth keying needs depth analysis enabled in Camera. Hardware camera permission is requested only when you explicitly enable the camera.
+
+Opening the deck preserves your existing mix. Adjusting a source layer switches the picture to independent layer composition: the 3D source is then separate from the generated visuals and their post effects. The original CAM MIX control remains a shortcut for fading the camera against the other sources. Its endpoints retain camera-only / visuals-only behavior. Layer visibility is separate, so a hidden source stays hidden until you show it again.
+
+**Solo preview** lets you inspect one source at full strength. The gold **SOLO · PREVIEW ONLY** label marks this view. It affects the operator preview while the deck is open; recordings continue to use the complete final mix. Closing Layers ends solo. Opacity, blend, visibility, effects and order are real composition edits and affect new frames in a recording. The card deck, inspector and its animations are excluded from clean video capture. Hiding a picture layer does not mute or disconnect audio.
+
+Open **Visual folders** to reach Geometry, Color, Motion, Effects and Feedback. Each folder exposes up to four existing controls at a time; use More controls for the next four. These folders organize controls that shape the same visual source. Open **3D controls** for point-cloud and splat settings. Use **Open 3D source** to load a real .ply, .splat or .spz file. A source that is off or unloaded says so on its card.
+
+Open **Camera FX** to browse the actual camera effect chain. Effect cards offer Strength plus the main effect controls, Bypass, Earlier/Later, Duplicate, Remove and Reset. **All effect controls** opens its full existing Camera FX editor. **Add effect** opens a searchable visual library. The camera chain still supports eight effects total; tracking effects keep their required early position before cloning/tiling. An invalid reorder is rejected without changing the chain.
+
+Use **Group FX**, select ungrouped effects, then **Create folder**. Open the folder to browse its effects. Folder strength multiplies each child's own strength; bypassing the folder bypasses all its effects. Folder locks prevent accidental changes in this workspace. Moving a folder moves its effects as a block when the chain permits it. Ungroup keeps the current strengths/bypass appearance. Removing an individual effect removes its folder membership too.
+
+The header has **Undo**, **Redo**, **Save setup**, **Switch control side** and **Close**. The console can sit on either side in landscape; portrait puts the stack above the controls. Touch sliders retain the app's hold-to-activate behavior. Layer settings persist on this device and are included in whole-app quick saves, downloadable setup files and restores. Camera permission and loaded media still need activating/reselecting after a restore. This release has one source layer of each type; effect duplication is available inside the camera chain.
+
 ## 19. LIBRARY: play, organize and protect your takes
 
 Everything here is saved in this browser on this device/site. A take saved in Android Chrome will not automatically appear in iPhone Chrome, a private tab, another browser profile or a different site address. There is no account-based media backup in this version.

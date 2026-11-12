@@ -1,5 +1,6 @@
 import byos from '../../lib/byos.cjs';
 import catalog from '../../lib/camera-fx.cjs';
+import layers from '../../lib/layers.cjs';
 import knowledge from '../../lib/guide-index.json';
 import {CameraFXControls,artwork} from './camera-ui.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -37,7 +38,7 @@ export class BuildStudio {
   await this.fx.quickSave();this.source='blank';this.layout=[];this.tabs=[];this.activeTab='starter';this.setMode(true);
   for(const c of knowledge.controls)if(Number.isFinite(c.default)&&!['cam','motion','depth','hands','lyrics','aiDir'].includes(c.id))this.fx.rig.setParam(c.id,c.default,'silent');
   for(const id of ['cam','motion','depth','hands','lyrics','aiDir'])this.fx.rig.setParam(id,0,'user');
-  this.fx.commit(catalog.empty());this.persist();this.render();
+  this.fx.commit(catalog.empty());this.fx.layers?.setState(layers.fromLegacy(this.fx.rig.guideState().controls));this.persist();this.render();
   this.selectTab('starter');
   this.status('Blank canvas. Add a visual source or camera from the library. Your previous setup is saved.');
  }
