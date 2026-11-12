@@ -8,7 +8,7 @@ export function layerGesture(layers){
  document.addEventListener('pointerdown',event=>{
   if(!event.isTrusted||event.pointerType!=='touch'||!eligible(event.target))return;
   points.set(event.pointerId,{id:event.pointerId,x:event.clientX,y:event.clientY});
-  if(points.size!==3){cancel();return;}stop(event);cancel();claimed=true;start=[...points.values()].map(p=>({...p}));layers.rig.cancelLayerTouches(start);layers.drag=null;layers.deck.classList.remove('is-dragging');layers.deck.style.setProperty('--deck-drag','0px');
+  if(points.size!==3){cancel();return;}stop(event);cancel();claimed=true;start=[...points.values()].map(p=>({...p}));layers.rig.cancelLayerTouches(start);layers.deckMotion?.cancel();layers.drag=null;layers.deck.classList.remove('is-dragging');
   const token=generation;timer=setTimeout(()=>requestAnimationFrame(()=>{
    if(token!==generation||points.size!==3)return;armed=true;layers.rig.cancelLayerTouches(start);layers.drag=null;layers.deck.classList.remove('is-dragging');layers.deck.style.setProperty('--deck-drag','0px');layers.open(!layers.opened);layers.rig.feedback?.('tick');navigator.vibrate?.(12);layers.gestureQuietUntil=performance.now()+650;
   }),520);

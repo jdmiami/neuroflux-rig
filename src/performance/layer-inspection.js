@@ -44,7 +44,7 @@ export function mountInspection(layers){
  const points=new Map();let pinch=null,consume=false;
  const stop=e=>{e.preventDefault();e.stopImmediatePropagation();};
  const distance=()=>{const [a,b]=[...points.values()];return Math.hypot(a.x-b.x,a.y-b.y);};
- const clearDrag=()=>{layers.drag=null;deck.classList.remove('is-dragging');deck.style.setProperty('--deck-drag','0px');};
+ const clearDrag=()=>{layers.deckMotion?.cancel();layers.drag=null;deck.classList.remove('is-dragging');};
  deck.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;points.set(e.pointerId,{x:e.clientX,y:e.clientY});if(points.size>=2){clearDrag();consume=true;root.classList.add('nfx-scene-pinching');if(points.size===2)pinch={distance:Math.max(1,distance()),zoom:layers.sceneZoom};else pinch=null;stop(e);}},true);
  deck.addEventListener('pointermove',e=>{if(!points.has(e.pointerId))return;points.set(e.pointerId,{x:e.clientX,y:e.clientY});if(consume){stop(e);if(pinch&&points.size===2)layers.setZoom(pinch.zoom*distance()/pinch.distance);}},true);
  const end=e=>{points.delete(e.pointerId);if(consume){e.preventDefault();clearDrag();pinch=null;layers.blockCardClick=true;setTimeout(()=>layers.blockCardClick=false,400);if(!points.size){consume=false;root.classList.remove('nfx-scene-pinching');}}};
@@ -64,5 +64,5 @@ export function drawComparison(layers,canvas,after,before,mirror=false){
  if(before&&mode==='compare'){ctx.save();ctx.beginPath();ctx.rect(0,0,w/2,h);ctx.clip();draw(before);ctx.restore();ctx.fillStyle='#c0faff';ctx.fillRect(w/2-1,0,2,h);}
  if(before&&mode==='difference'){ctx.save();ctx.globalCompositeOperation='difference';draw(before);ctx.restore();}
  const card=canvas.parentElement,labels=card.querySelector('.nfx-scene-comparison');labels.hidden=!before;
- if(before){labels.replaceChildren();for(const text of mode==='compare'?['Before','After']:mode==='difference'?['Change · black = unchanged']:['Stage result']){const span=document.createElement('span');span.textContent=text;labels.append(span);}}
+ if(before&&labels.dataset.mode!==mode){labels.dataset.mode=mode;labels.replaceChildren();for(const text of mode==='compare'?['Before','After']:mode==='difference'?['Change · black = unchanged']:['Stage result']){const span=document.createElement('span');span.textContent=text;labels.append(span);}}
 }

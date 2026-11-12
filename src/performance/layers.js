@@ -84,12 +84,7 @@ export class LayerWorkspace {
    if(event.target===this.deck&&['ArrowUp','ArrowDown','Home','End'].includes(event.key)){event.preventDefault();const items=this.items(),index=items.findIndex(i=>i.id===this.selected);this.select(items[event.key==='Home'?0:event.key==='End'?items.length-1:Math.max(0,Math.min(items.length-1,index+(event.key==='ArrowDown'?1:-1)))]?.id);}
   });
   for(const type of ['pointerdown','pointerup','dblclick'])this.rootElement.addEventListener(type,e=>e.stopPropagation());
-  this.deck.addEventListener('wheel',event=>{event.preventDefault();if(performance.now()-(this.wheelAt||0)<160)return;this.wheelAt=performance.now();this.browse(event.deltaY>0?1:-1);},{passive:false});
-  this.deck.addEventListener('pointerdown',event=>{if(event.button>0||this.drag)return;this.drag={id:event.pointerId,y:event.clientY,card:event.target.closest('[data-layer-card]')?.dataset.layerCard,reorder:!!event.target.closest('[data-layer-grip]')};this.deck.classList.add('is-dragging');this.deck.setPointerCapture(event.pointerId);});
-  this.deck.addEventListener('pointermove',event=>{if(this.drag?.id===event.pointerId&&!this.drag.reorder)this.deck.style.setProperty('--deck-drag',Math.max(-45,Math.min(45,(event.clientY-this.drag.y)*.35))+'px');});
-  this.deck.addEventListener('pointerup',event=>{const drag=this.drag;this.drag=null;this.deck.classList.remove('is-dragging');this.deck.style.setProperty('--deck-drag','0px');if(!drag||drag.id!==event.pointerId)return;const distance=event.clientY-drag.y;if(Math.abs(distance)>30){event.preventDefault();if(drag.reorder)this.guard(()=>this.move((distance>0?1:-1)*(this.scope==='root'&&['effect','group'].includes(this.current()?.kind)?-1:1)));else this.browse((distance<0?1:-1)*Math.max(1,Math.min(5,Math.floor(Math.abs(distance)/65))));this.blockCardClick=true;setTimeout(()=>this.blockCardClick=false,0);}else if(drag.card&&!drag.reorder){this.select(drag.card);}});
-  this.deck.addEventListener('click',event=>{if(this.blockCardClick){event.preventDefault();event.stopImmediatePropagation();}},true);
-  this.deck.addEventListener('pointercancel',()=>{this.drag=null;this.deck.classList.remove('is-dragging');this.deck.style.setProperty('--deck-drag','0px');});
+
  }
  guard(fn){try{fn();}catch(error){this.message(error.message);}}
  message(text){this.rootElement.querySelector('.nfx-layer-status').textContent=text;}

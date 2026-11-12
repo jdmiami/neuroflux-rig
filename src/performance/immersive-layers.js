@@ -4,6 +4,7 @@ import model from '../../lib/layers.cjs';
 import {layerGesture} from './layer-gesture.js';
 import {drawLayerWords} from './layer-words.js';
 import {mountInspection,comparable,sourceLabel,drawComparison} from './layer-inspection.js';
+import {mountLayerNavigation} from './layer-navigation.js';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const controls=(id,name,ids,source='visuals',preview={})=>({id,name,kind:'controls',controls:ids,source,preview});
@@ -53,7 +54,7 @@ export function immersiveLayers(layers){
  const words=document.createElement('canvas');words.id='nfxWordsOverlay';words.setAttribute('aria-hidden','true');document.getElementById('hud').before(words);layers.wordsCanvas=words;
  layers.settle=function(){this.focused=this.opened;root.classList.toggle('nfx-layer-focused',this.opened);};
  layers.open=function(value=true){
-  if(value===this.opened)return;this.clearInspectionTouches();original.open(value);if(value){this.scope='root';this.selected=this.rig.layerStatus().camera?'camera':'visuals';this.paint();this.settle(580);}else{clearTimeout(this.settleTimer);this.focused=false;root.classList.remove('nfx-layer-focused');for(const id of this.previewTargets)this.rig.release(id);this.previewTargets.clear();this.workspace.renderer?.clearPreviews();}
+  if(value===this.opened)return;this.deckMotion?.cancel();this.clearInspectionTouches();original.open(value);if(value){this.scope='root';this.selected=this.rig.layerStatus().camera?'camera':'visuals';this.paint();this.settle(580);}else{clearTimeout(this.settleTimer);this.focused=false;root.classList.remove('nfx-layer-focused');for(const id of this.previewTargets)this.rig.release(id);this.previewTargets.clear();this.workspace.renderer?.clearPreviews();}
  };
  layers.select=function(id){original.select(id);this.settle();};
  layers.deck.addEventListener('pointerup',()=>layers.settle(),true);layers.deck.addEventListener('pointercancel',()=>layers.settle(),true);
@@ -142,12 +143,12 @@ export function immersiveLayers(layers){
   root.querySelector('h2').textContent=item?.name||'Layers';root.querySelector('.nfx-layer-kicker').textContent=`${index+1} / ${items.length} · LIVE LAYERS`;
   root.querySelector('.nfx-layer-browse output').textContent=`${index+1} / ${items.length}`;root.querySelector('[data-layer-action=previous]').disabled=index<=0;root.querySelector('[data-layer-action=next]').disabled=index>=items.length-1;
   root.querySelector('.nfx-layer-breadcrumb').innerHTML=this.scope==='root'?'<span>EXPLODED VIEW</span>':'<button data-layer-action="back">‹ All layers</button>';
-  root.querySelector('.nfx-layer-solo').hidden=!this.previewSolo;this.paintHistory();this.paintInspector(item);this.paintInspection(item);this.lastPreview=0;
+  root.querySelector('.nfx-layer-solo').hidden=!this.previewSolo;this.paintHistory();this.paintInspector(item);this.paintInspection(item);this.deckMotion?.sync();this.lastPreview=0;
  };
  layers.hasCameraPreview=function(){return this.opened&&this.previewItems().some(i=>['effect','group','cameraRaw'].includes(i.kind));};
- layers.previewItems=function(){const items=this.items(),index=items.findIndex(i=>i.id===this.selected);return items.filter((item,n)=>Math.abs(n-index)<=3);};
+ layers.previewItems=function(){const items=this.items(),index=this.deckMotion?.busy?Math.round(this.deckMotion.position):items.findIndex(i=>i.id===this.selected);return items.filter((item,n)=>Math.abs(n-index)<=(this.deckMotion?.busy?1:3));};
  layers.cameraPreviewRequest=function(now){
-  if(!this.opened||document.hidden||now-(this.lastCameraPreview||0)<80)return null;this.lastCameraPreview=now;
+  if(!this.opened||document.hidden||now-(this.lastCameraPreview||0)<(this.deckMotion?.busy?160:80))return null;this.lastCameraPreview=now;
   const result=new Set();for(const item of this.previewItems()){if(item.kind==='effect'){result.add(item.id);result.add('before:'+item.id);}if(item.id==='camera-raw')result.add('camera-raw');if(item.kind==='group'){const nodes=this.workspace.state.nodes.filter(n=>item.group.nodes.includes(n.id));if(nodes.length){result.add(nodes.at(-1).id);result.add('before:'+nodes[0].id);}}}return result;
  };
  function spectrum(ctx,width,height){
@@ -162,10 +163,11 @@ export function immersiveLayers(layers){
   if(w.width!==boxWidth||w.height!==boxHeight){w.width=boxWidth;w.height=boxHeight;}w.style.left=gl.offsetLeft+'px';w.style.top=gl.offsetTop+'px';w.style.width=boxWidth+'px';w.style.height=boxHeight+'px';
   const wc=w.getContext('2d');wc.clearRect(0,0,w.width,w.height);drawLayerWords(wc,this.state.words,w.width,w.height);
   const lyric=document.getElementById('lyr');if(lyric)lyric.style.opacity=this.state.words.visible?String(this.state.words.opacity):'0';
-  if(!this.opened||document.hidden||now-this.lastPreview<60)return;this.lastPreview=now;
+  if(!this.opened||document.hidden||now-this.lastPreview<(this.deckMotion?.busy?120:60))return;this.lastPreview=now;
   try{
    const visible=new Set(this.previewItems().map(i=>i.id)),items=this.items(),index=items.findIndex(i=>i.id===this.selected),status=this.rig.layerStatus();const statusKey=JSON.stringify([status,this.rig.guideState().services.hands]);if(statusKey!==this.sourceStatus&&!this.before){this.sourceStatus=statusKey;this.paint();}
-   for(const item of items){if(!visible.has(item.id))continue;const canvas=this.deck.querySelector(`[data-layer-preview="${item.id}"]`);if(!canvas)continue;const selected=item.id===this.selected,interval=selected?60:150;if(now-(canvas.lastFrame||0)<interval)continue;canvas.lastFrame=now;
+   let rendered=0;const primary=this.deckMotion?.busy?items[Math.round(this.deckMotion.position)]?.id:this.selected,ordered=items.filter(i=>visible.has(i.id)).sort((a,b)=>{if(a.id===primary)return -1;if(b.id===primary)return 1;const ca=this.deck.querySelector(`[data-layer-preview="${a.id}"]`),cb=this.deck.querySelector(`[data-layer-preview="${b.id}"]`);return (ca?.lastFrame||0)-(cb?.lastFrame||0);});
+   for(const item of ordered){if(rendered>=(this.deckMotion?.busy?1:3))break;const canvas=this.deck.querySelector(`[data-layer-preview="${item.id}"]`);if(!canvas)continue;const selected=item.id===this.selected,interval=selected?60:150;if(now-(canvas.lastFrame||0)<interval)continue;canvas.lastFrame=now;rendered++;
     const aspect=Number(root.style.getPropertyValue('--scene-aspect'))||1,edge=selected?480:288,width=Math.max(2,2*Math.round(edge*Math.min(1,aspect)/2)),height=Math.max(2,2*Math.round(width/aspect/2));if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}const ctx=canvas.getContext('2d'),empty=this.deck.querySelector(`[data-layer-empty="${item.id}"]`);ctx.clearRect(0,0,width,height);empty.hidden=true;
     if(item.kind==='audio'){spectrum(ctx,width,height);continue;}
     if(item.kind==='words'){drawLayerWords(ctx,this.state.words,width,height,this.state.words.text||(this.rig.guideState().services.lyrics?this.rig.state().lyrics:''));if(!this.state.words.text&&!this.rig.guideState().services.lyrics){empty.hidden=false;empty.textContent='Add words';}continue;}
@@ -179,9 +181,9 @@ export function immersiveLayers(layers){
     const target='layers-stage-'+item.id,source=this.rig.render(target,width,height,{...(item.kind==='mix'?{}:{solo:sourceId}),...item.preview,compare:comparable(item)});this.previewTargets.add(target);drawComparison(this,canvas,source,source.layerBefore);if(item.kind==='mix')drawLayerWords(ctx,this.state.words,width,height,this.state.words.text||(this.rig.guideState().services.lyrics?this.rig.state().lyrics:''));
     const operation=stages.post.find(s=>s.id===item.id);if(selected&&operation){const value=this.rig.guideState().controls[operation.control],link=this.state.audioLinks[operation.control];this.sceneContext.textContent=sourceLabel(item)+' · '+(Math.abs(value-operation.neutral)<.0001&&!link?.amount?'Neutral · no adjustment':this.previewMode==='difference'?'Change · black = unchanged':this.previewMode==='compare'?'Before → After':'Result at this stage');}
    }
-   const keep=new Set(this.previewItems().filter(i=>!['effect','group','words','audio','tracking','cameraRaw'].includes(i.kind)).map(i=>'layers-stage-'+i.id));for(const id of this.previewTargets)if(!keep.has(id)){this.rig.release(id);this.previewTargets.delete(id);}
+   const keep=new Set(this.previewItems().filter(i=>!['effect','group','words','audio','tracking','cameraRaw'].includes(i.kind)).map(i=>'layers-stage-'+i.id));for(const id of this.previewTargets)if(!keep.has(id)&&(!this.deckMotion?.busy||this.previewTargets.size>9)){this.rig.release(id);this.previewTargets.delete(id);}
   }catch(error){this.message(error.message);}
  };
  window.addEventListener('resize',()=>{if(layers.opened){layers.paint();layers.settle(120);}});
- layerGesture(layers);
+ mountLayerNavigation(layers);layerGesture(layers);
 }

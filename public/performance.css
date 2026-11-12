@@ -102,10 +102,13 @@ body.nfx-layers-open #hud,body.nfx-layers-open #nfxWordsOverlay,body.nfx-layers-
 .nfx-layer-stage{position:relative;min-height:0;overflow:hidden;pointer-events:none}
 .nfx-scene-frame{position:absolute;inset:0;pointer-events:none}
 .nfx-layer-deck{position:absolute;inset:0;perspective:1500px;transform-style:preserve-3d;touch-action:none;pointer-events:auto;outline:none!important}
-.nfx-layer-card{position:absolute;left:50%;top:50%;width:var(--card-width);aspect-ratio:var(--card-aspect);border:1px solid #a7def94d;border-radius:10px;background:#050b12ed;box-shadow:0 12px 30px #0009;transform-style:preserve-3d;backface-visibility:hidden;z-index:var(--card-index);opacity:clamp(.1,calc(1 - var(--distance)*.2),1);translate:0 var(--deck-drag,0px);transform:translate(-50%,-50%) translate3d(calc(var(--offset)*var(--stack-x)*-1),calc(var(--offset)*var(--stack-y)),calc(var(--distance)*-120px)) rotateX(10deg) rotateY(-25deg) rotateZ(-5deg) scale(var(--scene-zoom));transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .25s,translate .15s ease,border-color .2s;cursor:pointer;overflow:hidden}
+.nfx-layer-card{position:absolute;left:50%;top:50%;width:var(--card-width);aspect-ratio:var(--card-aspect);border:1px solid #a7def94d;border-radius:10px;background:#050b12ed;box-shadow:0 12px 30px #0009;transform-style:preserve-3d;backface-visibility:hidden;z-index:var(--card-index);opacity:clamp(.1,calc(1 - var(--distance)*.2),1);transform:translate(-50%,-50%) translate3d(calc(var(--offset)*var(--stack-x)*-1),calc(var(--offset)*var(--stack-y)),calc(var(--distance)*-120px)) rotateX(calc(10deg - var(--focus,0)*7deg)) rotateY(calc(-25deg + var(--focus,0)*20deg)) rotateZ(calc(-5deg + var(--focus,0)*5deg)) scale(var(--scene-zoom));transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .28s ease-out;cursor:pointer;overflow:hidden}
+.nfx-layer-deck.is-dragging .nfx-layer-card{transition:none}
+.nfx-layer-deck:is(.is-dragging,.is-settling) .nfx-layer-card[data-near=true]{will-change:transform,opacity}
+
 .nfx-layer-card canvas{display:block;position:absolute;inset:34px 0 0;width:100%;height:calc(100% - 34px);object-fit:contain;pointer-events:none}
 .nfx-scene-pinching .nfx-layer-card{transition:none}
-.nfx-layer-card[aria-selected=true]{border-color:#a7f6ff;box-shadow:0 0 0 1px #63e7ff55,0 15px 40px #0009;opacity:1;transform:translate(-50%,-50%) rotateX(3deg) rotateY(-5deg) scale(var(--scene-zoom))}
+.nfx-layer-card[aria-selected=true]{border-color:#a7f6ff;box-shadow:0 0 0 1px #63e7ff55,0 15px 40px #0009}
 .nfx-layer-card.is-hidden{filter:saturate(.25)}
 .nfx-layer-card-top{position:absolute;inset:0 0 auto;height:34px;padding:0 9px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;background:#0c1d2cfa;color:#e2f6ff}
 .nfx-layer-card-top span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
