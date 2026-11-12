@@ -1,4 +1,5 @@
 import {SimpleRecorder} from './studio/simple-record.js';
+import {PhoneSave, recordingFile} from './studio/phone-save.js';
 import { PRESETS, profile, dimensions, validateProfile, formatTime, formatBytes } from './studio/profiles.js';
 import { ProgramOutput } from './studio/compositor.js';
 import { OutputMixer } from './studio/audio.js';
@@ -296,6 +297,7 @@ class RecordingStudio {
     if (action === 'share') await this.shareAsset();
     if (action === 'rename') {
       const asset = await this.store.get(this.selectedAsset); asset.name = $('#nfxAssetName').value.trim().slice(0,120) || asset.name; await this.store.put(asset); this.message('Recording renamed.');
+      this.selectedShareFile = recordingFile(asset, this.selectedBlob); this.selectedShareName = asset.name;
     }
     if (action === 'delete') {
       const asset = await this.store.get(this.selectedAsset);
@@ -335,6 +337,7 @@ class RecordingStudio {
   }
   async start() {
     if (this.active || this.busy || this.starting) return;
+    this.phoneSave?.suspend();
     this.cancelStart = false; this.starting = true; this.updateButtons();
     try {
       if (navigator.locks) {
@@ -406,15 +409,19 @@ class RecordingStudio {
     if (session?.status === 'preparing') { this.cancelPreparation(); return; }
     if (!session || this.busy || session.status === 'saving') return;
     this.busy = true; this.updateButtons(); this.message('Saving recording data to this device…');
+    let finished = [];
     try {
       const assets = await session.stop();
+      finished = assets;
       window.NFXPerformance?.take?.message(assets.length?`${assets.length} file${assets.length===1?'':'s'} saved on this device.${session.error?' Take interrupted.':' Ready for the next take.'}`:'No recording data was saved.',!!session.error||!assets.length);
-      this.message(`${assets.length} file${assets.length === 1 ? '' : 's'} saved.${session.error ? ` Interrupted: ${session.error.message}` : ''} Open Library to play, finish, or share.`);
+      this.message(`${assets.length} file${assets.length === 1 ? '' : 's'} kept in Recording → Library.${session.error ? ` Interrupted: ${session.error.message}` : ''} Use Save to phone to choose a phone destination.`);
     } catch (error) { window.NFXPerformance?.take?.message(`Could not save every file: ${error.message}. Check Recording → Library.`,true);this.message(`Could not finalize every file: ${error.message}. Check Library for saved chunks.`); }
     finally {
       this.session = null; this.busy = false; this.releaseRecordingLock?.(); this.releaseRecordingLock = null;
       await this.releaseWake(); await this.updateStorage(); if (this.opened) this.render(); this.updateButtons();
     }
+    // Do not keep the recorder/UI locked while the operating system sheet is open.
+    if (finished.length) void this.phoneSave?.offer(finished, { automatic: !session.error }).catch(() => this.message('Take kept in Recording → Library. Open it there to save or share.'));
   }
   async wake() {
     try { if (!this.wakeLock && navigator.wakeLock && !document.hidden) { this.wakeLock = await navigator.wakeLock.request('screen'); this.wakeLock.addEventListener('release', () => this.wakeLock = null); } } catch {}
@@ -518,7 +525,7 @@ class RecordingStudio {
     if (this.selectedAsset) return this.showAsset(this.selectedAsset);
     const assets = await this.store.list();
     if (this.tab !== 'library') return;
-    this.body.innerHTML = `<p>Saved on this device only. Download important takes. Deleting one companion does not delete the other files.</p><div class="nfx-assets">${assets.length ? '' : '<p>No recordings yet. Your first take starts in Record.</p>'}${assets.map(asset => {
+    this.body.innerHTML = `<p>Saved in this browser on this device. Use Save to phone to choose Photos, Gallery or Files from the phone’s share sheet. Deleting one companion does not delete the other files.</p><div class="nfx-assets">${assets.length ? '' : '<p>No recordings yet. Your first take starts in Record.</p>'}${assets.map(asset => {
       let image = ''; if (asset.thumbnail) { const url = URL.createObjectURL(asset.thumbnail); this.assetUrls.push(url); image = `<img src="${url}" alt="">`; }
       return `<button class="nfx-asset" data-asset="${asset.id}" ${asset.status === 'recording' ? 'disabled' : ''}>${image}<span>${escape(asset.name)}<small>${asset.kind.toUpperCase()} · ${formatTime(asset.duration)} · ${formatBytes(asset.bytes)}${asset.width ? ` · ${asset.width}×${asset.height}` : ''}${asset.status !== 'complete' ? ` · ${asset.status.toUpperCase()}` : ''}</small></span></button>`;
     }).join('')}</div>`;
@@ -532,11 +539,14 @@ class RecordingStudio {
     this.selectedAsset = id; this.clearUrls();
     const blob = await this.store.blob(asset); if (this.selectedAsset !== id || this.tab !== 'library') return;
     const url = URL.createObjectURL(blob); this.assetUrls.push(url); this.selectedBlob = blob;
+    this.selectedShareFile = recordingFile(asset, blob); this.selectedShareName = asset.name;
     const groupAssets = asset.group ? (await this.store.list()).filter(a => a.group === asset.group && a.pcm && ['music','mic'].includes(a.source)) : [];
     this.body.innerHTML = `<button data-action="back">← LIBRARY</button>
+      <button data-action="share" class="nfx-primary" style="display:block;width:100%;margin:10px 0">SAVE TO PHONE / SHARE</button>
       ${asset.kind === 'image' ? `<img src="${url}" alt="Saved snapshot" style="width:100%;margin-top:12px">` : `<${asset.kind === 'audio' ? 'audio' : 'video'} id="nfxAssetPlayer" src="${url}" controls playsinline preload="metadata"></${asset.kind === 'audio' ? 'audio' : 'video'}>`}
       <label>Recording name<input type="text" id="nfxAssetName" maxlength="120" value="${escape(asset.name)}"></label>
-      <div class="nfx-row"><button data-action="rename">RENAME</button><button data-action="download">DOWNLOAD ORIGINAL</button><button data-action="share">SHARE FILE</button></div>
+      <div class="nfx-row"><button data-action="rename">RENAME</button><button data-action="download">DOWNLOAD ORIGINAL</button></div>
+      <p>${escape(this.phoneSave.hint(this.selectedShareFile))} Sharing leaves your Library copy intact.</p>
       <p>${formatTime(asset.duration)} · ${formatBytes(blob.size)} · ${escape(asset.mime)}${asset.width ? ` · ${asset.width}×${asset.height}` : ''}</p>
       ${asset.status !== 'complete' ? `<p class="nfx-alert">${escape(asset.warning || 'Interrupted take. Saved chunks may be incomplete or unplayable. Download the original before trying to finish it.')}</p>` : ''}
       ${asset.markers?.length ? `<div class="nfx-row">${asset.markers.map(marker => `<button data-seek="${marker.time}">${escape(marker.label)} · ${formatTime(marker.time)}</button>`).join('')}</div>` : ''}
@@ -554,7 +564,7 @@ class RecordingStudio {
       <button data-action="export" class="nfx-primary" ${this.exporting || this.active ? 'disabled' : ''}>CREATE NEW EXPORT</button>
       <button data-action="cancelExport" ${!this.exporting ? 'hidden' : ''}>CANCEL EXPORT</button><progress id="nfxExportProgress" max="1" value="0" ${!this.exporting ? 'hidden' : ''}></progress>
       <p>Burned-in menus and captions cannot be removed afterward. Alternate framing crops or pads the saved picture.</p>` : ''}
-      <h3>SHARE TO AN APP</h3><p>Use Share File to choose Instagram, TikTok, YouTube, or another app offered by your device. Otherwise download and upload manually: Reels/Stories for Instagram, Create/Upload for TikTok, and Create → Upload video for YouTube. Installed apps decide whether they accept the file.</p>
+      <h3>SHARE TO AN APP</h3><p>Use Save to phone / Share to choose Instagram, TikTok, YouTube, or another app offered by your device. Otherwise download and upload manually: Reels/Stories for Instagram, Create/Upload for TikTok, and Create → Upload video for YouTube. Installed apps decide whether they accept the file.</p>
       <button data-action="delete" class="nfx-danger">DELETE FROM THIS DEVICE</button>`;
   }
   extension(asset) { return asset.mime.includes('mp4') ? 'mp4' : asset.mime.includes('wav') ? 'wav' : asset.mime.includes('png') ? 'png' : 'webm'; }
@@ -567,10 +577,10 @@ class RecordingStudio {
     const asset = await this.store.get(this.selectedAsset); this.download(this.selectedBlob || await this.store.blob(asset), `${asset.name}.${this.extension(asset)}`);
   }
   async shareAsset() {
-    const asset = await this.store.get(this.selectedAsset), blob = this.selectedBlob;
-    const file = new File([blob], `${asset.name.replace(/[\\/:*?"<>|]/g, '-')}.${this.extension(asset)}`, { type: asset.mime });
-    if (navigator.canShare?.({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: asset.name }); this.message('File handed to the device share sheet.'); }
+    const file = this.selectedShareFile;
+    if (!file) return;
+    if (this.phoneSave.canShare(file)) {
+      try { await navigator.share({ files: [file], title: this.selectedShareName }); this.message('Share sheet completed. Check the destination you chose. Your Library backup is still here.'); }
       catch (error) { if (error.name !== 'AbortError') throw error; }
     } else { await this.downloadAsset(); this.message('File sharing is unavailable here. The recording was downloaded; upload it through your chosen app.'); }
   }
@@ -632,6 +642,7 @@ class RecordingStudio {
 const rig = window.NFXRig;
 if (rig) {
   const studio = new RecordingStudio(rig);
+  studio.phoneSave = new PhoneSave(studio);
   studio.simple=new SimpleRecorder(studio);
   window.NFXStudio = studio;
   studio.init();

@@ -79,3 +79,20 @@ body.nfx-simple-record #nfxSimpleRecorder{opacity:1;visibility:visible;pointer-e
 body.nfx-simple-record #btnQuickSave,body.nfx-simple-record #nfxGuideBanner,body.nfx-simple-record #nfxGuideSpotlight,body.nfx-simple-record #title,body.nfx-simple-record #toast{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
 
 body.nfx-simple-record #hud,body.nfx-simple-record #sheet,body.nfx-simple-record #dock,body.nfx-simple-record #top,body.nfx-simple-record #stats{opacity:0!important;pointer-events:none!important;transition:opacity .35s}
+
+#nfxPhoneSave{position:fixed;z-index:115;right:max(12px,env(safe-area-inset-right));bottom:calc(90px + env(safe-area-inset-bottom));width:min(350px,calc(100vw - 24px));max-height:calc(100dvh - 110px);overflow:auto;box-sizing:border-box;padding:16px;background:rgba(8,19,31,.97);border:1px solid var(--cyan,#45f0ff);border-radius:12px;box-shadow:0 12px 48px #0008;color:var(--text,#dcecff);font:13px/1.5 var(--disp,sans-serif);touch-action:pan-y}
+#nfxPhoneSave[hidden],#nfxPhoneSave [hidden],body.nfx-simple-record #nfxPhoneSave{display:none!important}
+#nfxPhoneSave strong{display:block;padding-right:35px;font-size:16px}
+#nfxPhoneSave p{margin:8px 0;color:#bdd0df}
+#nfxPhoneSave small{display:block;margin-top:10px;color:#94aabe;font-size:11px}
+#nfxPhoneSave button,#nfxPhoneSave select{min-height:44px;padding:10px;border:1px solid #36536b;border-radius:8px;color:inherit;background:#15283a;font:inherit;cursor:pointer;touch-action:manipulation}
+#nfxPhoneSave button:disabled{opacity:.5}
+#nfxPhoneSave :focus-visible{outline:2px solid #45f0ff;outline-offset:2px}
+#nfxPhoneSave .nfx-phone-dismiss{position:absolute;right:4px;top:4px;min-width:44px;background:transparent;border:0;font-size:23px}
+#nfxPhoneSave .nfx-phone-actions{display:flex;gap:8px;flex-wrap:wrap}
+#nfxPhoneSave [data-phone-save]{flex:1;border-color:#45f0ff;background:#123d49}
+#nfxPhoneSave label{display:grid;gap:4px;margin:8px 0}
+#nfxPhoneSave select{width:100%;min-width:0}
+.nfx-landscape-take #nfxPhoneSave{left:calc(50vw + 8px);right:8px;bottom:calc(142px + env(safe-area-inset-bottom));width:auto;max-height:calc(100dvh - 154px)}
+.nfx-landscape-take.nfx-take-left #nfxPhoneSave{left:8px;right:calc(50vw + 8px)}
+@media(orientation:portrait){.nfx-landscape-take #nfxPhoneSave,.nfx-landscape-take.nfx-take-left #nfxPhoneSave{left:12px;right:12px;width:auto;max-height:calc(100dvh - 154px)}}

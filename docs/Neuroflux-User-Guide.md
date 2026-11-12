@@ -657,13 +657,23 @@ For a truly silent deliverable, choose **Silent video** for that output. If you 
 
 Everything here is saved in this browser on this device/site. A take saved in Android Chrome will not automatically appear in iPhone Chrome, a private tab, another browser profile or a different site address. There is no account-based media backup in this version.
 
+### Save a finished take to your phone
+
+After recording stops, the app prepares your take for the phone's share sheet. It opens automatically if the browser still allows it; otherwise, tap **Save to phone** on the Take ready card. You do not need to find or export the recording first. The studio is ready for the next take while this card is showing.
+
+On **iPhone**, choose **Save Video** to put a compatible video in Photos. Choose **Save Image** for a photo, or **Save to Files** for audio. On **Android**, choose Photos or Gallery if your share sheet offers it. The destinations depend on your phone and installed apps: the PWA cannot force a file straight into the photo library. Completing the share sheet means the phone handled your choice; check the destination you selected.
+
+If sharing is unavailable or your phone will not accept the format, use **Download** and check Files/Downloads. A download does not automatically mean it is in Photos. Videos keep their real MP4 or WebM format; use **Finish & Export → MP4** in Library if you need a compatible version. Then open that export and tap **Save to phone / Share**.
+
+With two video outputs, choose A or B from the card's file selector and save each separately. Companion audio stays in Library; audio-only takes offer their audio files. Closing/canceling the sheet never deletes your take. Dismiss the card with × or start another take; you can always return to **Recording → Library** and use **Save to phone / Share**. Browser storage can still be cleared by the OS or the user, so save important takes outside the app.
+
 Open **RECORD → LIBRARY**, tap a take, and play it. A/B videos, stems, mix WAVs, PNG snapshots and newly finished exports appear as separate items. The file card shows type, duration, size and dimensions when relevant, plus an interrupted status if saving did not finish normally.
 
 | Action | What it does |
 |---|---|
 | RENAME | Change the name field, then tap RENAME. Typing without committing the action is not the same as saving the name. |
 | DOWNLOAD ORIGINAL | Downloads the stored original with its actual format/extension. It does not secretly convert WebM to MP4. |
-| SHARE FILE | Hands the file to the device's supported share sheet; if file sharing is unavailable, downloads it for manual upload. |
+| SAVE TO PHONE / SHARE | Opens the device's supported share sheet with the original file. Choose its destination there; if file sharing is unavailable, downloads it instead. Keeps the Library backup. |
 | Marker buttons | Seek to marked moments in the Library player. They are take-relative navigation aids, not an automatic montage. |
 | USE CURRENT FRAME AS THUMBNAIL | For a video, play or seek to a frame, then save it as the Library thumbnail. |
 | DOWNLOAD COVER IMAGE | Downloads the stored thumbnail as a separate image. Social apps may require choosing their own cover during upload. |
@@ -734,7 +744,7 @@ If finishing fails, download the original and finish on a device/editor that can
 
 ### Hand it to Instagram, TikTok, YouTube or another app
 
-Use **SHARE FILE** when your device offers the destination. Installed apps decide whether they accept that type/length/size. If sharing is absent or rejected, download the appropriate original/export, open the destination app's upload flow, and select the file there. Typical routes are Reels/Stories for Instagram, Create/Upload for TikTok, and Create → Upload video for YouTube; platform wording and requirements can change.
+Use **SAVE TO PHONE / SHARE** when your device offers the destination. Installed apps decide whether they accept that type/length/size. If sharing is absent or rejected, download the appropriate original/export, open the destination app's upload flow, and select the file there. Typical routes are Reels/Stories for Instagram, Create/Upload for TikTok, and Create → Upload video for YouTube; platform wording and requirements can change.
 
 These presets and share actions do not schedule posts, add platform captions/hashtags, connect social accounts, or start a stream. Always check the destination preview for cropping, overlays, orientation, audio level and cover selection before you publish.
 
@@ -832,7 +842,7 @@ Core visuals and local recording/export can work offline once the needed assets 
 | Typed AI instructions | Prompt and relevant visual/context metadata are sent to the connected Gemini service through the app's server. |
 | Voice instructions | A short captured voice clip is sent for the online instruction request. |
 | Live lyrics | Audio is sent to the online transcription service via its live/clip workflow. Muting saved output is not the same as turning this service off. |
-| Share File / manual social upload | Your device and the destination app handle the file when you choose to share/upload. |
+| Save to phone / Share / manual social upload | Your device and the destination app handle the file when you choose to share/upload. |
 
 There is no built-in account library/cloud media backup. Do not treat a private/incognito session as durable recording storage. If you need a keep-forever copy, download and back it up somewhere you control.
 

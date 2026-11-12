@@ -1383,6 +1383,10 @@
 <p>If the device has already mixed music and voice into one input stream, the app cannot pull them apart into genuinely isolated sources. A “music” or “mic” name describes the routing, not AI source separation. A camera microphone is not silently added just because the camera is visible; enable the audio input you want.</p>
 <p>For a truly silent deliverable, choose <strong>Silent video</strong> for that output. If you also want no audio companion files, turn off the separate/mixed WAV options. Muting an output does not turn off a lyric service or stop the visual analyzer from listening.</p>
 <h2 id="19-library-play-organize-and-protect-your-takes">19. LIBRARY: play, organize and protect your takes</h2><p>Everything here is saved in this browser on this device/site. A take saved in Android Chrome will not automatically appear in iPhone Chrome, a private tab, another browser profile or a different site address. There is no account-based media backup in this version.</p>
+<h3 id="save-a-finished-take-to-your-phone">Save a finished take to your phone</h3><p>After recording stops, the app prepares your take for the phone&#39;s share sheet. It opens automatically if the browser still allows it; otherwise, tap <strong>Save to phone</strong> on the Take ready card. You do not need to find or export the recording first. The studio is ready for the next take while this card is showing.</p>
+<p>On <strong>iPhone</strong>, choose <strong>Save Video</strong> to put a compatible video in Photos. Choose <strong>Save Image</strong> for a photo, or <strong>Save to Files</strong> for audio. On <strong>Android</strong>, choose Photos or Gallery if your share sheet offers it. The destinations depend on your phone and installed apps: the PWA cannot force a file straight into the photo library. Completing the share sheet means the phone handled your choice; check the destination you selected.</p>
+<p>If sharing is unavailable or your phone will not accept the format, use <strong>Download</strong> and check Files/Downloads. A download does not automatically mean it is in Photos. Videos keep their real MP4 or WebM format; use <strong>Finish &amp; Export → MP4</strong> in Library if you need a compatible version. Then open that export and tap <strong>Save to phone / Share</strong>.</p>
+<p>With two video outputs, choose A or B from the card&#39;s file selector and save each separately. Companion audio stays in Library; audio-only takes offer their audio files. Closing/canceling the sheet never deletes your take. Dismiss the card with × or start another take; you can always return to <strong>Recording → Library</strong> and use <strong>Save to phone / Share</strong>. Browser storage can still be cleared by the OS or the user, so save important takes outside the app.</p>
 <p>Open <strong>RECORD → LIBRARY</strong>, tap a take, and play it. A/B videos, stems, mix WAVs, PNG snapshots and newly finished exports appear as separate items. The file card shows type, duration, size and dimensions when relevant, plus an interrupted status if saving did not finish normally.</p>
 <table>
 <thead>
@@ -1400,8 +1404,8 @@
 <td>Downloads the stored original with its actual format/extension. It does not secretly convert WebM to MP4.</td>
 </tr>
 <tr>
-<td>SHARE FILE</td>
-<td>Hands the file to the device&#39;s supported share sheet; if file sharing is unavailable, downloads it for manual upload.</td>
+<td>SAVE TO PHONE / SHARE</td>
+<td>Opens the device&#39;s supported share sheet with the original file. Choose its destination there; if file sharing is unavailable, downloads it instead. Keeps the Library backup.</td>
 </tr>
 <tr>
 <td>Marker buttons</td>
@@ -1506,7 +1510,7 @@
 </tbody></table>
 <p>Companion WAVs use 16-bit PCM stereo at the active audio context&#39;s sample rate. Two video outputs also add their own video storage. A minute of 1080p video plus companions can easily exceed a phone&#39;s 64 MB local-export input budget when remixing, even if storage has room for the take. For mobile editing/sharing, try short 15–30-second takes first and verify one export before recording a long performance.</p>
 <p>If finishing fails, download the original and finish on a device/editor that can handle it, or record shorter takes next time. Do not delete the only source file just to make a failed export form look empty.</p>
-<h3 id="hand-it-to-instagram-tiktok-youtube-or-another-app">Hand it to Instagram, TikTok, YouTube or another app</h3><p>Use <strong>SHARE FILE</strong> when your device offers the destination. Installed apps decide whether they accept that type/length/size. If sharing is absent or rejected, download the appropriate original/export, open the destination app&#39;s upload flow, and select the file there. Typical routes are Reels/Stories for Instagram, Create/Upload for TikTok, and Create → Upload video for YouTube; platform wording and requirements can change.</p>
+<h3 id="hand-it-to-instagram-tiktok-youtube-or-another-app">Hand it to Instagram, TikTok, YouTube or another app</h3><p>Use <strong>SAVE TO PHONE / SHARE</strong> when your device offers the destination. Installed apps decide whether they accept that type/length/size. If sharing is absent or rejected, download the appropriate original/export, open the destination app&#39;s upload flow, and select the file there. Typical routes are Reels/Stories for Instagram, Create/Upload for TikTok, and Create → Upload video for YouTube; platform wording and requirements can change.</p>
 <p>These presets and share actions do not schedule posts, add platform captions/hashtags, connect social accounts, or start a stream. Always check the destination preview for cropping, overlays, orientation, audio level and cover selection before you publish.</p>
 <h2 id="21-practical-mix-recipes">21. Practical mix recipes</h2><p>The numbers below are suggested starting points, not built-in presets. Save your own result in a bank once it works. Before each recipe, turn off AUTOPILOT/AI DIRECTOR/BEAT JUMP unless the recipe calls for them; other modulation can change what the same dial numbers appear to do.</p>
 <h3 id="a-clean-music-visual-no-camera">A. Clean music visual, no camera</h3><p>Load LIQUID SUN or OUTRUN. Turn CAMERA off, set FEEDBACK around 55–70%, BLOOM 30–50%, EXPOSURE near 1×, and keep GLITCH low. Use BASS › ZOOM around 15–25%, MID › WARP 10–25%, and HIGH › CHROMA 10–20%. Set output Clean with no optional text/skeletons if you want only the art. Record a short test with the real track.</p>
@@ -1596,7 +1600,7 @@
 <td>Audio is sent to the online transcription service via its live/clip workflow. Muting saved output is not the same as turning this service off.</td>
 </tr>
 <tr>
-<td>Share File / manual social upload</td>
+<td>Save to phone / Share / manual social upload</td>
 <td>Your device and the destination app handle the file when you choose to share/upload.</td>
 </tr>
 </tbody></table>

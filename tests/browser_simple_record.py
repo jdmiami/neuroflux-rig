@@ -26,8 +26,17 @@ with sync_playwright() as p:
  assert not page.evaluate('document.body.classList.contains("nfx-simple-record")')
  assert page.evaluate('NFXStudio.settings.kind')=='audio' and page.evaluate('NFXStudio.settings.limit')==17 and page.evaluate('NFXStudio.profiles[0].mode')=='full'
  assets=page.evaluate('NFXStudio.store.list()');assert any(a['kind']=='video' and a['bytes']>0 and a.get('profile',{}).get('mode')=='clean' for a in assets),assets
+ # A real finalized clean video is offered without blocking recorder cleanup.
+ page.wait_for_function('NFXStudio.phoneSave.entries.length===1')
+ assert page.locator('#nfxPhoneSave').is_visible()
+ assert page.evaluate('NFXStudio.phoneSave.entries[0].file.size===NFXStudio.phoneSave.entries[0].asset.bytes')
+ page.evaluate('''()=>{window.sharedTake=null;navigator.canShare=({files})=>files[0] instanceof File;navigator.share=async({files})=>{window.sharedTake={bytes:files[0].size,type:files[0].type,active:navigator.userActivation.isActive}};NFXStudio.phoneSave.paint()}''')
+ page.locator('[data-phone-save]').tap()
+ assert page.evaluate('sharedTake.active&&sharedTake.bytes>0&&sharedTake.type.startsWith("video/")')
+ assert len(page.evaluate('NFXStudio.store.list()'))==len(assets)
  # A short tap during preparation cancels and restores advanced settings.
  page.locator('#btnRecord').tap();page.wait_for_function('NFXStudio.starting')
+ assert page.locator('#nfxPhoneSave').is_hidden()
  page.locator('#btnRecord').tap();page.wait_for_function('!NFXStudio.starting&&!NFXStudio.simple.engaged',timeout=30000)
  assert page.evaluate('NFXStudio.settings.kind')=='audio'
  # Failed admission must not leave hidden controls or altered modes.
