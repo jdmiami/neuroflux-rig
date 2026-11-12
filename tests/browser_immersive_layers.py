@@ -38,7 +38,7 @@ with sync_playwright() as p:
  page.wait_for_function('(ids)=>ids.every(id=>NFXPerformance.renderer.previews.has(id))',arg=ids)
  hashes=page.evaluate('(ids)=>ids.map(id=>imageHash(NFXPerformance.renderer.previews.get(id)))',ids);assert hashes[0]!=hashes[1],hashes
  error=page.evaluate('''(id)=>{const a=normalized(NFXPerformance.renderer.previews.get(id)),b=normalized(NFXPerformance.cameraFrame);let error=0;for(let i=0;i<a.length;i++)error+=Math.abs(a[i]-b[i]);return error/a.length}''',ids[-1]);assert error<8,error
- old=hashes[0];page.evaluate('paintStageCamera(90)');page.wait_for_timeout(300);assert page.evaluate('(id)=>imageHash(NFXPerformance.renderer.previews.get(id))',ids[0])!=old
+ old=hashes[0];page.evaluate('paintStageCamera(90)');page.wait_for_function('([id,old])=>imageHash(NFXPerformance.renderer.previews.get(id))!==old',arg=[ids[0],old],timeout=15000)
  assert not page.locator('[data-layer-card] .nfx-fx-art').count(),'Rendering stages must show actual pixels, not illustrations'
  print('PASS different live camera stages, final-stage agreement and changing camera feed',flush=True)
  # Native visual stage sound routing changes renderer inputs, without overwriting knobs.
@@ -47,7 +47,7 @@ with sync_playwright() as p:
  page.locator('[data-scene-value=visualBeat]').evaluate('el=>{el.value="0.8";el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}))}')
  page.locator('[data-scene-band]').select_option('mid');assert page.evaluate('NFXLayers.state.audioLinks.sat')=={'amount':.8,'band':'mid'}
  assert page.evaluate('NFXRig.guideState().controls.sat')==base
- page.evaluate("NFXLayers.select('sound')");page.wait_for_timeout(450);assert page.locator('[data-layer-preview=sound]').is_visible()
+ page.evaluate("NFXLayers.select('sound')");page.wait_for_function('!NFXLayers.deckMotion.busy');assert page.locator('[data-layer-preview=sound]').is_visible()
  page.locator('[data-layer-action=scenePlay]').first.click();page.wait_for_function('!NFXMotion.held&&NFXRig.state().mid>.05')
  page.evaluate("NFXRig.setParam('fb',0,'user')");page.wait_for_timeout(150)
  routed=page.evaluate('''()=>{const link=NFXLayers.state.audioLinks.sat,amount=link.amount,a=imageHash(NFXRig.render('sound-proof',128,128,{solo:'visuals'}));link.amount=0;const b=imageHash(NFXRig.render('sound-proof',128,128,{solo:'visuals'}));link.amount=amount;return {a,b}}''')

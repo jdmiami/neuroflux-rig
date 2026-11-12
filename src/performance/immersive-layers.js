@@ -54,7 +54,7 @@ export function immersiveLayers(layers){
  const words=document.createElement('canvas');words.id='nfxWordsOverlay';words.setAttribute('aria-hidden','true');document.getElementById('hud').before(words);layers.wordsCanvas=words;
  layers.settle=function(){this.focused=this.opened;root.classList.toggle('nfx-layer-focused',this.opened);};
  layers.open=function(value=true){
-  if(value===this.opened)return;this.deckMotion?.cancel();this.clearInspectionTouches();original.open(value);if(value){this.scope='root';this.selected=this.rig.layerStatus().camera?'camera':'visuals';this.paint();this.settle(580);}else{clearTimeout(this.settleTimer);this.focused=false;root.classList.remove('nfx-layer-focused');for(const id of this.previewTargets)this.rig.release(id);this.previewTargets.clear();this.workspace.renderer?.clearPreviews();}
+  if(value===this.opened)return;this.deckMotion?.cancel();this.clearInspectionTouches();original.open(value);if(value){this.scope='root';this.selected=this.rig.layerStatus().camera?'camera':'visuals';this.paint();this.settle(580);}else{this.deckMotion?.cancel(true);clearTimeout(this.settleTimer);this.focused=false;root.classList.remove('nfx-layer-focused');for(const id of this.previewTargets)this.rig.release(id);this.previewTargets.clear();this.workspace.renderer?.clearPreviews();}
  };
  layers.select=function(id){original.select(id);this.settle();};
  layers.deck.addEventListener('pointerup',()=>layers.settle(),true);layers.deck.addEventListener('pointercancel',()=>layers.settle(),true);

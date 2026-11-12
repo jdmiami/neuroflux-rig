@@ -23,14 +23,19 @@ with sync_playwright() as p:
  # cards or inspector. A slow, held 0.6-card drag settles to exactly one card.
  start=idx();state=page.evaluate('JSON.stringify(NFXLayers.state)');x,y=center();paints=page.evaluate('paintCount');step=page.evaluate('Math.max(64,Math.min(115,NFXLayers.deck.clientHeight*.28))')
  touch('touchStart',[(x,y)]);positions=[]
- for delta in [.15,.3,.6]:
+ for delta in [.15,.3,.5,.6]:
   touch('touchMove',[(x,y-step*delta)]);page.wait_for_function('(v)=>Math.abs(NFXLayers.deckMotion.position-v)<.02',arg=start+delta);positions.append(page.evaluate('NFXLayers.deckMotion.position'))
- assert positions[0]<positions[1]<positions[2] and .5<positions[-1]-start<.8,positions
+ assert all(a<b for a,b in zip(positions,positions[1:])) and .5<positions[-1]-start<.8,positions
  assert page.evaluate('paintCount')==paints,'Pointer moves must not rebuild inspector/card DOM'
  assert page.evaluate('getComputedStyle(NFXLayers.deck.querySelector("[aria-selected=true]")).transitionDuration')=='0s','No CSS lag while finger is down'
+
+ lanes=page.evaluate('''()=>{const items=NFXLayers.items(),i=items.findIndex(i=>i.id===NFXLayers.selected),cards=[items[i],items[i+1]].map(item=>document.querySelector('[data-layer-card="'+item.id+'"]'));return cards.map(card=>{const r=card.getBoundingClientRect(),style=getComputedStyle(card),m=new DOMMatrixReadOnly(style.transform);return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,scale:Math.hypot(m.m11,m.m12,m.m13),transition:style.transitionProperty}})}''')
+ left,right=lanes;assert left['x']>=right['right'] or right['x']>=left['right'] or left['y']>=right['bottom'] or right['y']>=left['bottom'],lanes
+ assert all(c['scale']<page.evaluate('NFXLayers.sceneZoom')*.85 for c in lanes),lanes
  page.screenshot(path='/workspace/Neuroflux-Swipe-Mid-Drag.png')
  page.wait_for_timeout(150);touch('touchEnd');settle();assert idx()==start+1,(start,idx(),positions)
  assert page.evaluate('JSON.stringify(NFXLayers.state)')==state
+ assert page.evaluate('getComputedStyle(NFXLayers.deck.querySelector("[aria-selected=true]")).transitionProperty').find('transform')<0,'Release must follow the orbit, not a straight transform interpolation'
  assert page.evaluate('paintCount')==paints+1,'Only the settled selection should paint'
  print('PASS finger-following fractional motion, one paint per swipe, predictable slow snap, unchanged mix',flush=True)
  # The main interaction takes at most one auxiliary GPU render per refresh.
@@ -58,9 +63,9 @@ with sync_playwright() as p:
  # than teleporting to the destination. Inspect both sides in one JS task.
  select('visual-contrast')
  page.evaluate('NFXLayers.browse(2)');page.wait_for_timeout(60)
- before=page.evaluate('''()=>{const cards=[...NFXLayers.deck.querySelectorAll('[data-near=true]')];for(const c of cards)for(const a of c.getAnimations()){a.pause();a.currentTime=90;}const c=NFXLayers.deck.querySelector('[aria-selected=true]');return new DOMMatrixReadOnly(getComputedStyle(c).transform).m41}''')
+ page.evaluate('''()=>{const deck=NFXLayers.deck;deck.addEventListener('pointerdown',()=>{window.grabBefore=new DOMMatrixReadOnly(getComputedStyle(deck.querySelector('[aria-selected=true]')).transform).m41},{capture:true,once:true});deck.addEventListener('pointerdown',()=>{window.grabAfter=new DOMMatrixReadOnly(getComputedStyle(deck.querySelector('[aria-selected=true]')).transform).m41},{once:true});}''')
  x,y=center();page.mouse.move(x,y);page.mouse.down()
- after=page.evaluate('''()=>new DOMMatrixReadOnly(getComputedStyle(NFXLayers.deck.querySelector('[aria-selected=true]')).transform).m41''')
+ before,after=page.evaluate('[grabBefore,grabAfter]')
  assert abs(before-after)<1,(before,after)
  page.mouse.up();settle()
  print('PASS grabbing an in-flight glide preserves its visible position',flush=True)

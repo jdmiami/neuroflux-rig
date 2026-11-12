@@ -21,7 +21,7 @@ export function mountInspection(layers){
   this.sceneZoom=Math.max(.7,Math.min(1.25,value));root.style.setProperty('--scene-zoom',this.sceneZoom);
   root.querySelector('[data-scene-zoom]').textContent=Math.abs(this.sceneZoom-1)<.005?'Fit':Math.round(this.sceneZoom*100)+'%';
   root.querySelector('[data-layer-action=zoomOut]').disabled=this.sceneZoom<=.701;
-  root.querySelector('[data-layer-action=zoomIn]').disabled=this.sceneZoom>=1.249;
+  root.querySelector('[data-layer-action=zoomIn]').disabled=this.sceneZoom>=1.249;this.deckMotion?.resize();
  };
  layers.fitScene=function(){
   const aspect=Math.max(.85,Math.min(1.8,Number(root.style.getPropertyValue('--scene-aspect'))||1.6));
@@ -29,7 +29,7 @@ export function mountInspection(layers){
   const width=Math.max(32,Math.min(deck.clientWidth*.65,Math.max(32,deck.clientHeight-24)*aspect/1.3));
   root.style.setProperty('--card-width',width+'px');root.style.setProperty('--card-aspect',aspect);
   root.style.setProperty('--stack-x',Math.min(deck.clientWidth*.23,170)+'px');
-  root.style.setProperty('--stack-y',Math.min(deck.clientHeight*.19,72)+'px');
+  root.style.setProperty('--stack-y',Math.min(deck.clientHeight*.19,72)+'px');this.deckMotion?.resize();
  };
  layers.paintInspection=function(item){
   const enabled=comparable(item),button=root.querySelector('[data-layer-action=previewMode]');button.disabled=!enabled;
