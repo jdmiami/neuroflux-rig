@@ -69,8 +69,8 @@ with sync_playwright() as p:
  page.set_viewport_size({'width':844,'height':390});select('visual-contrast');start=idx();x,y=center();step=page.evaluate('Math.max(64,Math.min(115,NFXLayers.deck.clientHeight*.28))')
  touch('touchStart',[(x,y)]);touch('touchMove',[(x,y-step*.6)]);page.wait_for_function('(v)=>Math.abs(NFXLayers.deckMotion.position-v)<.02',arg=start+.6);page.wait_for_timeout(160);touch('touchEnd');settle();assert idx()==start+1
  page.evaluate("NFXPerformance.add('swirl');NFXPerformance.add('horizontal-mirror');NFXLayers.select(NFXPerformance.state.nodes[0].id)");settle()
- order=page.evaluate('NFXPerformance.state.nodes.map(n=>n.id)');grip=page.locator('[data-layer-grip]').bounding_box();gx=grip['x']+grip['width']/2;gy=grip['y']+grip['height']/2
- page.mouse.move(gx,gy);page.mouse.down();page.mouse.move(gx,gy-55,steps=3);page.mouse.up();settle();assert page.evaluate('NFXPerformance.state.nodes.map(n=>n.id)')==order[::-1]
+ order=page.evaluate('NFXPerformance.state.nodes.map(n=>n.id)');page.locator('[data-layer-grip]').hover();grip=page.locator('[data-layer-grip]').bounding_box();gx=grip['x']+grip['width']/2;gy=grip['y']+grip['height']/2
+ page.mouse.move(gx,gy);page.mouse.down();page.mouse.move(gx,gy-55,steps=3);page.mouse.up();settle();assert page.evaluate('NFXPerformance.state.nodes.map(n=>n.id)')==order[::-1],{'before':order,'after':page.evaluate('NFXPerformance.state.nodes.map(n=>n.id)'),'selected':page.evaluate('NFXLayers.selected')}
  print('PASS landscape finger tracking and separate grip-based effect reordering',flush=True)
  page.set_viewport_size({'width':390,'height':844})
  # Pinch must cancel one-finger navigation, and a three-finger hold still exits.
