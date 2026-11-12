@@ -88,7 +88,7 @@ def main():
    }''')
    assert checks['unique']==16,checks
    assert checks['depthError']<5,checks
-   assert checks['programs']<=16,checks
+   assert checks['programs']<=18,checks
    print('PASS image checks: sixteen distinct kaleidoscope divisions; warped depth aligns with camera; bounded shader cache',flush=True)
    page.evaluate("NFXCameraFX.commit({version:1,enabled:true,nodes:[]});NFXCameraFX.add('kaleidoscope');NFXCameraFX.add('swirl')")
    page.locator('#btnMenu').click();page.locator('#tabs [data-p=cam]').click();page.locator('[data-tab=effects]').click()

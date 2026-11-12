@@ -4,7 +4,7 @@ const zlib = require('node:zlib');
 const crypto = require('node:crypto');
 const esbuild = require('esbuild');
 const root = path.resolve(__dirname, '..');
-const adapter = ['layer-shader.js', 'rig-render.js', 'rig-adapter.js'].map(name => fs.readFileSync(path.join(root, 'src/studio', name), 'utf8')).join('\n');
+const adapter = 'const rigPostStages='+JSON.stringify(require('../lib/layer-stages.cjs').post)+';\n'+['layer-shader.js', 'rig-render.js', 'rig-adapter.js'].map(name => fs.readFileSync(path.join(root, 'src/studio', name), 'utf8')).join('\n');
 const template = fs.readFileSync(path.join(root, 'src/app.html'), 'utf8');
 if (!template.includes('/* NFX_STUDIO_ADAPTER */')) throw new Error('Studio adapter insertion point missing.');
 const source = Buffer.from(template.replace('/* NFX_STUDIO_ADAPTER */', adapter));

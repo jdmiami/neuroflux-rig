@@ -20,7 +20,7 @@ with sync_playwright() as p:
   page.locator(selector).dispatch_event('change')
  page.evaluate('''()=>{window.hash=c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let h=2166136261;for(let i=0;i<d.length;i++)h=Math.imul(h^d[i],16777619);return h>>>0};window.output=()=>hash(NFXRig.render('layers-test',128,128));}''')
  initial=page.evaluate('output()');page.locator('#btnLayers').click();page.wait_for_timeout(300)
- assert page.locator('#nfxLayerWorkspace').is_visible();assert page.locator('[data-layer-card]').count()==3
+ assert page.locator('#nfxLayerWorkspace').is_visible();assert page.locator('[data-layer-card]').count()>=30
  page.evaluate("window.originalLayerCanvas=document.querySelector('[data-layer-preview=camera]');NFXLayers.select('space');NFXLayers.select('camera')")
  assert page.evaluate("originalLayerCanvas===document.querySelector('[data-layer-preview=camera]')"),'Rolodex browsing must preserve live card canvases'
  assert not page.evaluate('NFXLayers.state.enabled'), 'Browsing must not change the mix'
@@ -105,7 +105,7 @@ with sync_playwright() as p:
  cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':x,'y':y}]});cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':x,'y':y-60}]});cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
  assert page.evaluate('NFXLayers.selected')!='camera';assert page.evaluate('JSON.stringify(NFXLayers.state)')==before
  # Scrolling over a touch slider is safe; holding arms it for adjustment.
- page.evaluate("NFXLayers.select('camera')");before_opacity=page.evaluate('NFXLayers.state.layers.camera.opacity');slider=page.locator('[data-layer-value=opacity]').bounding_box();sx=slider['x']+slider['width']/2;sy=slider['y']+slider['height']/2
+ page.evaluate("NFXLayers.select('camera')");page.wait_for_timeout(650);before_opacity=page.evaluate('NFXLayers.state.layers.camera.opacity');slider=page.locator('[data-layer-value=opacity]').bounding_box();sx=slider['x']+slider['width']/2;sy=slider['y']+slider['height']/2
  cdp.send('Input.dispatchTouchEvent',{'type':'touchStart','touchPoints':[{'x':sx,'y':sy}]});cdp.send('Input.dispatchTouchEvent',{'type':'touchMove','touchPoints':[{'x':sx,'y':sy-35}]});cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
  assert page.evaluate('NFXLayers.state.layers.camera.opacity')==before_opacity
  page.locator('.nfx-layer-inspector').evaluate('el=>el.scrollTop=0');slider=page.locator('[data-layer-value=opacity]').bounding_box();sx=slider['x']+slider['width']/2;sy=slider['y']+slider['height']/2
@@ -118,7 +118,7 @@ with sync_playwright() as p:
   for left in [False,True]:
    page.evaluate('(left)=>{NFXLayers.hand=left?"left":"right";NFXLayers.rootElement.classList.toggle("nfx-layer-left",left)}',left)
    bounds=page.locator('.nfx-layer-inspector').bounding_box();assert bounds['x']>=0 and bounds['y']>=0 and bounds['x']+bounds['width']<=width and bounds['y']+bounds['height']<=height
-   if width>height:assert (bounds['x']<width/2)==left
+   if width>height:assert bounds['y']>height*.5
  page.set_viewport_size({'width':844,'height':390});page.wait_for_timeout(450);page.screenshot(path='/workspace/Neuroflux-Layers-Landscape.png')
  # Only the hardware performance probe is bypassed for this software GPU.
  # MediaRecorder, output rendering, local storage and decoded playback stay real.

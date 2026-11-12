@@ -1,6 +1,7 @@
 import model from '../../lib/layers.cjs';
 import cameraCatalog from '../../lib/camera-fx.cjs';
 import {artwork,formatValue} from './camera-ui.js';
+import {immersiveLayers} from './immersive-layers.js';
 
 const copy=value=>structuredClone(value);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -15,7 +16,7 @@ export class LayerWorkspace {
   this.workspace=workspace;this.rig=workspace.rig;this.state=model.fromLegacy(this.rig.guideState().controls);
   try{const saved=JSON.parse(localStorage.getItem('nfx.layers.v1'));if(saved)this.state=model.validate(saved);}catch{}
   this.opened=false;this.scope='root';this.selected='camera';this.hand=workspace.take.hand;this.previewSolo=null;this.undo=[];this.redo=[];this.groupSelection=new Set();this.lastPreview=0;
-  this.mount();this.cleanGroups();
+  this.mount();this.cleanGroups();immersiveLayers(this);
  }
  cameraState(state){return model.effectiveCamera(state,this.state);}
  persist(){try{localStorage.setItem('nfx.layers.v1',JSON.stringify(this.state));}catch{this.message('Could not save layer settings. Use SAVE to keep a setup.');}}
@@ -76,7 +77,7 @@ export class LayerWorkspace {
   this.inspector.addEventListener('pointerdown',()=>this.begin(),true);
   this.inspector.addEventListener('keydown',e=>{if(e.target.matches('input,select'))this.begin();},true);
   this.inspector.addEventListener('input',e=>this.guard(()=>this.input(e.target)));
-  this.inspector.addEventListener('change',event=>{this.end();if(!event.target.matches('[data-layer-search],.nfx-layer-rename input'))this.paint();});
+  this.inspector.addEventListener('change',event=>{this.end();if(!event.target.matches('[data-layer-search],[data-scene-text],.nfx-layer-rename input'))this.paint();});
   this.inspector.addEventListener('focusout',()=>{this.end();});
   this.rootElement.addEventListener('keydown',event=>{
    event.stopPropagation();if(event.key==='Escape'){event.preventDefault();this.open(false);return;}
@@ -84,9 +85,9 @@ export class LayerWorkspace {
   });
   for(const type of ['pointerdown','pointerup','dblclick'])this.rootElement.addEventListener(type,e=>e.stopPropagation());
   this.deck.addEventListener('wheel',event=>{event.preventDefault();if(performance.now()-(this.wheelAt||0)<160)return;this.wheelAt=performance.now();this.browse(event.deltaY>0?1:-1);},{passive:false});
-  this.deck.addEventListener('pointerdown',event=>{if(event.button>0)return;this.drag={id:event.pointerId,y:event.clientY,card:event.target.closest('[data-layer-card]')?.dataset.layerCard,reorder:!!event.target.closest('[data-layer-grip]')};this.deck.classList.add('is-dragging');this.deck.setPointerCapture(event.pointerId);});
+  this.deck.addEventListener('pointerdown',event=>{if(event.button>0||this.drag)return;this.drag={id:event.pointerId,y:event.clientY,card:event.target.closest('[data-layer-card]')?.dataset.layerCard,reorder:!!event.target.closest('[data-layer-grip]')};this.deck.classList.add('is-dragging');this.deck.setPointerCapture(event.pointerId);});
   this.deck.addEventListener('pointermove',event=>{if(this.drag?.id===event.pointerId&&!this.drag.reorder)this.deck.style.setProperty('--deck-drag',Math.max(-45,Math.min(45,(event.clientY-this.drag.y)*.35))+'px');});
-  this.deck.addEventListener('pointerup',event=>{const drag=this.drag;this.drag=null;this.deck.classList.remove('is-dragging');this.deck.style.setProperty('--deck-drag','0px');if(!drag||drag.id!==event.pointerId)return;const distance=event.clientY-drag.y;if(Math.abs(distance)>30){event.preventDefault();if(drag.reorder)this.guard(()=>this.move(distance>0?1:-1));else this.browse(distance<0?1:-1);this.blockCardClick=true;setTimeout(()=>this.blockCardClick=false,0);}else if(drag.card&&!drag.reorder){this.select(drag.card);}});
+  this.deck.addEventListener('pointerup',event=>{const drag=this.drag;this.drag=null;this.deck.classList.remove('is-dragging');this.deck.style.setProperty('--deck-drag','0px');if(!drag||drag.id!==event.pointerId)return;const distance=event.clientY-drag.y;if(Math.abs(distance)>30){event.preventDefault();if(drag.reorder)this.guard(()=>this.move((distance>0?1:-1)*(this.scope==='root'&&['effect','group'].includes(this.current()?.kind)?-1:1)));else this.browse((distance<0?1:-1)*Math.max(1,Math.min(5,Math.floor(Math.abs(distance)/65))));this.blockCardClick=true;setTimeout(()=>this.blockCardClick=false,0);}else if(drag.card&&!drag.reorder){this.select(drag.card);}});
   this.deck.addEventListener('click',event=>{if(this.blockCardClick){event.preventDefault();event.stopImmediatePropagation();}},true);
   this.deck.addEventListener('pointercancel',()=>{this.drag=null;this.deck.classList.remove('is-dragging');this.deck.style.setProperty('--deck-drag','0px');});
  }
@@ -128,7 +129,7 @@ export class LayerWorkspace {
   const root=this.state.layers[this.root()],locked=root.locked||item?.group?.locked||!!this.groupFor(item?.id)?.locked;
   let content='';
   if(this.grouping){content=`<h3>Group camera effects</h3><div class="nfx-layer-group-picker">${this.workspace.state.nodes.map(n=>`<button data-layer-action="chooseGroup" data-node-id="${n.id}" aria-pressed="${this.groupSelection.has(n.id)}" ${this.groupFor(n.id)?'disabled':''}>${artwork(cameraCatalog.byId[n.effect])}<span>${esc(cameraCatalog.byId[n.effect].name)}</span></button>`).join('')}</div><button data-layer-action="createGroup" class="nfx-layer-primary" ${!this.groupSelection.size?'disabled':''}>Create folder</button>`;}
-  else if(this.library){content=`<h3>Add a camera effect</h3><input type="search" data-layer-search aria-label="Search camera effects" placeholder="Find an effect…"><div class="nfx-layer-library">${cameraCatalog.effects.map(e=>`<button data-layer-action="addFx" data-effect="${e.id}" data-search="${esc((e.name+' '+e.family).toLowerCase())}" ${this.workspace.state.nodes.length>=8?'disabled':''}>${artwork(e)}<span>${esc(e.name)}</span></button>`).join('')}</div>`;}
+  else if(this.library){content=`<h3>Add a camera effect</h3><input type="search" data-layer-search aria-label="Search camera effects" placeholder="Find an effect…"><div class="nfx-layer-library">${cameraCatalog.effects.map(e=>`<button data-layer-action="addFx" data-effect="${e.id}" data-search="${esc((e.name+' '+e.family).toLowerCase())}" ${this.workspace.state.nodes.length>=cameraCatalog.MAX_NODES?'disabled':''}>${artwork(e)}<span>${esc(e.name)}</span></button>`).join('')}</div>`;}
   else if(!item){content=`<h3>Camera effects</h3><button data-layer-action="library" class="nfx-layer-primary">＋ Add effect</button>`;}
   else if(item.kind==='source'){
    const layer=this.state.layers[item.id],status=this.rig.layerStatus(),available=item.id==='visuals'?!['blank','camera'].includes(this.workspace.byos.source):status[item.id]&&this.workspace.byos.source!=='blank';

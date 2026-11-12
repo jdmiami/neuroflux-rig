@@ -44,6 +44,8 @@ window.NFXRig = {
   createBYOSControl(id) {return Ue[id]?wt(Ue[id],'quick'):null;},
   layerCatalog() {return De.map(p=>({id:p.id,page:p.page,label:p.label,type:p.type,min:p.min,max:p.max}));},
   layerStatus() {return {camera:!!(Qn.on&&Qn.video?.readyState>=2),space:!!(Hn.pts&&(Hn.pts.cloud||Hn.pts.splat))};},
+  audioSpectrum() {return {bands:Array.from(k),bass:U.bass,mid:U.mid,high:U.high,level:U.level,bpm:U.bpm,source:G};},
+  cancelLayerTouches(pointers) {for(const pointer of pointers)f.dispatchEvent(new PointerEvent('pointercancel',{pointerId:pointer.id,pointerType:'touch',clientX:pointer.x,clientY:pointer.y,bubbles:true}));ma.clear();fa.fill(0);},
   mountBYOS(panel) {Dt.quick.insertBefore(panel,Dt.quick.firstChild);},
   mountPerformance(camera,motion,setups) {
     Dt.cam.insertBefore(camera,Dt.cam.firstChild);Dt.react.insertBefore(motion,Dt.react.firstChild);Dt.scenes.insertBefore(setups,Dt.scenes.firstChild);
@@ -53,7 +55,7 @@ window.NFXRig = {
   feedback: kind => Ke(kind),
   refreshTransport: yn,
   notify: (title,detail) => st(title,detail),
-  cameraSource() {return {video:Qn.on&&Be.cam?Qn.video:null,bpm:U.bpm,level:U.level,depthKey:Be.camBlend===5||window.NFXLayers?.state.enabled&&window.NFXLayers.state.layers.camera.blend==='depth',depth:oa.on?{data:oa.data,w:oa.w,h:oa.h}:null};},
+  cameraSource() {return {video:Qn.on&&Be.cam?Qn.video:null,mirror:!!Hn.post?.uCamMirror,bpm:U.bpm,level:U.level,depthKey:Be.camBlend===5||window.NFXLayers?.state.enabled&&window.NFXLayers.state.layers.camera.blend==='depth',depth:oa.on?{data:oa.data,w:oa.w,h:oa.h}:null};},
   controlCatalog() {return De.map(p=>({id:p.id,min:p.type==='switch'?0:p.min,max:p.type==='switch'?1:p.max,step:p.step||(p.type==='switch'?1:0)}));},
   setupState() {return {rig:{...Be},source:G,pins:[...ze],slots:Ve.map((slot,i)=>slot?{n:'ABCD'[i],v:{...slot}}:null)};},
   applySetup(setup) {
@@ -133,6 +135,12 @@ window.NFXRig = {
     }
     const saved = { M, w, S, L, A };
     const scene = { ...Hn.scene }, post = { ...Hn.post }, aspect = width / height;
+    let feedback={...Hn.fb};
+    if(options.stage){
+      const stageIndex=rigPostStages.findIndex(p=>p.id===options.stage);
+      for(const p of rigPostStages)if(options.stage==='visual-base'||options.stage==='visual-feedback'||p.index>stageIndex&&stageIndex>=0)post[p.uniform]=p.neutral;
+      if(options.stage==='visual-base')for(const key of Object.keys(feedback))if(key.startsWith('uFb'))feedback[key]=0;
+    }
     // Menu avoidance is for the operator screen only; output stays centered.
     scene.uCenter = [Be.ox + Xn.tilt[0] * Be.tiltOrigin * 1.4,
       Be.oy - Xn.tilt[1] * Be.tiltOrigin * 1.4];
@@ -157,6 +165,8 @@ window.NFXRig = {
           pts[key].uPx *= height / saved.A;
         } else pts[key].uPxS *= height / saved.A;
       }
+      if(options.spaceKind==='cloud')pts.splat=null;
+      if(options.spaceKind==='splat')pts.cloud=null;
     }
     try {
       M = target.scene; w = target.trails; S = target.index; L = width; A = height;
@@ -164,7 +174,7 @@ window.NFXRig = {
       // Each target renders into its own viewport; the operator pass fills the buffer.
       const bufferWidth = Math.max(f.width, saved.L, width), bufferHeight = Math.max(f.height, saved.A, height);
       if (f.width !== bufferWidth || f.height !== bufferHeight) { f.width = bufferWidth; f.height = bufferHeight; }
-      renderRig({ scene, post, fb: Hn.fb, pts, studio: true, layerSolo:options.solo, camFrame: Hn.camFrame, depthFrame: Hn.depthFrame });
+      renderRig({ scene, post, fb: feedback, pts, previewStage:options.stage, studio: true, layerSolo:options.solo, camFrame: Hn.camFrame, depthFrame: Hn.depthFrame });
       target.index = S;
       target.context.drawImage(f, 0, f.height - height, width, height, 0, 0, width, height);
       return target.canvas;

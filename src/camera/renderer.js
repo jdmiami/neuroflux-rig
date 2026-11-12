@@ -3,7 +3,7 @@ import {CameraVision} from './vision.js';
 import catalog from '../../lib/camera-fx.cjs';
 export class CameraRenderer {
  constructor(){
-  this.canvas=document.createElement('canvas');this.gl=this.canvas.getContext('webgl2',{alpha:true,preserveDrawingBuffer:true,premultipliedAlpha:false,antialias:false});if(!this.gl)throw Error('Camera FX needs WebGL 2.');
+  this.previews=new Map();this.canvas=document.createElement('canvas');this.gl=this.canvas.getContext('webgl2',{alpha:true,preserveDrawingBuffer:true,premultipliedAlpha:false,antialias:false});if(!this.gl)throw Error('Camera FX needs WebGL 2.');
   const gl=this.gl;this.programs=new Map();this.useProgram(-2);
   this.vao=gl.createVertexArray();gl.bindVertexArray(this.vao);const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);
   this.source=this.texture();this.featuresTexture=this.texture();this.background=this.texture();this.backgroundReady=false;this.targets=[];this.histories=new Map();this.vision=new CameraVision();this.level=matchMedia('(pointer:coarse)').matches?360:720;this.last=0;this.sample=[];this.status='Camera FX ready';this.restoreIds=new Set();
@@ -19,7 +19,7 @@ export class CameraRenderer {
    const vs=compile(gl.VERTEX_SHADER,vertex),fs=compile(gl.FRAGMENT_SHADER,source),program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.bindAttribLocation(program,0,'aP');gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));
    const uniforms={};for(let i=0;i<gl.getProgramParameter(program,gl.ACTIVE_UNIFORMS);i++){const u=gl.getActiveUniform(program,i);uniforms[u.name]=gl.getUniformLocation(program,u.name);}item={program,uniforms};
   }
-  this.programs.delete(code);this.programs.set(code,item);if(this.programs.size>16){const oldest=this.programs.keys().next().value;gl.deleteProgram(this.programs.get(oldest).program);this.programs.delete(oldest);}
+  this.programs.delete(code);this.programs.set(code,item);if(this.programs.size>catalog.MAX_NODES+2){const oldest=this.programs.keys().next().value;gl.deleteProgram(this.programs.get(oldest).program);this.programs.delete(oldest);}
   this.program=item.program;this.uniforms=item.uniforms;gl.useProgram(this.program);
   this.set('uImage',0,true);this.set('uFeatures',1,true);this.set('uHistory',2,true);this.set('uBackground',3,true);this.set('uFeatureHistory',4,true);this.set('uSize',[this.canvas.width,this.canvas.height]);this.set('uFace',this.vision?.face||[.5,.5,0,0]);this.set('uBody',this.vision?.body||[.5,.5,0,0]);
  }
@@ -32,7 +32,16 @@ export class CameraRenderer {
  clearHistory(){for(const t of this.histories.values()){this.gl.deleteTexture(t.texture);this.gl.deleteTexture(t.maskTexture);this.gl.deleteFramebuffer(t.f);}this.histories.clear();}
  history(id,w,h){if(this.histories.has(id))return this.histories.get(id);const g=this.gl,short=matchMedia('(pointer:coarse)').matches?96:160,ratio=w/h,hw=ratio>1?Math.round(short*ratio):short,hh=ratio>1?short:Math.round(short/ratio);const texture=g.createTexture();g.activeTexture(g.TEXTURE2);g.bindTexture(g.TEXTURE_2D_ARRAY,texture);g.texImage3D(g.TEXTURE_2D_ARRAY,0,g.RGBA8,hw,hh,30,0,g.RGBA,g.UNSIGNED_BYTE,null);for(const k of [g.TEXTURE_MIN_FILTER,g.TEXTURE_MAG_FILTER])g.texParameteri(g.TEXTURE_2D_ARRAY,k,g.LINEAR);for(const k of [g.TEXTURE_WRAP_S,g.TEXTURE_WRAP_T])g.texParameteri(g.TEXTURE_2D_ARRAY,k,g.CLAMP_TO_EDGE);const maskTexture=g.createTexture();g.activeTexture(g.TEXTURE4);g.bindTexture(g.TEXTURE_2D_ARRAY,maskTexture);g.texImage3D(g.TEXTURE_2D_ARRAY,0,g.RGBA8,hw,hh,30,0,g.RGBA,g.UNSIGNED_BYTE,null);for(const k of [g.TEXTURE_MIN_FILTER,g.TEXTURE_MAG_FILTER])g.texParameteri(g.TEXTURE_2D_ARRAY,k,g.LINEAR);for(const k of [g.TEXTURE_WRAP_S,g.TEXTURE_WRAP_T])g.texParameteri(g.TEXTURE_2D_ARRAY,k,g.CLAMP_TO_EDGE);const t={texture,maskTexture,f:g.createFramebuffer(),w:hw,h:hh,head:0,count:0,last:-1};this.histories.set(id,t);return t;}
  async setBackground(file){if(file.size>32*1024*1024)throw Error('Choose an image smaller than 32 MB.');const bitmap=await createImageBitmap(file);this.upload(3,this.background,bitmap);bitmap.close();this.backgroundReady=true;}
- render(video,state,{clock,held,bpm=120,level=0,now=performance.now(),depth,depthKey=false}={}){
+ capturePreview(id,target,w,h,requested){
+  if(!requested?.has(id))return;
+  const g=this.gl;let canvas=this.previews.get(id);if(!canvas){canvas=document.createElement('canvas');canvas.width=384;canvas.height=Math.max(2,Math.round(384*h/w));this.previews.set(id,canvas);}
+  if(canvas.height!==Math.round(384*h/w))canvas.height=Math.max(2,Math.round(384*h/w));
+  g.bindFramebuffer(g.READ_FRAMEBUFFER,target.f);g.readBuffer(g.COLOR_ATTACHMENT0);g.bindFramebuffer(g.DRAW_FRAMEBUFFER,null);g.drawBuffers([g.BACK]);g.blitFramebuffer(0,0,w,h,0,0,w,h,g.COLOR_BUFFER_BIT,g.NEAREST);
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(this.canvas,0,0,canvas.width,canvas.height);
+  g.bindFramebuffer(g.FRAMEBUFFER,target.f);g.drawBuffers([g.COLOR_ATTACHMENT0,g.COLOR_ATTACHMENT1]);g.viewport(0,0,w,h);
+ }
+ clearPreviews(){this.previews.clear();}
+ render(video,state,{clock,held,bpm=120,level=0,now=performance.now(),depth,depthKey=false,previewStages}={}){
   if(video.readyState<2)return null;const start=performance.now(),g=this.gl,active=state.enabled?state.nodes.filter(n=>!n.bypass&&n.wet>0):[];
   const required=active.flatMap(n=>[...catalog.byId[n.effect].requirements,...(n.params.target==='person'||n.params.target==='background'?['segment']:n.params.target==='face'?['face']:n.params.target==='body'?['pose']:[])]);
   const short=Math.min(this.level,video.videoWidth,video.videoHeight),ratio=video.videoWidth/video.videoHeight,w=2*Math.round((ratio>1?short*ratio:short)/2),h=2*Math.round((ratio>1?short:short/ratio)/2);
@@ -42,8 +51,10 @@ export class CameraRenderer {
   g.activeTexture(g.TEXTURE2);g.bindTexture(g.TEXTURE_2D_ARRAY,this.fallbackHistory);g.activeTexture(g.TEXTURE4);g.bindTexture(g.TEXTURE_2D_ARRAY,this.fallbackHistory);
   this.set('uSize',[w,h]);this.set('uCenter',[.5,.5]);this.set('uFace',this.vision.face||[.5,.5,0,0]);this.set('uBody',this.vision.body||[.5,.5,0,0]);this.set('uScale',1);this.set('uAngle',0);this.set('uWet',1);this.set('uTarget',0,true);this.set('uAvailable',1);this.set('uCode',-1,true);
   let current=0;g.bindFramebuffer(g.FRAMEBUFFER,this.targets[current].f);g.viewport(0,0,w,h);g.drawBuffers([g.COLOR_ATTACHMENT0,g.COLOR_ATTACHMENT1]);g.drawArrays(g.TRIANGLES,0,3);
-  const used=new Set();
-  for(const node of active){
+  const used=new Set(),activeIds=new Set(active.map(n=>n.id));
+  this.capturePreview('camera-raw',this.targets[current],w,h,previewStages);
+  for(const node of state.nodes){
+   if(!activeIds.has(node.id)){this.capturePreview(node.id,this.targets[current],w,h,previewStages);continue;}
    const effect=catalog.byId[node.effect],p=node.params;const needs=[...effect.requirements,...(p.target==='person'||p.target==='background'?['segment']:p.target==='face'?['face']:p.target==='body'?['pose']:[])];const available=needs.every(k=>k==='depth'?!!depth?.data:!!this.vision.results[k]&&!this.vision.failed.has(k)&&performance.now()-this.vision.results[k].at<2000&&(k!=='face'||this.vision.results[k].faces?.length>0)&&(k!=='pose'||this.vision.results[k].poses?.length>0))&& (node.effect!=='background-image'||this.backgroundReady);
    const input=this.targets[current],output=this.targets[1-current];this.bind(0,input.colors[0]);this.bind(1,input.colors[1]);
    if(effect.temporal){used.add(node.id);const history=this.history(node.id,w,h);g.activeTexture(g.TEXTURE2);g.bindTexture(g.TEXTURE_2D_ARRAY,this.fallbackHistory);g.activeTexture(g.TEXTURE4);g.bindTexture(g.TEXTURE_2D_ARRAY,this.fallbackHistory);
@@ -53,8 +64,8 @@ export class CameraRenderer {
    g.bindFramebuffer(g.FRAMEBUFFER,output.f);g.drawBuffers([g.COLOR_ATTACHMENT0,g.COLOR_ATTACHMENT1]);g.viewport(0,0,w,h);
    this.useProgram(effect.code);const historyState=this.histories.get(node.id);this.set('uHead',historyState?.head||0,true);this.set('uFrames',historyState?.count||0,true);
    const phase=p.autoplay?clock*p.speed*6.2831853:0,beat=level*p.beat;
-   this.set('uCode',effect.code,true);this.set('uCount',p.count,true);this.set('uCenter',[p.centerX,p.centerY]);this.set('uAmount',Math.max(-1,Math.min(1,p.amount+beat*.5)));this.set('uAngle',p.angle*Math.PI/180);this.set('uScale',p.scale);this.set('uPhase',phase+(p.beat?clock*bpm/60/p.division*6.2831853*p.beat:0));this.set('uClock',clock);this.set('uWet',node.wet);this.set('uSeed',p.seed);this.set('uDelay',p.delay);this.set('uAutoplay',p.autoplay?1:0);this.set('uAvailable',available?1:0);this.set('uRestored',this.restoreIds.has(node.id)?1:0,true);this.set('uBorder',['clamp','mirror','repeat','transparent'].indexOf(p.border),true);this.set('uTarget',['all','person','background','face','body'].indexOf(p.target),true);this.set('uTint',[1,3,5].map(i=>parseInt(p.tint.slice(i,i+2),16)/255));
-   g.drawArrays(g.TRIANGLES,0,3);current=1-current;
+   this.set('uCode',effect.code,true);this.set('uCount',p.count,true);this.set('uCenter',[p.centerX,p.centerY]);this.set('uAmount',Math.max(-1,Math.min(1,p.amount+beat*.5)));this.set('uAngle',p.angle*Math.PI/180);this.set('uScale',p.scale);this.set('uPhase',phase+(p.beat?clock*bpm/60/p.division*6.2831853*p.beat:0));this.set('uClock',clock);this.set('uWet',node.wet*(1-p.beat+p.beat*Math.max(0,Math.min(1,level))));this.set('uSeed',p.seed);this.set('uDelay',p.delay);this.set('uAutoplay',p.autoplay?1:0);this.set('uAvailable',available?1:0);this.set('uRestored',this.restoreIds.has(node.id)?1:0,true);this.set('uBorder',['clamp','mirror','repeat','transparent'].indexOf(p.border),true);this.set('uTarget',['all','person','background','face','body'].indexOf(p.target),true);this.set('uTint',[1,3,5].map(i=>parseInt(p.tint.slice(i,i+2),16)/255));
+   g.drawArrays(g.TRIANGLES,0,3);current=1-current;this.capturePreview(node.id,this.targets[current],w,h,previewStages);
   }
   for(const [id,hist]of this.histories)if(!used.has(id)){g.deleteTexture(hist.texture);g.deleteTexture(hist.maskTexture);g.deleteFramebuffer(hist.f);this.histories.delete(id);}
   this.bind(0,this.targets[current].colors[0]);this.bind(1,this.targets[current].colors[1]);g.activeTexture(g.TEXTURE2);g.bindTexture(g.TEXTURE_2D_ARRAY,this.fallbackHistory);g.activeTexture(g.TEXTURE4);g.bindTexture(g.TEXTURE_2D_ARRAY,this.fallbackHistory);g.bindFramebuffer(g.FRAMEBUFFER,null);g.drawBuffers([g.BACK]);g.viewport(0,0,w,h);this.useProgram(-2);this.set('uAvailable',1);this.set('uCenter',[.5,.5]);this.set('uAngle',0);this.set('uScale',1);this.set('uWet',1);this.set('uTarget',0,true);g.drawArrays(g.TRIANGLES,0,3);
@@ -64,10 +75,11 @@ export class CameraRenderer {
    this.depthCanvas??=document.createElement('canvas');this.depthCanvas.width=w;this.depthCanvas.height=h;const ctx=this.depthCanvas.getContext('2d'),image=ctx.createImageData(w,h);
    for(let y=0;y<h;y++)for(let x=0;x<w;x++){const source=((h-y-1)*w+x)*4+1,d=(y*w+x)*4;image.data[d]=image.data[d+1]=image.data[d+2]=pixels[source];image.data[d+3]=255;}ctx.putImageData(image,0,0);this.processedDepth=this.depthCanvas;
   }
+  if(previewStages)for(const id of this.previews.keys())if(!previewStages.has(id))this.previews.delete(id);
   const error=g.getError();if(error!==g.NO_ERROR)throw Error('Camera FX GPU error '+error);
   const frameMs=this.last&&now>this.last&&now-this.last<200?now-this.last:0;this.last=now;this.sample.push({cpu:performance.now()-start,frame:frameMs});if(this.sample.length>=90){const ms=this.sample.reduce((a,b)=>a+b.cpu,0)/this.sample.length,frames=this.sample.filter(s=>s.frame>0),interval=frames.length?frames.reduce((a,b)=>a+b.frame,0)/frames.length:0;this.sample=[];const levels=[180,270,360,540,720],i=levels.indexOf(this.level);if((ms>24||interval>44)&&i>0)this.level=levels[i-1];else if(ms<9&&interval<25&&i<levels.length-1)this.level=levels[i+1];}
   this.status=required.includes('depth')&&!depth?.data?'Depth FX waiting: enable local depth analysis in the effect card.':active.some(n=>n.effect==='background-image')&&!this.backgroundReady?'Choose a background image in the effect card.':required.some(k=>k!=='depth')?this.vision.status:'Camera FX ready';this.status+=` · ${w}×${h} internal · adaptive detail`;
   return this.canvas;
  }
- release(){this.vision.release();this.clearHistory();}
+ release(){this.vision.release();this.clearHistory();this.clearPreviews();}
 }

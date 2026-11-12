@@ -1,4 +1,5 @@
 import { dimensions } from './profiles.js';
+import {drawLayerWords} from '../performance/layer-words.js';
 
 export class ProgramOutput {
   constructor(rig, settings) {
@@ -31,10 +32,12 @@ export class ProgramOutput {
     ctx.drawImage(source, (width - dw) / 2 + p.panX * Math.abs(width - dw) / 2,
       (height - dh) / 2 + p.panY * Math.abs(height - dh) / 2, dw, dh);
     const unit = Math.min(width, height) / 720;
+    const words=window.NFXLayers?.state.words;
+    if(words)drawLayerWords(ctx,words,width,height);
     ctx.font = `600 ${22 * unit}px monospace`; ctx.textBaseline = 'top';
     if (p.mode !== 'clean') this.hud(ctx, state, width, height, unit, p);
     if (p.hands) this.hands(ctx, state, width, height, unit);
-    if (p.lyrics && state.lyrics.trim()) this.text(ctx, state.lyrics.trim().slice(-180), width / 2, height * 0.73, width * 0.8, 30 * unit, true);
+    if (p.lyrics && state.lyrics.trim() && (!words||words.visible)) {ctx.save();ctx.globalAlpha*=words?.opacity??1;this.text(ctx, state.lyrics.trim().slice(-180), width / 2, height * 0.73, width * 0.8, 30 * unit, true);ctx.restore();}
     if (p.title) this.text(ctx, p.title, width / 2, height * 0.13, width * 0.8, 32 * unit, true);
     if (p.branding) this.text(ctx, p.branding, width * 0.08, height * 0.9, width * 0.75, 16 * unit);
     ctx.restore(); return true;

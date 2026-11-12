@@ -1,5 +1,13 @@
 // Injected into the native rig closure, alongside rig-render.js.
 let rigLayerProgram=null;
+let rigSoundBands={bass:0,mid:0,high:0,level:0};
+function applyLayerSound(e){
+ const links=window.NFXLayers?.state.audioLinks;if(!links||!Object.keys(links).length)return {event:e,signature:[]};
+ if(!window.NFXMotion?.held)rigSoundBands={bass:U.bass,mid:U.mid,high:U.high,level:U.level};
+ const post={...e.post},signature=[],through=rigPostStages.findIndex(p=>p.id===e.previewStage);
+ for(const stage of rigPostStages){const link=links[stage.control],control=Ue[stage.control];if(!link||!control||e.previewStage==='visual-base'||e.previewStage==='visual-feedback'||through>=0&&stage.index>through)continue;const value=Math.max(control.min,Math.min(control.max,post[stage.uniform]+rigSoundBands[link.band]*link.amount*(control.max-control.min)*.5));post[stage.uniform]=value;signature.push(stage.control,value);}
+ return {event:{...e,post},signature};
+}
 const rigLayerSource=`#version 300 es
 precision highp float;in vec2 vUv;out vec4 o;
 uniform sampler2D uVisual,uSpace,uCamera,uDepth;

@@ -18,11 +18,12 @@ function renderRig(e){
  if(byosSource==='blank'||byosSource==='camera'&&!Qn.on){h.bindFramebuffer(h.FRAMEBUFFER,null);h.clearColor(0,0,0,1);h.clear(h.COLOR_BUFFER_BIT);return;}
  if(e.camFrame){h.activeTexture(h.TEXTURE2);h.bindTexture(h.TEXTURE_2D,u.camTex);try{h.texImage2D(h.TEXTURE_2D,0,h.RGBA,h.RGBA,h.UNSIGNED_BYTE,e.camFrame);}catch{}e.camFrame=null;}
  if(e.depthFrame){const d=e.depthFrame;h.activeTexture(h.TEXTURE3);h.bindTexture(h.TEXTURE_2D,u.depthTex);h.texImage2D(h.TEXTURE_2D,0,h.R8,d.w,d.h,0,h.RED,h.UNSIGNED_BYTE,d.data);e.depthFrame=null;}
+ const sound=applyLayerSound(e);e=sound.event;
  h.bindVertexArray(y);
  let target=rigVisualBuffers.get(M);if(!target){h.activeTexture(h.TEXTURE0);target={post:D(L,A,false),signature:null};rigVisualBuffers.set(M,target);}
  const layerUI=window.NFXLayers,split=!!layerUI?.state.enabled||e.layerSolo!==undefined||!e.studio&&layerUI?.opened&&!!layerUI.previewSolo;
  if(target.split!==split){target.split=split;target.signature=null;for(const trail of w){h.bindFramebuffer(h.FRAMEBUFFER,trail.f);h.clearColor(0,0,0,1);h.clear(h.COLOR_BUFFER_BIT);}}
- const signature=JSON.stringify([Object.fromEntries(Object.entries(Be).filter(([key])=>!key.startsWith('cam'))),L,A,e.scene.uCenter,split]);
+ const signature=JSON.stringify([Object.fromEntries(Object.entries(Be).filter(([key])=>!key.startsWith('cam'))),L,A,e.scene.uCenter,split,e.previewStage,sound.signature]);
  const hold=window.NFXMotion?.held??true;
  if(!hold||target.signature!==signature){
   h.activeTexture(h.TEXTURE0);h.bindTexture(h.TEXTURE_2D,E);h.texSubImage2D(h.TEXTURE_2D,0,0,0,256,1,h.RED,h.UNSIGNED_BYTE,k);
