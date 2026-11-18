@@ -47,6 +47,8 @@ window.NFXRig = {
   audioSpectrum() {return {bands:Array.from(k),bass:U.bass,mid:U.mid,high:U.high,level:U.level,bpm:U.bpm,source:G};},
   cancelLayerTouches(pointers) {for(const pointer of pointers)f.dispatchEvent(new PointerEvent('pointercancel',{pointerId:pointer.id,pointerType:'touch',clientX:pointer.x,clientY:pointer.y,bubbles:true}));ma.clear();fa.fill(0);},
   mountBYOS(panel) {Dt.quick.insertBefore(panel,Dt.quick.firstChild);},
+  mountInterfaceChoice(button) { Dt.quick.prepend(button); },
+  closeMenu: Kt,
   mountPerformance(camera,motion,setups) {
     Dt.cam.insertBefore(camera,Dt.cam.firstChild);Dt.react.insertBefore(motion,Dt.react.firstChild);Dt.scenes.insertBefore(setups,Dt.scenes.firstChild);
   },

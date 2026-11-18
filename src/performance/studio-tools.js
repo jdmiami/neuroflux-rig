@@ -48,6 +48,7 @@ export function mountStudioTools(workspace) {
     <header class="nfx-tools-header">
       <h2 id="nfxToolsTitle">Tools</h2>
       <button type="button" data-tools-find aria-expanded="false" aria-controls="nfxToolsSearch">Find a tool</button>
+      <button type="button" data-tools-stock>Stock UI</button>
       <button type="button" data-tools-close aria-label="Close tools">×</button>
     </header>
     <div class="nfx-aperture" role="group" aria-label="Tool groups">
@@ -75,14 +76,13 @@ export function mountStudioTools(workspace) {
   const label = document.createElement('span');
   label.className = 'nfx-tools-dock-label';
   label.textContent = 'Tools';
+  label.hidden = true;
   trigger.append(label);
-  trigger.setAttribute('aria-haspopup', 'dialog');
-  trigger.setAttribute('aria-controls', panel.id);
-  trigger.setAttribute('aria-expanded', 'false');
   let activeGroup = 0;
   let groupMotion;
   let closing = false;
   let useNativeMenu = false;
+  let enabled = false;
 
   const groupButtons = groups.map((group, index) => {
     const button = document.createElement('button');
@@ -182,9 +182,59 @@ export function mountStudioTools(workspace) {
       document.body.classList.contains('clean') || document.body.classList.contains('nfx-simple-record');
   }
 
-  dock.classList.add('nfx-studio-dock');
+  function setEnabled(value) {
+    enabled = value;
+    dock.classList.toggle('nfx-studio-dock', value);
+    label.hidden = !value;
+    if (value) {
+      trigger.setAttribute('aria-haspopup', 'dialog');
+      trigger.setAttribute('aria-controls', panel.id);
+      trigger.setAttribute('aria-expanded', 'false');
+    } else {
+      for (const attribute of ['aria-haspopup', 'aria-controls', 'aria-expanded']) {
+        trigger.removeAttribute(attribute);
+      }
+    }
+  }
+
+  function launchFromStock() {
+    workspace.rig.closeMenu();
+    setEnabled(true);
+    open();
+  }
+
+  const stockChoice = document.createElement('button');
+  stockChoice.id = 'nfxMenuNewUI';
+  stockChoice.type = 'button';
+  stockChoice.className = 'act nfx-new-ui-entry';
+  stockChoice.textContent = 'New UI';
+  stockChoice.addEventListener('click', launchFromStock);
+  workspace.rig.mountInterfaceChoice(stockChoice);
+
+  const start = document.getElementById('start');
+  const startMenu = document.getElementById('stMenu');
+  const silentEntry = startMenu?.querySelector('[data-go=sim]');
+  if (start && silentEntry) {
+    const startChoice = document.createElement('button');
+    startChoice.id = 'nfxStartNewUI';
+    startChoice.type = 'button';
+    startChoice.className = 'st-b';
+    startChoice.innerHTML = '<i aria-hidden="true">◎</i><span>New UI<small>Animated studio</small></span>';
+    startMenu.append(startChoice);
+    startChoice.addEventListener('click', () => {
+      startChoice.disabled = true;
+      const observer = new MutationObserver(() => {
+        if (start.isConnected) return;
+        observer.disconnect();
+        launchFromStock();
+      });
+      observer.observe(start.parentNode, {childList: true});
+      silentEntry.click();
+    });
+  }
+
   trigger.addEventListener('click', event => {
-    if (useNativeMenu || usesNativeMenu()) return;
+    if (!enabled || useNativeMenu || usesNativeMenu()) return;
     event.stopImmediatePropagation();
     open();
   }, true);
@@ -211,6 +261,12 @@ export function mountStudioTools(workspace) {
       dismiss(false);
       useNativeMenu = true;
       try { trigger.click(); } finally { useNativeMenu = false; }
+    }
+    if (button?.hasAttribute('data-tools-stock')) {
+      await dismiss();
+      setEnabled(false);
+      workspace.rig.guideOpen('quick');
+      stockChoice.focus({preventScroll: true});
     }
   });
 }

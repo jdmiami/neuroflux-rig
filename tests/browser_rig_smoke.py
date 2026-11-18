@@ -25,6 +25,8 @@ def main():
             page.goto(f'http://127.0.0.1:{server.server_port}/',wait_until='domcontentloaded')
             page.wait_for_function('window.NFXStudio?.storageReady');page.locator('#start [data-go=sim]').click()
             page.wait_for_timeout(800);page.locator('#btnMenu').click()
+            page.locator('#tabs [data-p=quick]').click()
+            page.get_by_role('button',name='New UI',exact=True).click()
             page.get_by_role('button',name='Find a tool').click()
             page.get_by_role('searchbox',name='Search tools').fill('recording controls')
             page.get_by_role('button',name='Recording controls',exact=True).click()

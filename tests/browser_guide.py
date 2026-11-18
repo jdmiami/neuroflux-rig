@@ -47,7 +47,7 @@ def main():
    page.route('https://fonts.googleapis.com/**',lambda r:r.abort());page.route('https://fonts.gstatic.com/**',lambda r:r.abort())
    page.add_init_script("localStorage.setItem('nfx.state.v1',JSON.stringify({P:{res:0,cx:0,mode:8,mirror:0}}));localStorage.setItem('nfx.studio.v1',JSON.stringify({profiles:[{width:128,height:128,fps:24},{width:128,height:192,fps:24}],settings:{stems:false}}));")
    page.goto(f'http://127.0.0.1:{server.server_port}/',wait_until='domcontentloaded');page.wait_for_function('window.NFXGuide&&NFXStudio.storageReady')
-   page.locator('#start [data-go=sim]').click();page.locator('#btnMenu').click();page.get_by_role('button',name='All controls').click();page.locator('#tabs [data-p=ai]').click()
+   page.locator('#start [data-go=sim]').click();page.locator('#btnMenu').click();page.locator('#tabs [data-p=ai]').click()
    assert not page.locator('#nfxGuideEnabled').is_checked()
    assert page.locator('#nfxGuideHome').is_hidden() and page.locator('#nfxGuideStep').is_hidden()
    assert not requests,'Default-off guide made a model request'

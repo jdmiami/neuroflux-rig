@@ -4,6 +4,8 @@ The live picture is the workspace. Keep the transport, Record, Layers, quick sav
 
 ## Navigation
 
+Choose **New UI** on the start screen or under **Menu → Quick**. The animated Tools control stays available for the current session. **Stock UI** in the Tools header returns to the standard menu. Choosing any other start mode uses the stock interface by default.
+
 | Area | What it contains |
 |---|---|
 | Live picture | Camera and visual mix, scene name, active source and recording state. Canvas gestures continue to perform on the picture. |
