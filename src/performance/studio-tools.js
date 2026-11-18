@@ -211,27 +211,14 @@ export function mountStudioTools(workspace) {
   stockChoice.addEventListener('click', launchFromStock);
   workspace.rig.mountInterfaceChoice(stockChoice);
 
-  const start = document.getElementById('start');
-  const startMenu = document.getElementById('stMenu');
-  const silentEntry = startMenu?.querySelector('[data-go=sim]');
-  if (start && silentEntry) {
-    const startChoice = document.createElement('button');
-    startChoice.id = 'nfxStartNewUI';
-    startChoice.type = 'button';
-    startChoice.className = 'st-b';
-    startChoice.innerHTML = '<i aria-hidden="true">◎</i><span>New UI<small>Animated studio</small></span>';
-    startMenu.append(startChoice);
-    startChoice.addEventListener('click', () => {
-      startChoice.disabled = true;
-      const observer = new MutationObserver(() => {
-        if (start.isConnected) return;
-        observer.disconnect();
-        launchFromStock();
-      });
-      observer.observe(start.parentNode, {childList: true});
-      silentEntry.click();
-    });
+  function openRequestedInterface() {
+    if (document.body.dataset.nfxStartNewUi !== 'pending') return;
+    delete document.body.dataset.nfxStartNewUi;
+    launchFromStock();
   }
+
+  document.addEventListener('nfx-start-new-ui', openRequestedInterface, {once: true});
+  openRequestedInterface();
 
   trigger.addEventListener('click', event => {
     if (!enabled || useNativeMenu || usesNativeMenu()) return;

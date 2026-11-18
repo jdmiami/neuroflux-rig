@@ -205,6 +205,21 @@ body:not(.nfx-landscape-take):not(.nfx-byos-mode) #dock.nfx-studio-dock {
 #dock.nfx-studio-dock #btnMenu.on .nfx-tools-dock-label,
 body.nfx-byos-mode .nfx-tools-dock-label { display: none; }
 
+.nfx-new-ui-entry { align-self: start; margin-bottom: 8px; }
+body.nfx-landscape-take .nfx-new-ui-entry { display: none; }
+#start:has(#nfxStartNewUI) { overflow-y: auto; align-items: safe center; }
+#nfxStartNewUI {
+  width: 100%;
+  margin-top: clamp(12px, 3dvh, 30px);
+  color: #fff2df;
+  background: linear-gradient(100deg, #392f21f2, #121420ee);
+  box-shadow: inset 0 0 0 1px #e6bc7866;
+}
+#nfxStartNewUI > i { color: #f6c68a; }
+#nfxStartNewUI > svg { margin-inline-start: auto; }
+#nfxStartNewUI + #stMenu { margin-top: 8px; }
+
+
 @media (max-width: 370px) {
   body:not(.nfx-landscape-take):not(.nfx-byos-mode) #dock.nfx-studio-dock { gap: 2px; padding-inline: 2px; }
   #dock.nfx-studio-dock .trk { display: none; }
@@ -271,7 +286,7 @@ body.nfx-byos-mode .nfx-tools-dock-label { display: none; }
 }
 #nfxStudioTools button:focus-visible,
 #nfxStudioTools input:focus-visible { outline: 2px solid var(--tool-light); outline-offset: -2px; border-radius: 8px; }
-#nfxStudioTools [data-tools-find] { padding-inline: 12px; color: #dbded9; }
+#nfxStudioTools :is([data-tools-find], [data-tools-stock]) { padding-inline: 8px; color: #dbded9; }
 #nfxStudioTools [data-tools-close] { font: 300 24px/1 system-ui, sans-serif; color: #fff1d3; border: 1px solid #f8edcf3d; border-radius: 50%; }
 .nfx-aperture { position: relative; grid-area: lens; min-width: 0; min-height: 0; touch-action: none; isolation: isolate; }
 .nfx-aperture canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }

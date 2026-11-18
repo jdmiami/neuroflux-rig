@@ -113,8 +113,20 @@ with sync_playwright() as p:
     assert not dialog.is_visible() and page.evaluate('NFXRig.guideState().ui.menuOpen')
     close_editor()
     page.set_viewport_size({'width':320,'height':568})
-    page.reload(wait_until='domcontentloaded')
-    page.locator('#nfxStartNewUI').click()
+    delayed_scripts = []
+    page.route('**/performance.js', lambda route: delayed_scripts.append(route))
+    page.reload(wait_until='commit')
+    page.wait_for_function('window.NFXRig && !window.NFXPerformance')
+    startup_choice = page.locator('#start').get_by_role('button', name='New UI Animated studio', exact=True)
+    startup_choice.wait_for(state='visible')
+    assert startup_choice.bounding_box()['y'] < 300
+    assert startup_choice.evaluate('(button) => Boolean(button.compareDocumentPosition(document.querySelector("#stMenu")) & Node.DOCUMENT_POSITION_FOLLOWING)')
+    startup_choice.click()
+    page.wait_for_function('document.body.dataset.nfxStartNewUi === "pending"')
+    assert not dialog.count()
+    assert len(delayed_scripts) == 1
+    delayed_scripts[0].continue_()
+    page.unroute('**/performance.js')
     dialog.wait_for(state='visible')
     assert not page.locator('#start').count()
     assert page.locator('#dock').evaluate('(dock)=>dock.classList.contains("nfx-studio-dock")')
