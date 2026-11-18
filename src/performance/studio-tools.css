@@ -1,0 +1,85 @@
+/* The existing controls keep their identity and event handlers in the new dock. */
+body:not(.nfx-landscape-take):not(.nfx-byos-mode) #dock.nfx-studio-dock {
+  gap: 5px;
+  max-width: calc(100% - 16px);
+  padding-inline: 6px;
+  border: 1px solid #abb1d22e;
+  border-radius: 20px;
+  background: #0d1020ec;
+  clip-path: none;
+}
+#dock.nfx-studio-dock::before { display: none; }
+#dock.nfx-studio-dock :is(.dk, .play) { border-radius: 13px; clip-path: none; }
+#dock.nfx-studio-dock .dk { background: #adb9e20d; }
+#dock.nfx-studio-dock .dk:active { background: #adb9e233; }
+#dock.nfx-studio-dock .play { animation: none; }
+#dock.nfx-studio-dock :is(.dk, .play):focus-visible { outline: 2px solid #aef6ff; outline-offset: 1px; }
+#dock.nfx-studio-dock #btnMenu { display: flex; flex-direction: column; justify-content: center; gap: 1px; }
+#dock.nfx-studio-dock .nfx-tools-dock-label { font: 600 9px/1.2 system-ui, sans-serif; }
+#dock.nfx-studio-dock #btnMenu.on .nfx-tools-dock-label,
+body.nfx-byos-mode .nfx-tools-dock-label { display: none; }
+
+#nfxStudioTools {
+  position: fixed;
+  inset: auto max(10px, env(safe-area-inset-right)) calc(var(--sb) + var(--dockH) + 16px) auto;
+  width: min(430px, calc(100vw - 20px));
+  max-height: calc(100dvh - var(--sb) - var(--dockH) - 28px - env(safe-area-inset-top));
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #aeb9e33b;
+  border-radius: 24px;
+  background: #101323f7;
+  color: #f1f4ff;
+  box-shadow: 0 24px 70px #0009;
+  font: 500 14px/1.4 system-ui, sans-serif;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+#nfxStudioTools::backdrop { background: linear-gradient(0deg,#060814b0,#06081410); }
+#nfxStudioTools .nfx-tools-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+#nfxStudioTools h2 { flex: 1; margin: 0; padding-inline: 2px; font-size: 21px; font-weight: 640; }
+#nfxStudioTools button, #nfxStudioTools input {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid #b0bee02b;
+  border-radius: 13px;
+  background: #1b2033;
+  color: inherit;
+  font: inherit;
+}
+#nfxStudioTools button { padding: 9px 12px; transition: background .16s, transform .16s; }
+#nfxStudioTools button:active { background: #34405b; transform: scale(.98); }
+#nfxStudioTools :is(button, input):focus-visible { outline: 2px solid #aef6ff; outline-offset: 2px; }
+#nfxStudioTools input { display: block; width: 100%; padding: 9px 12px; font-size: 16px; }
+#nfxStudioTools input::placeholder { color: #aeb8d1; }
+.nfx-tools-body { display: grid; gap: 7px; margin-block: 12px; }
+.nfx-tools-body > button { text-align: left; }
+.nfx-tools-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#nfxStudioTools .nfx-tools-groups button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 58px;
+  background: linear-gradient(135deg, #252c43, #181d30);
+}
+.nfx-tools-groups button > span { color: #acf0ff; font-size: 22px; line-height: 1; }
+#nfxStudioTools footer { display: flex; justify-content: flex-end; }
+#nfxStudioTools footer button { background: transparent; color: #c5d4f2; }
+@media (max-height: 500px) and (orientation: landscape) {
+  #nfxStudioTools { width: min(560px, calc(100vw - 20px)); padding: 10px; }
+  .nfx-tools-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #nfxStudioTools .nfx-tools-groups button { min-height: 44px; }
+}
+@media (max-width: 370px) {
+  body:not(.nfx-landscape-take):not(.nfx-byos-mode) #dock.nfx-studio-dock { gap: 2px; padding-inline: 2px; }
+  #dock.nfx-studio-dock .trk { display: none; }
+  #dock.nfx-studio-dock :is(.dk,.play) { width: 40px; min-width: 0; }
+  #dock.nfx-studio-dock #btnQuickSave { width: 39px; }
+  body:not(.nfx-landscape-take):not(.nfx-byos-mode) #dock.nfx-studio-dock:not(.nfx-capturing) #btnAI {
+    display: grid !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #nfxStudioTools button { transition: none; }
+  #nfxStudioTools button:active { transform: none; }
+}

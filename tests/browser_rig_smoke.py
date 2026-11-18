@@ -25,7 +25,9 @@ def main():
             page.goto(f'http://127.0.0.1:{server.server_port}/',wait_until='domcontentloaded')
             page.wait_for_function('window.NFXStudio?.storageReady');page.locator('#start [data-go=sim]').click()
             page.wait_for_timeout(800);page.locator('#btnMenu').click()
-            page.locator('#tabs [data-p="recording"]').click()
+            page.get_by_role('searchbox',name='Find a tool').fill('recording controls')
+            page.get_by_role('button',name='Recording controls',exact=True).click()
+            page.locator('#nfxStudioTools').wait_for(state='hidden')
             page.wait_for_timeout(500)
             assert page.locator('#nfxStudioBar').count()==0
             assert page.locator('#dock #btnRecord').count()==1

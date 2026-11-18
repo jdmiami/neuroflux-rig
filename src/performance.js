@@ -12,6 +12,7 @@ import {validateProfile} from './studio/profiles.js';
 import {CameraFXControls} from './performance/camera-ui.js';
 import {QuickSaveControl} from './performance/quick-save.js';
 import {LayerWorkspace} from './performance/layers.js';
+import {mountStudioTools} from './performance/studio-tools.js';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const copy=o=>structuredClone(o);
 installPWA();holdSliders();
@@ -19,7 +20,7 @@ const motion=window.NFXMotion=new MotionController();
 class PerformanceWorkspace {
  constructor(rig){this.rig=rig;this.state=catalog.empty();this.undo=[];this.redo=[];this.store=new SetupStore();this.tab='source';this.filter='';this.category='featured';this.openId='';this.cameraFrame=null;this.status='';this.pending=null;
   try{this.state=catalog.validate(JSON.parse(localStorage.getItem('nfx.camera-fx.v1')));}catch{}
-  this.catalogOpen=!this.state.nodes.length;this.ui=new CameraFXControls(this);this.syncLegacy();this.mount();this.quickSaveControl=new QuickSaveControl(this);this.renderStack();this.refreshSetups();this.byos=new BuildStudio(this);this.take=new LandscapeTake(this);this.layers=window.NFXLayers=new LayerWorkspace(this);this.timer=setInterval(()=>{this.quickSaveControl.sync();this.updateStatus();},500);
+  this.catalogOpen=!this.state.nodes.length;this.ui=new CameraFXControls(this);this.syncLegacy();this.mount();this.quickSaveControl=new QuickSaveControl(this);this.renderStack();this.refreshSetups();this.byos=new BuildStudio(this);this.take=new LandscapeTake(this);this.layers=window.NFXLayers=new LayerWorkspace(this);mountStudioTools(this);this.timer=setInterval(()=>{this.quickSaveControl.sync();this.updateStatus();},500);
  }
  persist(){try{localStorage.setItem('nfx.camera-fx.v1',JSON.stringify(this.state));}catch{this.message('Settings could not be saved on this device. Download a setup file.');}}
  message(text){this.status=text;this.statusAt=Date.now();for(const e of document.querySelectorAll('.nfx-performance-status'))e.textContent=text;}

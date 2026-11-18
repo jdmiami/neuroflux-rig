@@ -88,7 +88,7 @@ def main():
             }''')
             assert not page.evaluate('caches.has("neuroflux-local-test-legacy")')
             # Recovery remains reachable in the existing SYSTEM menu.
-            page.locator('#start [data-go=sim]').click();page.locator('#btnMenu').click();page.locator('#tabs [data-p=sys]').click()
+            page.locator('#start [data-go=sim]').click();page.locator('#btnMenu').click();page.get_by_role('button',name='All controls').click();page.locator('#tabs [data-p=sys]').click()
             page.locator('#btnAppUpdate').click();page.wait_for_url('**/update.html')
             assert not errors,errors
             print('PASS recovery: latest app loads; both saved recording backends, settings and unrelated caches survive; active recording and offline failures are safe; native SYSTEM update link works', flush=True)

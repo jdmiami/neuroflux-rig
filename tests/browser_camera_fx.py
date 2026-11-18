@@ -91,7 +91,7 @@ def main():
    assert checks['programs']<=18,checks
    print('PASS image checks: sixteen distinct kaleidoscope divisions; warped depth aligns with camera; bounded shader cache',flush=True)
    page.evaluate("NFXCameraFX.commit({version:1,enabled:true,nodes:[]});NFXCameraFX.add('kaleidoscope');NFXCameraFX.add('swirl')")
-   page.locator('#btnMenu').click();page.locator('#tabs [data-p=cam]').click();page.locator('[data-tab=effects]').click()
+   page.locator('#btnMenu').click();page.get_by_role('button',name='All controls').click();page.locator('#tabs [data-p=cam]').click();page.locator('[data-tab=effects]').click()
    assert page.locator('#nfxCameraEffects .nfx-fx-node').count()==2
    if page.locator('#nfxCameraEffects .nfx-fx-node').nth(1).get_attribute('open') is None:page.locator('#nfxCameraEffects .nfx-fx-node').nth(1).locator('summary').first.click()
    page.locator('#nfxCameraEffects .nfx-fx-node').nth(1).locator('[data-command=tools]').click()
