@@ -24,8 +24,9 @@ In portrait, Tools expands from the dock and leaves the live picture visible abo
 
 ## Motion
 
-- **Tools opens from its button.** Match the button's position to the panel's transform origin. Use one quick expansion, then a short stagger as the tool groups arrive. Closing returns to the same place. Shorten or skip travel for reduced motion.
-- **Tool groups move through a consistent depth transition.** Opening a group moves the next choices forward. Back reverses the direction. Search results update in place to keep typing immediate.
+The design branch opens Tools as a lens over the actual composition. The rim travels from the dock button into place. Turning it brings each group to the fixed index, casts a moving highlight on the glass, and updates the tools below. Taps and arrow keys select the same groups. Closing the lens returns it to the dock, while entering a tool expands it into the existing editor. Search and All controls remain visible. Reduced motion places the lens directly and leaves the tool routes accessible.
+
+- **Editors open in context.** Extend the lens transition into the focused controls so the most important adjustment stays in view. Keep tool groups and search stable as users move between editors.
 - **Layers stay spatial.** Preserve the live 3D card paths. In the next pass extend the same motion to the transition from the full picture into the deck. Selected cards stay readable while parked. Pinch remains bounded and the recording surface stays separate.
 - **Sliders attach to the thumb after the hold.** Keep the current hold-to-edit behavior. Refine the arming highlight and let the value follow the thumb as soon as the slider is armed. Scroll, tap and hold remain distinctly different interactions.
 - **Record stays unmistakable.** Give readiness, countdown, locked recording and take saved their own concise motion and status. Keep the continuous capture surface and native save flow. Honor reduced motion and preserve keyboard controls throughout.
