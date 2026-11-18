@@ -4,14 +4,14 @@ The live picture is the workspace. Keep the transport, Record, Layers, quick sav
 
 ## Navigation
 
-Choose **New UI** on the start screen or under **Menu → Quick**. The animated Tools control stays available for the current session. **Stock UI** in the Tools header returns to the standard menu. Choosing any other start mode uses the stock interface by default.
+Choose **New UI** on the start screen or under **Menu → Quick**. It opens a separate workspace over the live picture, with its own signal header, transport styling and editable Looks, Shape, Color, Motion and Camera panels. Use **Tools** on the dock to open the aperture and find more editors. **Stock UI** in the Tools header returns to the standard menu. Choosing any other start mode uses the stock interface by default.
 
 | Area | What it contains |
 |---|---|
 | Live picture | Camera and visual mix, scene name, active source and recording state. Canvas gestures continue to perform on the picture. |
 | Dock | Source, play/pause, AI command, Layers, quick save, Record and Tools. Record, Layers and Tools remain directly reachable. |
 | Tools | Searchable shortcuts and six groups for the actions below. All controls opens the full existing menu. |
-| Editor | The existing instrument opens in context. Next pass groups the first controls by job, with the rest under clearly named subsections. |
+| Editor | The redesigned editor writes directly to the live instrument. Preset banks, Camera FX chains, recording options and other specialist controls also remain available in their existing panels. |
 
 | Tools group | Existing destinations |
 |---|---|

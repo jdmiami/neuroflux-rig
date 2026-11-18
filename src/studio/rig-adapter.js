@@ -1,6 +1,7 @@
 // Inserted inside the rig closure by the build. Never exposes keys or AI state.
 const studioTargets = new Map();
 let studioPerformanceTab = 'quick';
+let studioInterfaceEditing = false;
 // Keep recovery in the native system menu, accessible without a floating toolbar.
 const appUpdateCard = Ut(Dt.sys, '<span>APP UPDATES</span>',
   '<p class="mstat">Get the latest Neuroflux while keeping saved recordings and settings.</p><button class="sbtn act" id="btnAppUpdate">LOAD LATEST VERSION</button>');
@@ -43,6 +44,21 @@ window.NFXRig = {
   },
   createBYOSControl(id) {return Ue[id]?wt(Ue[id],'quick'):null;},
   layerCatalog() {return De.map(p=>({id:p.id,page:p.page,label:p.label,type:p.type,min:p.min,max:p.max}));},
+  interfaceControl(id) {
+    const control = Ue[id];
+    if (!control) return null;
+    const {label, type, min, max, step, def} = control;
+    const format = id === 'mode' ? value => xe[value][0] : value => et(control, value);
+    return {label, type, min, max, step, defaultValue: def, format};
+  },
+  interfaceValue(id) { return Be[id]; },
+  interfaceSetParam(id, value) {
+    studioInterfaceEditing = true;
+    try { nt(id, value, 'user'); } finally { studioInterfaceEditing = false; }
+  },
+  interfaceSignal() {
+    return {scene: xe[Be.mode][0], source: G, bpm: U.bpm, bass: U.bass, mid: U.mid, high: U.high};
+  },
   layerStatus() {return {camera:!!(Qn.on&&Qn.video?.readyState>=2),space:!!(Hn.pts&&(Hn.pts.cloud||Hn.pts.splat))};},
   audioSpectrum() {return {bands:Array.from(k),bass:U.bass,mid:U.mid,high:U.high,level:U.level,bpm:U.bpm,source:G};},
   cancelLayerTouches(pointers) {for(const pointer of pointers)f.dispatchEvent(new PointerEvent('pointercancel',{pointerId:pointer.id,pointerType:'touch',clientX:pointer.x,clientY:pointer.y,bubbles:true}));ma.clear();fa.fill(0);},

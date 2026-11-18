@@ -1,4 +1,5 @@
 import {mountToolAperture} from './tool-aperture.js';
+import {mountStudioInterface} from './studio-interface.js';
 
 const groups = [
   {name: 'Create', color: '#f6c68a', tools: [
@@ -83,6 +84,7 @@ export function mountStudioTools(workspace) {
   let closing = false;
   let useNativeMenu = false;
   let enabled = false;
+  const studio = mountStudioInterface(workspace.rig, openNative);
 
   const groupButtons = groups.map((group, index) => {
     const button = document.createElement('button');
@@ -171,8 +173,13 @@ export function mountStudioTools(workspace) {
       workspace.layers.open();
       return;
     }
+    if ((!section || page === 'cam' && section === 'source') && studio.show(page)) return;
+    openNative(page, section);
+  }
+
+  function openNative(page, section) {
     workspace.rig.guideOpen(page);
-    if (page === 'cam') workspace.selectTab(section);
+    if (page === 'cam') workspace.selectTab(section || 'source');
     if (page === 'recording') document.getElementById(`nfx-tab-${section}`)?.click();
     document.getElementById('shClose')?.focus({preventScroll: true});
   }
@@ -184,6 +191,7 @@ export function mountStudioTools(workspace) {
 
   function setEnabled(value) {
     enabled = value;
+    studio.enable(value);
     dock.classList.toggle('nfx-studio-dock', value);
     label.hidden = !value;
     if (value) {
@@ -200,7 +208,7 @@ export function mountStudioTools(workspace) {
   function launchFromStock() {
     workspace.rig.closeMenu();
     setEnabled(true);
-    open();
+    document.querySelector('#nfxStudioShell [data-interface=scenes]')?.focus({preventScroll: true});
   }
 
   const stockChoice = document.createElement('button');

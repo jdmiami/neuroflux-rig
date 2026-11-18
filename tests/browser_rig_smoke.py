@@ -27,6 +27,8 @@ def main():
             page.wait_for_timeout(800);page.locator('#btnMenu').click()
             page.locator('#tabs [data-p=quick]').click()
             page.get_by_role('button',name='New UI',exact=True).click()
+            page.locator('#nfxStudioShell').wait_for(state='visible')
+            page.locator('#btnMenu').click()
             page.get_by_role('button',name='Find a tool').click()
             page.get_by_role('searchbox',name='Search tools').fill('recording controls')
             page.get_by_role('button',name='Recording controls',exact=True).click()

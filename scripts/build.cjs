@@ -14,7 +14,7 @@ fs.mkdirSync(output, { recursive: true });
 fs.copyFileSync(path.join(root, 'src/update.html'), path.join(output, 'update.html'));
 esbuild.buildSync({entryPoints:[path.join(root,'src/performance.js')],bundle:true,outfile:path.join(output,'performance.js'),format:'iife',target:'es2022',minify:true});
 esbuild.buildSync({entryPoints:[path.join(root,'src/camera/vision.worker.js')],bundle:true,outfile:path.join(output,'vision.worker.js'),format:'iife',target:'es2022',minify:true});
-const performanceStyles = ['performance.css', 'layers.css', 'studio-tools.css'];
+const performanceStyles = ['performance.css', 'layers.css', 'studio-tools.css', 'studio-interface.css'];
 fs.writeFileSync(path.join(output, 'performance.css'), performanceStyles
   .map(file => fs.readFileSync(path.join(root, 'src/performance', file), 'utf8')).join('\n'));
 fs.cpSync(path.join(root,'node_modules/@mediapipe/tasks-vision/wasm'),path.join(output,'vendor/vision/wasm'),{recursive:true});
