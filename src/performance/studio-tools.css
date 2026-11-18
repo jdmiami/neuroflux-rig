@@ -58,6 +58,7 @@ body.nfx-landscape-take .nfx-new-ui-entry { display: none; }
   --lens-shade: 1;
   position: fixed;
   inset: 0;
+  z-index: 51;
   display: grid;
   grid-template-areas: 'header' 'lens' 'tray';
   grid-template-rows: auto minmax(190px, 1fr) minmax(180px, 29dvh);
@@ -89,7 +90,7 @@ body.nfx-landscape-take .nfx-new-ui-entry { display: none; }
   translate: 0 calc(10px * (1 - var(--lens-exposure)));
 }
 #nfxStudioTools h2 { flex: 1; margin: 0; padding-left: 3px; font: 550 18px/1 system-ui, sans-serif; }
-#nfxStudioTools :is(button, input) {
+#nfxStudioTools :is(.nfx-tools-header > button, .nfx-tools-tray-header > button, [data-studio-route], #nfxToolsSearch) {
   color: inherit;
   font: inherit;
   min-height: 44px;
@@ -210,4 +211,85 @@ body.nfx-landscape-take .nfx-new-ui-entry { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   #nfxStudioTools [data-studio-group] { transition: none; }
+}
+
+#nfxStudioTools.nfx-tools-editing { grid-template-rows: auto minmax(155px,.85fr) minmax(0,1.15fr); }
+#nfxStudioTools.nfx-tools-editing .nfx-aperture-hint { display: none; }
+#nfxStudioTools.nfx-tools-editing .nfx-tools-tray { width: min(100%,700px); }
+#nfxStudioTools.nfx-tools-editing .nfx-tools-tray-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  gap: 5px;
+  padding: 4px 0;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #eaf1eb30;
+  background: #070c12f5;
+}
+#nfxStudioTools.nfx-tools-editing #nfxToolsGroup {
+  font-size: clamp(21px, 6vw, 36px);
+  text-wrap: balance;
+}
+#nfxStudioTools [data-tools-detail] {
+  flex: none;
+  color: #c3d3d0;
+  font-size: 11px;
+  padding-inline: 5px;
+}
+#nfxStudioTools.nfx-tools-editing .nfx-tools-body {
+  --instrument-light: var(--tool-light);
+  --instrument-line: #ebf0d931;
+  --acc: var(--tool-light);
+  --line: #d3e5d630;
+  --line2: #d3e5d64d;
+  --dim: #bbc6c4;
+}
+#nfxStudioTools .nfx-tools-body.nfx-interface-fields { overflow: visible; max-height: none; }
+#nfxStudioTools .nfx-tools-body > .page { grid-column: 1 / -1; width: 100%; min-width: 0; }
+#nfxStudioTools .nfx-tools-body > .page .card {
+  border: 1px solid #d3e5d633;
+  border-radius: 12px;
+  clip-path: none;
+  background: #10191c;
+}
+#nfxStudioTools .nfx-tools-body > .page > :is(.sec,.blk) { margin-top: 9px; }
+#nfxStudioTools .nfx-tools-body > .page .card .c-hd { color: #e4ebe0; }
+#nfxStudioTools .nfx-tool-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-bottom: 1px solid var(--instrument-line);
+}
+#nfxStudioTools .nfx-tool-field .nfx-interface-field { border-bottom: 0; }
+#nfxStudioTools .nfx-circle-dial {
+  min-width: 48px;
+  min-height: 44px;
+  width: fit-content;
+  padding: 0 10px;
+  border: 1px solid #cbded647;
+  border-radius: 14px;
+  background: #10191c;
+  color: var(--tool-light);
+  font: inherit;
+  font-size: 11px;
+  align-self: end;
+  margin-bottom: 5px;
+}
+#nfxStudioTools .nfx-aperture-input { display: grid; place-items: center; }
+#nfxStudioTools .nfx-aperture-input output { display: none; }
+#nfxStudioTools .nfx-aperture-adjusting .nfx-aperture-input output {
+  display: block;
+  pointer-events: none;
+  color: #fff8e8;
+  font: 400 clamp(24px,7vw,43px)/1 Georgia, serif;
+  text-shadow: 0 0 16px #000, 0 0 8px #000;
+}
+#nfxStudioTools .nfx-aperture-adjusting .nfx-aperture-groups { visibility: hidden; }
+#nfxStudioTools .nfx-aperture-input:focus-visible { outline: 2px dashed var(--tool-light); outline-offset: -8px; }
+@media (orientation: landscape), (min-width: 760px) {
+  #nfxStudioTools.nfx-tools-editing {
+    grid-template-rows: auto minmax(0,1fr);
+    grid-template-columns: minmax(210px,.85fr) minmax(0,1.15fr);
+  }
+  #nfxStudioTools.nfx-tools-editing .nfx-tools-tray { align-self: stretch; }
 }

@@ -32,12 +32,12 @@ def main():
             page.get_by_role('button',name='Find a tool').click()
             page.get_by_role('searchbox',name='Search tools').fill('recording controls')
             page.get_by_role('button',name='Recording controls',exact=True).click()
-            page.locator('#nfxStudioTools').wait_for(state='hidden')
+            page.locator('#nfxStudioTools #nfxStudioPanel').wait_for(state='visible')
             page.wait_for_timeout(500)
             assert page.locator('#nfxStudioBar').count()==0
             assert page.locator('#dock #btnRecord').count()==1
-            assert page.locator('#pages #nfxStudioPanel').count()==1
-            assert page.locator('#shName').inner_text()=='RECORD'
+            assert page.locator('#nfxStudioTools #nfxStudioPanel').count()==1
+            assert not page.evaluate('NFXRig.guideState().ui.menuOpen')
             page.locator('#nfx-tab-output').click()
             page.locator('[data-field="output.mode"]').select_option('full')
             page.wait_for_timeout(500)
@@ -58,7 +58,7 @@ def main():
             assert not errors,errors
             page.screenshot(path=str(pathlib.Path(tempfile.gettempdir())/'neuroflux-mobile-studio.png'))
             # The existing menu button closes the recording page as it does any other page.
-            page.locator('#btnMenu').click();page.wait_for_function('!window.NFXStudio.opened')
+            page.get_by_role('button',name='Close tools',exact=True).click();page.wait_for_function('!window.NFXStudio.opened')
             for width,height in [(320,740),(390,844),(844,390),(1280,800)]:
                 page.set_viewport_size({'width':width,'height':height});page.wait_for_timeout(180)
                 assert page.evaluate('''()=>{

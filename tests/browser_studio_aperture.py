@@ -30,7 +30,11 @@ with sync_playwright() as p:
         dialog.get_by_role('button', name='Find a tool').click()
         dialog.get_by_role('searchbox').fill(term)
         dialog.get_by_role('button',name=label, exact=True).click()
-        dialog.wait_for(state='hidden')
+        if label == 'Live layers':
+            dialog.wait_for(state='hidden')
+        else:
+            assert 'nfx-tools-editing' in dialog.get_attribute('class')
+            assert not page.evaluate('NFXRig.guideState().ui.menuOpen')
     def close_editor():
         assert page.evaluate('NFXRig.guideState().ui.menuOpen')
         page.locator('#shClose').click()
@@ -47,7 +51,7 @@ with sync_playwright() as p:
     assert not page.evaluate('NFXRig.guideState().ui.menuOpen')
     assert active.inner_text() == 'Create'
     cdp = page.context.new_cdp_session(page)
-    def turn_once():
+    def turn_once(direction=-1):
         stage = dialog.locator('.nfx-aperture').bounding_box()
         x,y = stage['x']+stage['width']/2,stage['y']+stage['height']/2
         r = min(stage['width']*.31,stage['height']*.39,178)*.88
@@ -55,7 +59,7 @@ with sync_playwright() as p:
         start=-1.3
         cdp.send('Input.dispatchTouchEvent',{'type':'touchStart',**params(start)})
         for step in range(1,9):
-            cdp.send('Input.dispatchTouchEvent',{'type':'touchMove',**params(start-step*.135)})
+            cdp.send('Input.dispatchTouchEvent',{'type':'touchMove',**params(start+direction*step*.135)})
         page.wait_for_timeout(160)
         cdp.send('Input.dispatchTouchEvent',{'type':'touchEnd','touchPoints':[]})
     turn_once()
@@ -66,10 +70,9 @@ with sync_playwright() as p:
     page.keyboard.press('ArrowRight')
     assert active.inner_text()=='Perform'
     dialog.get_by_role('button',name='Sound input',exact=True).click()
-    dialog.wait_for(state='hidden')
-    assert page.evaluate('NFXRig.guideState().ui.page')=='input'
-    close_editor()
-    open_tools()
+    assert dialog.is_visible() and page.evaluate('NFXRig.guideState().ui.page')=='input'
+    assert not page.evaluate('NFXRig.guideState().ui.menuOpen')
+    dialog.get_by_role('button',name='Groups',exact=True).click()
     page.keyboard.press('Escape')
     dialog.wait_for(state='hidden')
     assert trigger.evaluate('(el)=>document.activeElement===el')
@@ -77,15 +80,40 @@ with sync_playwright() as p:
     for (term,label,target) in [('kaleidoscope','Camera effects','cam'),('portrait fps','Output framing','recording'),('saved takes','Library','recording'),('offline','System','sys')]:
         choose(term,label)
         assert page.evaluate('NFXRig.guideState().ui.page')==target
-        close_editor()
+        assert dialog.locator('.nfx-tools-body .page').count() == 1
+        if target == 'recording':
+            assert dialog.locator('#nfxStudioPanel').is_visible() and page.evaluate('NFXStudio.opened')
+        else:
+            assert dialog.locator('.nfx-tools-body .page').is_visible()
+        dialog.get_by_role('button',name='Close tools',exact=True).click()
+        dialog.wait_for(state='hidden')
+        assert page.locator('#pages #nfxStudioPanel').count() == 1
+    choose('saturation','Color')
+    assert dialog.locator('[data-interface-control=sat]').is_visible()
+    dialog.get_by_role('button',name='Turn saturation with the dial',exact=True).click()
+    wheel = dialog.get_by_role('slider',name='SATURATION',exact=True)
+    wheel.press('Home')
+    assert page.evaluate('NFXRig.interfaceValue("sat")') == 0
+    turn_once(1)
+    assert page.evaluate('NFXRig.interfaceValue("sat")') > 0
+    wheel.press('End')
+    assert page.evaluate('NFXRig.interfaceValue("sat")') == 2
+    assert not page.evaluate('NFXRig.guideState().ui.menuOpen')
+    dialog.get_by_role('button',name='Done',exact=True).click()
+    dialog.get_by_role('button',name='Close tools',exact=True).click()
+    dialog.wait_for(state='hidden')
     choose('reorder','Live layers')
     assert page.evaluate('NFXLayers.opened')
     page.locator('[data-layer-action=close]').click()
     page.locator('#nfxLayerWorkspace').wait_for(state='hidden')
     open_tools()
-    dialog.get_by_role('button',name='All controls').click()
-    close_editor()
-    print('PASS real Camera FX, recording output, Library, System and Layers routes plus full menu',flush=True)
+    dialog.get_by_role('button',name='All tools').click()
+    assert dialog.get_by_role('heading',name='All tools',exact=True).is_visible()
+    assert dialog.locator('[data-studio-route]').count() >= 20
+    assert not page.evaluate('NFXRig.guideState().ui.menuOpen')
+    dialog.get_by_role('button',name='Close tools',exact=True).click()
+    dialog.wait_for(state='hidden')
+    print('PASS Camera FX, recording output, Library, System and Layers routes, circle adjustment and all-tools index',flush=True)
     for w,h in [(320,568),(390,844),(844,390),(1280,800)]:
         page.set_viewport_size({'width':w,'height':h})
         open_tools()
@@ -147,8 +175,10 @@ with sync_playwright() as p:
     shell.get_by_role('button',name='Camera',exact=True).click()
     assert shell.locator('[data-interface-control=camMix]').is_visible()
     shell.get_by_role('button',name='Camera effects',exact=True).click()
-    assert page.evaluate('NFXRig.guideState().ui.page==="cam" && NFXPerformance.tab==="effects"')
-    close_editor()
+    assert dialog.locator('#nfxCameraEffects').is_visible()
+    assert page.evaluate('!NFXRig.guideState().ui.menuOpen && NFXPerformance.tab==="effects"')
+    dialog.get_by_role('button',name='Close tools',exact=True).click()
+    dialog.wait_for(state='hidden')
     assert shell.is_visible()
     trigger.click()
     dialog.wait_for(state='visible')

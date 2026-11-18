@@ -11,7 +11,65 @@ const editors = {
 };
 const sourceNames = {sim: 'Simulation', demo: 'Demo', file: 'Track', mic: 'Microphone', sys: 'System audio'};
 const primaryEditors = ['scenes', 'form', 'color', 'motion', 'cam'];
+const notePositions = [12, 22, 15, 26, 19];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+function setText(element, value) {
+  if (!element.firstChild) element.append(document.createTextNode(value));
+  else if (element.firstChild.data !== value) element.firstChild.data = value;
+}
+
+function makeField(rig, id, onChange) {
+  const spec = rig.interfaceControl(id);
+  if (!spec) return null;
+  const isSwitch = spec.type === 'switch';
+  const isChoice = spec.type === 'pads' || spec.type === 'dial';
+  const field = document.createElement('label');
+  field.className = `nfx-interface-field ${isSwitch ? 'nfx-interface-switch' : isChoice ? 'nfx-interface-select' : 'nfx-interface-range'}`;
+  const label = document.createElement('span');
+  label.textContent = id === 'mode' ? 'Scene engine' : spec.label.toLowerCase();
+  const valueLabel = document.createElement('output');
+  valueLabel.hidden = isChoice || isSwitch;
+  const input = document.createElement(isChoice ? 'select' : 'input');
+  input.dataset.interfaceControl = id;
+  field.append(label, valueLabel, input);
+  if (isChoice) {
+    for (let value = spec.min; value <= spec.max; value += spec.step || 1) {
+      const option = document.createElement('option');
+      option.value = String(value);
+      option.textContent = spec.format(value);
+      input.append(option);
+    }
+  } else if (isSwitch) {
+    input.type = 'checkbox';
+  } else {
+    input.type = 'range';
+    input.min = String(spec.min);
+    input.max = String(spec.max);
+    input.step = String(spec.step || (spec.max - spec.min) / 200);
+    input.addEventListener('dblclick', () => {
+      rig.interfaceSetParam(id, spec.defaultValue);
+      refresh();
+    });
+  }
+  input.addEventListener(isChoice || isSwitch ? 'change' : 'input', () => {
+    rig.interfaceSetParam(id, isSwitch ? Number(input.checked) : Number(input.value));
+    refresh();
+    onChange?.();
+  });
+  function refresh() {
+    const value = rig.interfaceValue(id);
+    if (isSwitch) input.checked = !!value;
+    else if (Number(input.value) !== value) input.value = String(value);
+    if (!isSwitch && !isChoice) {
+      const text = spec.format(value);
+      setText(valueLabel, text);
+      if (input.getAttribute('aria-valuetext') !== text) input.setAttribute('aria-valuetext', text);
+      input.style.setProperty('--mix', `${100 * (value - spec.min) / (spec.max - spec.min)}%`);
+    }
+  }
+  return {field, input, spec, refresh};
+}
 
 export function mountStudioInterface(rig, openNative) {
   const shell = document.createElement('section');
@@ -49,23 +107,26 @@ export function mountStudioInterface(rig, openNative) {
   const tempo = shell.querySelector('.nfx-interface-tempo');
   const bands = [...shell.querySelectorAll('.nfx-interface-bands i')];
   const cache = new Map();
+  const wheelFields = new Map();
   let active = null;
   let timer;
   let animation;
 
-  for (const page of primaryEditors) {
+  for (const [index, page] of primaryEditors.entries()) {
     const button = document.createElement('button');
     button.type = 'button';
     button.dataset.interface = page;
-    button.textContent = editors[page].title;
+    const note = document.createElement('i');
+    note.className = 'nfx-note-mark';
+    note.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span');
+    label.textContent = editors[page].title;
+    button.append(note, label);
+    button.style.setProperty('--note-position', `${notePositions[index]}px`);
+    button.style.setProperty('--note-color', editors[page].color);
     button.setAttribute('aria-expanded', 'false');
     button.setAttribute('aria-controls', editor.id);
     navigation.append(button);
-  }
-
-  function setText(element, value) {
-    if (!element.firstChild) element.append(document.createTextNode(value));
-    else if (element.firstChild.data !== value) element.firstChild.data = value;
   }
 
   function update() {
@@ -80,57 +141,6 @@ export function mountStudioInterface(rig, openNative) {
     for (const id of editors[active]?.controls || []) cache.get(id)?.refresh();
   }
 
-  function makeField(id) {
-    const spec = rig.interfaceControl(id);
-    if (!spec) return null;
-    const isSwitch = spec.type === 'switch';
-    const isChoice = spec.type === 'pads' || spec.type === 'dial';
-    const field = document.createElement('label');
-    field.className = `nfx-interface-field ${isSwitch ? 'nfx-interface-switch' : isChoice ? 'nfx-interface-select' : 'nfx-interface-range'}`;
-    const label = document.createElement('span');
-    label.textContent = id === 'mode' ? 'Scene engine' : spec.label.toLowerCase();
-    const valueLabel = document.createElement('output');
-    valueLabel.hidden = isChoice || isSwitch;
-    const input = document.createElement(isChoice ? 'select' : 'input');
-    input.dataset.interfaceControl = id;
-    field.append(label, valueLabel, input);
-    if (isChoice) {
-      for (let value = spec.min; value <= spec.max; value += spec.step || 1) {
-        const option = document.createElement('option');
-        option.value = String(value);
-        option.textContent = spec.format(value);
-        input.append(option);
-      }
-    } else if (isSwitch) {
-      input.type = 'checkbox';
-    } else {
-      input.type = 'range';
-      input.min = String(spec.min);
-      input.max = String(spec.max);
-      input.step = String(spec.step || (spec.max - spec.min) / 200);
-      input.addEventListener('dblclick', () => {
-        rig.interfaceSetParam(id, spec.defaultValue);
-        refresh();
-      });
-    }
-    input.addEventListener(isChoice || isSwitch ? 'change' : 'input', () => {
-      rig.interfaceSetParam(id, isSwitch ? Number(input.checked) : Number(input.value));
-      update();
-    });
-    function refresh() {
-      const value = rig.interfaceValue(id);
-      if (isSwitch) input.checked = !!value;
-      else if (Number(input.value) !== value) input.value = String(value);
-      if (!isSwitch && !isChoice) {
-        const text = spec.format(value);
-        setText(valueLabel, text);
-        if (input.getAttribute('aria-valuetext') !== text) input.setAttribute('aria-valuetext', text);
-        input.style.setProperty('--mix', `${100 * (value - spec.min) / (spec.max - spec.min)}%`);
-      }
-    }
-    return {field, refresh};
-  }
-
   function show(page, focus = true) {
     const config = editors[page];
     if (!config || shell.hidden) return false;
@@ -141,7 +151,7 @@ export function mountStudioInterface(rig, openNative) {
     advanced.textContent = page === 'cam' ? 'Camera effects' : page === 'scenes' ? 'Presets & saves' : 'More controls';
     for (const button of navigation.children) button.setAttribute('aria-expanded', String(button.dataset.interface === page));
     const controls = config.controls.map(id => {
-      if (!cache.has(id)) cache.set(id, makeField(id));
+      if (!cache.has(id)) cache.set(id, makeField(rig, id, update));
       return cache.get(id)?.field;
     }).filter(Boolean);
     fields.replaceChildren(...controls);
@@ -193,6 +203,39 @@ export function mountStudioInterface(rig, openNative) {
 
   return {
     show,
+    circleEditor(page, host, activateDial) {
+      const config = editors[page];
+      if (!config) return null;
+      const records = config.controls.map(id => {
+        if (!wheelFields.has(id)) {
+          const record = makeField(rig, id);
+          if (!record) return null;
+          const item = document.createElement('div');
+          item.className = 'nfx-tool-field';
+          item.append(record.field);
+          if (record.input.type === 'range') {
+            const dial = document.createElement('button');
+            dial.type = 'button';
+            dial.className = 'nfx-circle-dial';
+            dial.textContent = 'Turn';
+            dial.setAttribute('aria-label', 'Turn ' + record.spec.label.toLowerCase() + ' with the dial');
+            dial.addEventListener('click', () => activateDial(id, record));
+            item.append(dial);
+          }
+          wheelFields.set(id, {...record, item});
+        }
+        return wheelFields.get(id);
+      }).filter(Boolean);
+      host.classList.add('nfx-interface-fields');
+      host.replaceChildren(...records.map(record => record.item));
+      const refresh = () => records.forEach(record => record.refresh());
+      refresh();
+      const ticker = setInterval(refresh, 140);
+      return () => {
+        clearInterval(ticker);
+        host.classList.remove('nfx-interface-fields');
+      };
+    },
     enable(value) {
       shell.hidden = !value;
       document.body.classList.toggle('nfx-new-studio', value);

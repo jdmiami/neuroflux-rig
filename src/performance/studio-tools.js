@@ -54,14 +54,15 @@ export function mountStudioTools(workspace) {
     </header>
     <div class="nfx-aperture" role="group" aria-label="Tool groups">
       <canvas aria-hidden="true"></canvas>
-      <div class="nfx-aperture-input" aria-hidden="true"></div>
+      <div class="nfx-aperture-input" aria-hidden="true"><output aria-hidden="true"></output></div>
       <div class="nfx-aperture-groups"></div>
       <p class="nfx-aperture-hint" aria-hidden="true">Turn or tap</p>
     </div>
     <section class="nfx-tools-tray" aria-labelledby="nfxToolsGroup">
       <header class="nfx-tools-tray-header">
         <h3 id="nfxToolsGroup" aria-live="polite"></h3>
-        <button type="button" data-tools-all>All controls</button>
+        <button type="button" data-tools-detail hidden>Detailed controls</button>
+        <button type="button" data-tools-all>All tools</button>
       </header>
       <input id="nfxToolsSearch" type="search" aria-label="Search tools" placeholder="Try camera mix or export" autocomplete="off" spellcheck="false" hidden>
       <div class="nfx-tools-body" aria-label="Tools in this group"></div>
@@ -74,6 +75,9 @@ export function mountStudioTools(workspace) {
   const stage = panel.querySelector('.nfx-aperture');
   const find = panel.querySelector('[data-tools-find]');
   const closeButton = panel.querySelector('[data-tools-close]');
+  const detail = panel.querySelector('[data-tools-detail]');
+  const back = panel.querySelector('[data-tools-all]');
+  const hud = document.getElementById('hud');
   const label = document.createElement('span');
   label.className = 'nfx-tools-dock-label';
   label.textContent = 'Tools';
@@ -82,9 +86,13 @@ export function mountStudioTools(workspace) {
   let activeGroup = 0;
   let groupMotion;
   let closing = false;
-  let useNativeMenu = false;
   let enabled = false;
-  const studio = mountStudioInterface(workspace.rig, openNative);
+  let restoreHudInert = false;
+  let undock;
+  let selectedRoute = null;
+  let adjusting = false;
+  let allTools = false;
+  const studio = mountStudioInterface(workspace.rig, (page, section) => openEditor(page, section, true));
 
   const groupButtons = groups.map((group, index) => {
     const button = document.createElement('button');
@@ -99,10 +107,11 @@ export function mountStudioTools(workspace) {
     const group = groups[activeGroup];
     const searching = !search.hidden;
     const terms = search.value.toLowerCase().trim().split(/\s+/).filter(Boolean);
-    const options = searching ? groups.flatMap(group => group.tools) : group.tools;
+    const options = searching || allTools ? groups.flatMap(group => group.tools) : group.tools;
     const matches = options.filter(tool => terms.every(term => tool.join(' ').toLowerCase().includes(term)));
     panel.style.setProperty('--tool-light', group.color);
-    title.textContent = searching ? 'Find a tool' : group.name;
+    title.textContent = searching ? 'Find a tool' : allTools ? 'All tools' : group.name;
+    back.textContent = allTools ? 'Groups' : 'All tools';
     for (const [index, button] of groupButtons.entries()) {
       button.setAttribute('aria-pressed', String(index === activeGroup));
     }
@@ -133,10 +142,14 @@ export function mountStudioTools(workspace) {
     activeGroup = index;
     stage.classList.add('nfx-aperture-used');
     workspace.rig.feedback?.('tick');
+    allTools = false;
+    clearEditor();
     render(true);
   });
 
   function setSearch(active, focus = true) {
+    clearEditor();
+    allTools = false;
     search.hidden = !active;
     search.value = '';
     find.setAttribute('aria-expanded', String(active));
@@ -149,19 +162,24 @@ export function mountStudioTools(workspace) {
 
   function open() {
     if (panel.open) return;
+    workspace.rig.closeMenu();
     setSearch(false, false);
-    panel.showModal();
+    restoreHudInert = hud.inert;
+    hud.inert = true;
+    panel.show();
     trigger.setAttribute('aria-expanded', 'true');
     closeButton.focus({preventScroll: true});
     aperture.open(trigger.getBoundingClientRect(), activeGroup);
   }
 
-  async function dismiss(withMotion = true, handoff = false) {
+  async function dismiss(withMotion = true) {
     if (closing || !panel.open) return;
     closing = true;
-    if (withMotion && !stage.inert) await aperture.close(handoff);
+    clearEditor();
+    if (withMotion && !stage.inert) await aperture.close();
     else aperture.stop();
     panel.close();
+    hud.inert = restoreHudInert;
     closing = false;
     trigger.setAttribute('aria-expanded', 'false');
     trigger.focus({preventScroll: true});
@@ -170,22 +188,84 @@ export function mountStudioTools(workspace) {
   function openRoute(route) {
     const [page, section] = route.split(':');
     if (page === 'layers') {
+      dismiss(false);
       workspace.layers.open();
       return;
     }
-    if ((!section || page === 'cam' && section === 'source') && studio.show(page)) return;
-    openNative(page, section);
+    openEditor(page, section);
   }
 
-  function openNative(page, section) {
-    workspace.rig.guideOpen(page);
-    if (page === 'cam') workspace.selectTab(section || 'source');
-    if (page === 'recording') document.getElementById(`nfx-tab-${section}`)?.click();
-    document.getElementById('shClose')?.focus({preventScroll: true});
+  function clearEditor() {
+    if (!selectedRoute) return;
+    if (adjusting) finishDial(false);
+    undock?.();
+    undock = null;
+    selectedRoute = null;
+    detail.hidden = true;
+    panel.classList.remove('nfx-tools-editing');
+    body.replaceChildren();
+  }
+
+  function turnControl(id, control) {
+    const {label, min, max, step, format} = control.spec;
+    adjusting = true;
+    detail.hidden = true;
+    title.textContent = label.toLowerCase();
+    back.textContent = 'Done';
+    aperture.dial({
+      label, min, max, step: step || (max - min) / 200, format,
+      read: () => workspace.rig.interfaceValue(id),
+      write(value) {
+        workspace.rig.interfaceSetParam(id, value);
+        control.refresh();
+      }
+    });
+  }
+
+  function finishDial(focus = true) {
+    adjusting = false;
+    aperture.dial();
+    if (selectedRoute) {
+      title.textContent = selectedRoute.title;
+      detail.hidden = !selectedRoute.compact;
+    }
+    back.textContent = 'Groups';
+    if (focus) back.focus({preventScroll: true});
+  }
+
+  function openEditor(page, section, detailed = false) {
+    if (closing) return false;
+    open();
+    setSearch(false, false);
+    const route = section ? page + ':' + section : page;
+    const groupIndex = groups.findIndex(group => group.tools.some(tool => tool[1] === route || tool[1] === page));
+    if (groupIndex >= 0) aperture.select(groupIndex);
+    const tool = groups.flatMap(group => group.tools).find(tool => tool[1] === route || tool[1] === page);
+    const canUseCompact = !detailed && (!section || page === 'cam' && section === 'source') && page !== 'recording';
+    const name = tool?.[0] || (page === 'recording' ? 'Recording controls' : 'Controls');
+    selectedRoute = {page, section, title: name, compact: false};
+    panel.classList.add('nfx-tools-editing');
+    groupMotion?.cancel();
+    body.replaceChildren();
+    undock = canUseCompact ? studio.circleEditor(page, body, turnControl) : null;
+    selectedRoute.compact = !!undock;
+    if (!undock) undock = workspace.rig.dockInterfacePage(page, body);
+    if (page === 'cam' && !selectedRoute.compact) workspace.selectTab(section || 'source');
+    if (page === 'recording' && section) document.getElementById('nfx-tab-' + section)?.click();
+    title.textContent = name;
+    back.textContent = 'Groups';
+    detail.hidden = !selectedRoute.compact;
+    body.parentElement.scrollTop = 0;
+    back.focus({preventScroll: true});
+    if (!reducedMotion.matches) {
+      groupMotion = body.animate([{opacity: .24, transform: 'translateY(12px)'}, {opacity: 1, transform: 'translateY(0)'}],
+        {duration: 260, easing: 'cubic-bezier(.2,.8,.2,1)'});
+    }
+    return true;
   }
 
   function usesNativeMenu() {
-    return workspace.byos.enabled || workspace.take.enabled || workspace.rig.guideState().ui.menuOpen ||
+    return workspace.byos.enabled || workspace.take.enabled ||
       document.body.classList.contains('clean') || document.body.classList.contains('nfx-simple-record');
   }
 
@@ -204,6 +284,15 @@ export function mountStudioTools(workspace) {
       }
     }
   }
+
+  workspace.rig.openInterfacePage = (page, section) => {
+    if (!enabled || usesNativeMenu()) return false;
+    return openEditor(page, section);
+  };
+  workspace.rig.closeInterfacePage = () => dismiss(false);
+  new MutationObserver(() => {
+    if (panel.open && usesNativeMenu() && !closing) dismiss(false);
+  }).observe(document.body, {attributes: true, attributeFilter: ['class']});
 
   function launchFromStock() {
     workspace.rig.closeMenu();
@@ -229,33 +318,42 @@ export function mountStudioTools(workspace) {
   openRequestedInterface();
 
   trigger.addEventListener('click', event => {
-    if (!enabled || useNativeMenu || usesNativeMenu()) return;
+    if (!enabled || usesNativeMenu()) return;
     event.stopImmediatePropagation();
     open();
   }, true);
 
   search.addEventListener('input', () => render());
   find.addEventListener('click', () => { if (!closing) setSearch(search.hidden); });
-  panel.addEventListener('cancel', event => {
+  panel.addEventListener('keydown', event => {
+    event.stopPropagation();
+    if (event.key !== 'Escape') return;
     event.preventDefault();
-    if (!search.hidden) setSearch(false);
+    if (adjusting) finishDial();
+    else if (!search.hidden) setSearch(false);
+    else if (selectedRoute) { clearEditor(); render(); }
     else dismiss();
   });
-  panel.addEventListener('keydown', event => event.stopPropagation());
   panel.addEventListener('click', async event => {
     if (closing) return;
     const button = event.target.closest('button');
     if (button === closeButton) dismiss();
-    if (button?.dataset.studioGroup !== undefined) aperture.select(Number(button.dataset.studioGroup));
-    if (button?.dataset.studioRoute) {
-      const route = button.dataset.studioRoute;
-      await dismiss(true, true);
-      openRoute(route);
+    if (button?.dataset.studioGroup !== undefined) {
+      allTools = false;
+      const group = Number(button.dataset.studioGroup);
+      clearEditor();
+      if (group === activeGroup) render();
+      else aperture.select(group);
     }
+    if (button?.dataset.studioRoute) openRoute(button.dataset.studioRoute);
+    if (button === detail && selectedRoute) openEditor(selectedRoute.page, selectedRoute.section, true);
     if (button?.hasAttribute('data-tools-all')) {
-      dismiss(false);
-      useNativeMenu = true;
-      try { trigger.click(); } finally { useNativeMenu = false; }
+      if (adjusting) finishDial();
+      else {
+        allTools = !selectedRoute && !allTools;
+        clearEditor();
+        render();
+      }
     }
     if (button?.hasAttribute('data-tools-stock')) {
       await dismiss();

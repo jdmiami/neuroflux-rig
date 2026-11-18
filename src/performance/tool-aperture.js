@@ -89,6 +89,7 @@ export function mountToolAperture(stage, buttons, colors, reducedMotion, onSelec
   let animation = 0, lastTime = 0, open = false, closing = null, drag = null, suppressClick = false;
   let selected = 0, turn = 0, target = 0, velocity = 0, exposure = 0, exposureSpeed = 0, anchor;
   const light = {x: -.6, y: -.8};
+  let dial = null;
 
   function resize() {
     if (!open) return;
@@ -141,6 +142,14 @@ export function mountToolAperture(stage, buttons, colors, reducedMotion, onSelec
       ctx.scale(scale, scale);
       ctx.globalAlpha = Math.min(1, expanded * 1.8) * (1 - handoff);
       paintOptics(ctx, radius, turn, velocity, light, colors[selected], !!drag?.moved);
+      if (dial) {
+        const progress = clamp((dial.read() - dial.min) / (dial.max - dial.min), 0, 1);
+        ctx.strokeStyle = colors[selected];
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius * .78, -Math.PI / 2, -Math.PI / 2 + TAU * progress);
+        ctx.stroke();
+      }
       ctx.restore();
     }
     const orbit = (radius + 12) * scale;
@@ -212,12 +221,28 @@ export function mountToolAperture(stage, buttons, colors, reducedMotion, onSelec
     return {x: event.clientX - bounds.left - width / 2, y: event.clientY - bounds.top - height / 2};
   }
 
+  function refreshDial() {
+    const value = dial.read();
+    const text = dial.format(value);
+    input.setAttribute('aria-valuenow', String(value));
+    input.setAttribute('aria-valuetext', text);
+    const readout = input.querySelector('output');
+    if (readout.textContent !== text) readout.textContent = text;
+  }
+
+  function writeDial(value) {
+    const rounded = Math.round((value - dial.min) / dial.step) * dial.step + dial.min;
+    dial.write(clamp(rounded, dial.min, dial.max));
+    refreshDial();
+    wake();
+  }
+
   stage.addEventListener('pointerdown', event => {
     if (event.button !== 0 || drag || closing || !bounds) return;
     const {x, y} = point(event);
     if (Math.hypot(x, y) < radius * .34) return;
     suppressClick = false;
-    drag = {id: event.pointerId, x, y, angle: Math.atan2(y, x), time: event.timeStamp, moved: false};
+    drag = {id: event.pointerId, x, y, angle: Math.atan2(y, x), time: event.timeStamp, moved: false, dialValue: dial?.read()};
   });
   stage.addEventListener('pointermove', event => {
     if (!bounds || closing) return;
@@ -232,6 +257,12 @@ export function mountToolAperture(stage, buttons, colors, reducedMotion, onSelec
     drag.moved = true;
     const angle = Math.atan2(y, x);
     const delta = wrap(angle - drag.angle + Math.PI, TAU) - Math.PI;
+    if (dial) {
+      drag.dialValue = clamp(drag.dialValue + (dial.max - dial.min) * delta / TAU, dial.min, dial.max);
+      drag.angle = angle;
+      writeDial(drag.dialValue);
+      return;
+    }
     const seconds = Math.max(.012, (event.timeStamp - drag.time) / 1000);
     turn -= delta / STEP;
     velocity = velocity * .35 + clamp(-delta / STEP / seconds, -10, 10) * .65;
@@ -245,6 +276,7 @@ export function mountToolAperture(stage, buttons, colors, reducedMotion, onSelec
     drag = null;
     if (!ended.moved) return;
     suppressClick = true;
+    if (dial) return;
     const momentum = cancelled || event.timeStamp - ended.time > 100 ? 0 : clamp(velocity * .095, -.7, .7);
     select(Math.round(turn + momentum));
   }
@@ -262,6 +294,12 @@ export function mountToolAperture(stage, buttons, colors, reducedMotion, onSelec
     }
   }, true);
   stage.addEventListener('keydown', event => {
+    if (dial && ['ArrowLeft','ArrowRight','ArrowDown','ArrowUp','Home','End'].includes(event.key)) {
+      event.preventDefault();
+      const sign = ['ArrowLeft','ArrowDown'].includes(event.key) ? -1 : 1;
+      writeDial(event.key === 'Home' ? dial.min : event.key === 'End' ? dial.max : dial.read() + sign * dial.step);
+      return;
+    }
     if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
     event.preventDefault();
     const direction = ['ArrowRight', 'ArrowDown'].includes(event.key) ? 1 : -1;
@@ -284,6 +322,23 @@ export function mountToolAperture(stage, buttons, colors, reducedMotion, onSelec
       draw();
     },
     select,
+    dial(control = null) {
+      dial = control;
+      stage.classList.toggle('nfx-aperture-adjusting', !!control);
+      input.toggleAttribute('aria-hidden', !control);
+      if (control) {
+        input.tabIndex = 0;
+        input.setAttribute('role', 'slider');
+        input.setAttribute('aria-label', control.label);
+        input.setAttribute('aria-valuemin', String(control.min));
+        input.setAttribute('aria-valuemax', String(control.max));
+        refreshDial();
+        input.focus({preventScroll: true});
+      } else {
+        for (const attribute of ['tabindex','role','aria-label','aria-valuemin','aria-valuemax','aria-valuenow','aria-valuetext']) input.removeAttribute(attribute);
+      }
+      wake();
+    },
     stop: halt,
     close(handoff = false) {
       if (!open || reducedMotion.matches) {

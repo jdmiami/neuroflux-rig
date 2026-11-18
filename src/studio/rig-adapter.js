@@ -2,6 +2,7 @@
 const studioTargets = new Map();
 let studioPerformanceTab = 'quick';
 let studioInterfaceEditing = false;
+let dockedInterfacePage = null;
 // Keep recovery in the native system menu, accessible without a floating toolbar.
 const appUpdateCard = Ut(Dt.sys, '<span>APP UPDATES</span>',
   '<p class="mstat">Get the latest Neuroflux while keeping saved recordings and settings.</p><button class="sbtn act" id="btnAppUpdate">LOAD LATEST VERSION</button>');
@@ -64,6 +65,23 @@ window.NFXRig = {
   cancelLayerTouches(pointers) {for(const pointer of pointers)f.dispatchEvent(new PointerEvent('pointercancel',{pointerId:pointer.id,pointerType:'touch',clientX:pointer.x,clientY:pointer.y,bubbles:true}));ma.clear();fa.fill(0);},
   mountBYOS(panel) {Dt.quick.insertBefore(panel,Dt.quick.firstChild);},
   mountInterfaceChoice(button) { Dt.quick.prepend(button); },
+  dockInterfacePage(page, host) {
+    const node = Dt[page];
+    if (!node) return null;
+    const previous = Ct;
+    const home = document.createComment('Studio page home');
+    node.before(home);
+    dockedInterfacePage = page;
+    jt(page, false);
+    host.append(node);
+    window.NFXStudio?.setVisible(page === 'recording');
+    return () => {
+      dockedInterfacePage = null;
+      home.replaceWith(node);
+      if (previous !== Ct) jt(previous, false);
+      window.NFXStudio?.setVisible(Nt.open && Ct === 'recording');
+    };
+  },
   closeMenu: Kt,
   mountPerformance(camera,motion,setups) {
     Dt.cam.insertBefore(camera,Dt.cam.firstChild);Dt.react.insertBefore(motion,Dt.react.firstChild);Dt.scenes.insertBefore(setups,Dt.scenes.firstChild);
@@ -85,6 +103,7 @@ window.NFXRig = {
   setParam: nt,
   guideOpen(page) {
     if (!Le.some(p => p.id === page)) throw new Error('That app page is unavailable.');
+    if (window.NFXRig.openInterfacePage?.(page)) return;
     if (document.body.classList.contains('clean')) $n();
     // A half-height phone sheet cannot fit both coaching and the real control.
     if (!qt()) Nt.snap = 'full';
@@ -127,14 +146,21 @@ window.NFXRig = {
     panel.classList.add('page'); panel.hidden = false;
     panel.style.setProperty('--acc', entry.c); Dt.recording = panel;
     It.appendChild(panel);
-    const sync = () => onVisibility(Nt.open && Ct === 'recording');
+    const sync = () => onVisibility(dockedInterfacePage === 'recording' || Nt.open && Ct === 'recording');
     const observer = new MutationObserver(sync);
     observer.observe(Lt, { attributes: true, attributeFilter: ['aria-hidden', 'class'] });
     observer.observe(panel, { attributes: true, attributeFilter: ['class'] });
     sync();
   },
-  openRecording() { if (document.body.classList.contains('clean')) $n(); jt('recording'); },
-  closeRecording() { if (Ct === 'recording') Kt(); },
+  openRecording() {
+    if (window.NFXRig.openInterfacePage?.('recording', window.NFXStudio?.tab)) return;
+    if (document.body.classList.contains('clean')) $n();
+    jt('recording');
+  },
+  closeRecording() {
+    if (dockedInterfacePage === 'recording') window.NFXRig.closeInterfacePage?.();
+    else if (Ct === 'recording') Kt();
+  },
   render(id, width, height, options = {}) {
     if (!T || !M || !v) throw new Error('WebGL visual engine is unavailable.');
     let target = studioTargets.get(id);
